@@ -50,7 +50,7 @@ func NewBlockchain() *Blockchain {
 
 // Create new block
 func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
-	b := &Block{}
+	b := NewBlock(nonce, previousHash)
 	bc.chain = append(bc.chain, b)
 	return b
 }
@@ -103,20 +103,20 @@ func init() { //? TODO: Why we need this?
 
 // Main function
 func main() {
-	block := &Block{nonce: 1}
-	fmt.Printf("%x\n", block.Hash())
+	// block := &Block{nonce: 1}
+	// fmt.Printf("%x\n", block.Hash())
 
 	// Initialize a new blockchain ()
-	// blockChain := NewBlockchain()
-	// blockChain.Print()
+	blockChain := NewBlockchain()
+	blockChain.Print()
 
 	// Create a new block
-	// previousHash := blockChain.LastBlock().Hash()
-	// blockChain.CreateBlock(5, previousHash)
-	// blockChain.Print()
+	previousHash := blockChain.LastBlock().Hash()
+	blockChain.CreateBlock(5, previousHash)
+	blockChain.Print()
 
 	// Create a new block
-	// previousHash = blockChain.LastBlock().Hash()
-	// blockChain.CreateBlock(2, previousHash)
-	// blockChain.Print()
+	previousHash = blockChain.LastBlock().Hash()
+	blockChain.CreateBlock(2, previousHash)
+	blockChain.Print()
 }
