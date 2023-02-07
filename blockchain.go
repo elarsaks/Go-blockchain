@@ -82,7 +82,7 @@ func (b *Block) Hash() [32]byte {
 //TODO: Learn more about this
 // This function should help return the JSON representation of the block
 // It should translate struct to JSON
-func (b *Block) MashalJSON() ([]byte, error) {
+func (b *Block) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Nonce        int      `json:"nonce"`
 		PreviousHash [32]byte `json:"previous_hash"`
