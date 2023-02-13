@@ -23,6 +23,7 @@ func NewBlock(nonce int, previousHash [32]byte, transactions []*Transaction) *Bl
 	b.nonce = nonce
 	b.previousHash = previousHash
 	b.timeStamp = time.Now().UnixNano()
+	b.transactions = transactions
 	return b
 }
 
@@ -30,7 +31,6 @@ func NewBlock(nonce int, previousHash [32]byte, transactions []*Transaction) *Bl
 func (b *Block) Print() {
 	fmt.Printf("nonce           %d\n", b.nonce)
 	fmt.Printf("previous_hash   %x\n", b.previousHash)
-	fmt.Printf("transactions    %s\n", b.transactions)
 	fmt.Printf("time_stamp      %d\n", b.timeStamp)
 
 	for _, t := range b.transactions {
@@ -77,7 +77,6 @@ func (bc *Blockchain) Print() {
 // Generate sha256 hash from a block, for a block
 func (b *Block) Hash() [32]byte {
 	m, _ := json.Marshal(b)
-
 	fmt.Println(string(m))
 
 	return sha256.Sum256([]byte(m))
