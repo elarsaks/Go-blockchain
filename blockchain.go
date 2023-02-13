@@ -17,7 +17,7 @@ type Block struct {
 	timeStamp    int64
 }
 
-// Create new block //* Note: this is not called anywhere
+// Create new block
 func NewBlock(nonce int, previousHash [32]byte) *Block {
 	b := new(Block)
 	b.nonce = nonce
@@ -78,10 +78,7 @@ func (b *Block) Hash() [32]byte {
 	return sha256.Sum256([]byte(m))
 }
 
-// Marshal block to JSON
-//TODO: Learn more about this
-// This function should help return the JSON representation of the block
-// It should translate struct to JSON
+// Marshal block to JSON (translate struct to JSON)
 func (b *Block) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Nonce        int      `json:"nonce"`
@@ -103,9 +100,6 @@ func init() { //? TODO: Why we need this?
 
 // Main function
 func main() {
-	// block := &Block{nonce: 1}
-	// fmt.Printf("%x\n", block.Hash())
-
 	// Initialize a new blockchain ()
 	blockChain := NewBlockchain()
 	blockChain.Print()
