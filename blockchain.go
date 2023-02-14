@@ -105,28 +105,32 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 
 // Copy transaction pool
 func (bc *Blockchain) CopyTransactionPool() []*Transaction {
-	transactions := make([]*Transaction, len(bc.transactionPool))
+	transactions := make([]*Transaction, 0)
 
 	for _, t := range bc.transactionPool {
 		transactions = append(transactions,
-			t.recipientBlockchainAddress,
-			t.senderBlockchainAddress,
-			t.value)
+			NewTransaction(t.senderBlockchainAddress,
+				t.recipientBlockchainAddress,
+				t.value))
 	}
 
 	return transactions
 }
 
-func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) {
+// Validate proof // TODO: Understand this function!
+func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
 	zeros := strings.Repeat("0", difficulty)
 	guessBlock := Block{0, nonce, previousHash, transactions}
-
 	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
 
-	return guessHashStr[:difficulty] === zeros
+	// Debug to see the hash
+	// fmt.Printf("guess_hash_str: %s\n", guessHashStr)
+
+	return guessHashStr[:difficulty] == zeros
 }
 
-func (bc *Blockchain) ProofOfWork(difficulty int) int {
+// Proof of work // TODO: Understand this function!
+func (bc *Blockchain) ProofOfWork() int {
 	transactions := bc.CopyTransactionPool()
 	previousHash := bc.LastBlock().Hash()
 	nonce := 0
@@ -134,6 +138,8 @@ func (bc *Blockchain) ProofOfWork(difficulty int) int {
 	for !bc.ValidProof(nonce, previousHash, transactions, MINING_DIFFICULTY) {
 		nonce += 1
 	}
+
+	return nonce
 }
 
 // Create transaction type
