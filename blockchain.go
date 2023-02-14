@@ -154,6 +154,8 @@ func main() {
 	blockChain.Print()
 
 	// Create a new block
+	blockChain.AddTransaction("Charile", "Bob", 1.2)
+	blockChain.AddTransaction("Alice", "Anton", 1.0)
 	previousHash = blockChain.LastBlock().Hash()
 	blockChain.CreateBlock(2, previousHash)
 	blockChain.Print()
