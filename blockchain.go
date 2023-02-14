@@ -9,12 +9,14 @@ import (
 	"time"
 )
 
+const MINING_DIFFICULTY = 3
+
 // Define Block type
 type Block struct {
+	timeStamp    int64
 	nonce        int
 	previousHash [32]byte
 	transactions []*Transaction
-	timeStamp    int64
 }
 
 // Create new block
@@ -77,8 +79,6 @@ func (bc *Blockchain) Print() {
 // Generate sha256 hash from a block, for a block
 func (b *Block) Hash() [32]byte {
 	m, _ := json.Marshal(b)
-	fmt.Println(string(m))
-
 	return sha256.Sum256([]byte(m))
 }
 
@@ -101,6 +101,39 @@ func (b *Block) MarshalJSON() ([]byte, error) {
 func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32) {
 	t := NewTransaction(sender, recipient, value)
 	bc.transactionPool = append(bc.transactionPool, t)
+}
+
+// Copy transaction pool
+func (bc *Blockchain) CopyTransactionPool() []*Transaction {
+	transactions := make([]*Transaction, len(bc.transactionPool))
+
+	for _, t := range bc.transactionPool {
+		transactions = append(transactions,
+			t.recipientBlockchainAddress,
+			t.senderBlockchainAddress,
+			t.value)
+	}
+
+	return transactions
+}
+
+func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) {
+	zeros := strings.Repeat("0", difficulty)
+	guessBlock := Block{0, nonce, previousHash, transactions}
+
+	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
+
+	return guessHashStr[:difficulty] === zeros
+}
+
+func (bc *Blockchain) ProofOfWork(difficulty int) int {
+	transactions := bc.CopyTransactionPool()
+	previousHash := bc.LastBlock().Hash()
+	nonce := 0
+
+	for !bc.ValidProof(nonce, previousHash, transactions, MINING_DIFFICULTY) {
+		nonce += 1
+	}
 }
 
 // Create transaction type
@@ -150,6 +183,7 @@ func main() {
 	// Create a new block
 	blockChain.AddTransaction("Alice", "Bob", 1.0)
 	previousHash := blockChain.LastBlock().Hash()
+	nonce := blockChain.ProofOfWork()
 	blockChain.CreateBlock(5, previousHash)
 	blockChain.Print()
 
@@ -157,6 +191,7 @@ func main() {
 	blockChain.AddTransaction("Charile", "Bob", 1.2)
 	blockChain.AddTransaction("Alice", "Anton", 1.0)
 	previousHash = blockChain.LastBlock().Hash()
-	blockChain.CreateBlock(2, previousHash)
+	nonce = blockChain.ProofOfWork()
+	blockChain.CreateBlock(nonce, previousHash)
 	blockChain.Print()
 }
