@@ -117,7 +117,6 @@ func (bc *Blockchain) CopyTransactionPool() []*Transaction {
 	return transactions
 }
 
-<<<<<<< HEAD
 // Generate and test Block hash
 func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
 	zeros := strings.Repeat("0", difficulty)                  // Create a string of zeros
@@ -128,17 +127,6 @@ func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions 
 }
 
 // Increment nonce until the hash is valid
-=======
-// Validate proof // TODO: Understand this function!
-func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
-	zeros := strings.Repeat("0", difficulty)
-	guessBlock := Block{0, nonce, previousHash, transactions}
-	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
-	return guessHashStr[:difficulty] == zeros
-}
-
-// Proof of work // TODO: Understand this function!
->>>>>>> main
 func (bc *Blockchain) ProofOfWork() int {
 	transactions := bc.CopyTransactionPool()
 	previousHash := bc.LastBlock().Hash()
