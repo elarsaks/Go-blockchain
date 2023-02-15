@@ -143,14 +143,14 @@ func (bc *Blockchain) ProofOfWork() int {
 	return nonce
 }
 
-// TODO: Understand this
+// Mine a block
 func (bc *Blockchain) Mining() bool {
 	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD)
-	nonce := bc.ProofOfWork()
-	previousHash := bc.LastBlock().Hash()
-	bc.CreateBlock(nonce, previousHash)
+	nonce := bc.ProofOfWork()             // Find a valid nonce
+	previousHash := bc.LastBlock().Hash() // Get the previous hash
+	bc.CreateBlock(nonce, previousHash)   // Create a new block with nonce and previous hash
 	log.Println("action=mining, status=success")
-	return true
+	return true // Return true if mining is successful
 }
 
 // Create transaction type
