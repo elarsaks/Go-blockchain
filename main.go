@@ -14,6 +14,6 @@ func init() {
 // Main function
 func main() {
 	w := wallet.NewWallet()
-	fmt.Println(w.privateKeyStr())
-	fmt.Println(w.publicKeyStr())
+	fmt.Println(w.PrivateKeyStr())
+	fmt.Println(w.PublicKeyStr())
 }
