@@ -1,6 +1,8 @@
 package block
 
 import (
+	"Go-blockchain/utils"
+	"crypto/ecdsa"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
@@ -102,9 +104,36 @@ func (b *Block) MarshalJSON() ([]byte, error) {
 }
 
 // Add transaction to the transaction pool
-func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32) {
+func (bc *Blockchain) AddTransaction(
+	sender string,
+	recipient string,
+	value float32,
+	senderPublicKey *ecdsa.PublicKey,
+	s *utils.Signature) bool {
+
 	t := NewTransaction(sender, recipient, value)
-	bc.transactionPool = append(bc.transactionPool, t)
+
+	// If sender is mining, add transaction without signature verification
+	if sender == MINING_SENDER {
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true
+	}
+
+	// Verify transaction signature
+	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true
+	} else {
+		log.Println("Invalid transaction signature")
+
+	}
+	return false
+}
+
+func (bc *Blockchain) VerifyTransactionSignature(senderPublicKey *ecdsa.PublicKey, s *utils.Signature, t *Transaction) bool {
+	m, _ := json.Marshal(t)
+	h := sha256.Sum256([]byte(m))
+	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
 }
 
 // Copy transaction pool
@@ -145,7 +174,7 @@ func (bc *Blockchain) ProofOfWork() int {
 
 // Mine a block
 func (bc *Blockchain) Mining() bool {
-	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD)
+	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD, nil, nil)
 	nonce := bc.ProofOfWork()             // Find a valid nonce
 	previousHash := bc.LastBlock().Hash() // Get the previous hash
 	bc.CreateBlock(nonce, previousHash)   // Create a new block with nonce and previous hash
