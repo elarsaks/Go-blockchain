@@ -38,4 +38,11 @@ func main() {
 		t.GeneratreSignature())
 
 	fmt.Println("Added: ", isAdded)
+
+	blockchain.Mining()
+	blockchain.Print()
+
+	fmt.Printf("A %.1f\n", blockchain.CalculateTotalAmount(walletA.BlockchainAddress()))
+	fmt.Printf("B %.1f\n", blockchain.CalculateTotalAmount(walletB.BlockchainAddress()))
+	fmt.Printf("M %.1f\n", blockchain.CalculateTotalAmount(walletM.BlockchainAddress()))
 }

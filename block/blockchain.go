@@ -121,10 +121,17 @@ func (bc *Blockchain) AddTransaction(
 
 	// Verify transaction signature
 	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
+
+		// Check if sender has enough funds
+		if bc.CalculateTotalAmount(sender) < value {
+			log.Println("Error: Not enough balance in sender account")
+			return false
+		}
+
 		bc.transactionPool = append(bc.transactionPool, t)
 		return true
 	} else {
-		log.Println("Invalid transaction signature")
+		log.Println("Error: VerifyTransactionSignature failed")
 
 	}
 	return false
