@@ -20,10 +20,10 @@ func (bcs *BlockchainServer) Port() uint16 {
 }
 
 func HelloWorld(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, "Hello, world!")
+	io.WriteString(w, "Hello, World!")
 }
 
 func (bcs *BlockchainServer) Run() {
 	http.HandleFunc("/", HelloWorld)
-	log.Fatal(http.ListenAndServe("0.0.0.0"+strconv.Itoa(int(bcs.Port())), nil))
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), nil))
 }
