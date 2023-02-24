@@ -39,12 +39,14 @@ func (bcs *BlockchainServer) Blockchain() *block.Blockchain {
 func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, r *http.Request) {
 	switch req.Method {
 	case "GET":
+		w.Header().Add("Content-Type", "application/json")
 		bc := bcs.Blockchain()
-	
+		m. _ := bc.MarshalJSON()
+		io.WriteString(w, string(m))
 	default: 
 		log.Printf("Error: Invalid request method: %v", req.Method)
 
 func (bcs *BlockchainServer) Run() {
-	http.HandleFunc("/", HelloWorld)
+	http.HandleFunc("/", bcs.GetChain)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), nil))
 }
