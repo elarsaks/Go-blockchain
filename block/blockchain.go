@@ -49,14 +49,16 @@ type Blockchain struct {
 	transactionPool   []*Transaction
 	chain             []*Block
 	blockchainAddress string
+	port              uint16
 }
 
 // Create blockchain (including genesis block)
-func NewBlockchain(blockcainAddress string) *Blockchain {
+func NewBlockchain(blockcainAddress string, port uint16) *Blockchain {
 	b := &Block{}
 	bc := new(Blockchain)
 	bc.blockchainAddress = blockcainAddress
 	bc.CreateBlock(0, b.Hash())
+	bc.port = port
 	return bc
 }
 
