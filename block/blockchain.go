@@ -1,7 +1,6 @@
 package block
 
 import (
-	"Go-blockchain/utils"
 	"crypto/ecdsa"
 	"crypto/sha256"
 	"encoding/json"
@@ -9,6 +8,8 @@ import (
 	"log"
 	"strings"
 	"time"
+
+	"github.com/elarsaks/Go-blockchain/utils"
 )
 
 const MINING_DIFFICULTY = 3

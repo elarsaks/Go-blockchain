@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"Go-blockchain/utils"
+	"github.com/elarsaks/Go-blockchain/utils"
 
 	"github.com/btcsuite/btcutil/base58"
 )
