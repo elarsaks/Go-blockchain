@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Go-blockchain/block"
+	"github.com/elarsaks/Go-blockchain/block"
 	"log"
 	"net/http"
 	"strconv"

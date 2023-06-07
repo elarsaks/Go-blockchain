@@ -1,4 +1,4 @@
-module Go-blockchain
+module github.com/elarsaks/Go-blockchain
 
 go 1.20
 
