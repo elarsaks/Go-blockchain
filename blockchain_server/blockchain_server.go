@@ -10,7 +10,7 @@ import (
 	"github.com/elarsaks/Go-blockchain/wallet"
 )
 
-var cache map[string]*block.Blockchain = make(map[string]*Block.Blockchain)
+var cache map[string]*block.Blockchain = make(map[string]*block.Blockchain)
 
 type BlockchainServer struct {
 	port uint16
@@ -29,7 +29,7 @@ func (bcs *BlockchainServer) Blockchain() *block.Blockchain {
 
 	if !ok {
 		minersWallet := wallet.NewWallet()
-		bc = block.NewBlockchain(minersWallet.Address(), bcs.Port())
+		bc = block.NewBlockchain(minersWallet.BlockchainAddress(), bcs.Port())
 		cache["blockchain"] = bc
 		log.Printf("private_key: %v", minersWallet.PrivateKeyStr())
 		log.Printf("public_key: %v", minersWallet.PublicKeyStr())
@@ -39,6 +39,7 @@ func (bcs *BlockchainServer) Blockchain() *block.Blockchain {
 	return bc
 }
 
+/*
 func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, r *http.Request) {
 	switch req.Method {
 	case "GET":
@@ -49,9 +50,14 @@ func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, r *http.Request) {
 	default:
 		log.Printf("Error: Invalid request method: %v", req.Method)
 	}
+} */
+
+func HelloWorld(w http.ResponseWriter, r *http.Request) {
+	io.WriteString(w, "Hello World!")
 }
 
 func (bcs *BlockchainServer) Run() {
-	http.HandleFunc("/", bcs.GetChain)
+	http.HandleFunc("/hello", HelloWorld)
+	//	http.HandleFunc("/", bcs.GetChain)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), nil))
 }
