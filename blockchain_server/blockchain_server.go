@@ -1,10 +1,13 @@
 package main
 
 import (
-	"github.com/elarsaks/Go-blockchain/block"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/elarsaks/Go-blockchain/block"
+	"github.com/elarsaks/Go-blockchain/wallet"
 )
 
 var cache map[string]*block.Blockchain = make(map[string]*Block.Blockchain)
@@ -41,10 +44,12 @@ func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		w.Header().Add("Content-Type", "application/json")
 		bc := bcs.Blockchain()
-		m. _ := bc.MarshalJSON()
+		m._ := bc.MarshalJSON()
 		io.WriteString(w, string(m))
-	default: 
+	default:
 		log.Printf("Error: Invalid request method: %v", req.Method)
+	}
+}
 
 func (bcs *BlockchainServer) Run() {
 	http.HandleFunc("/", bcs.GetChain)

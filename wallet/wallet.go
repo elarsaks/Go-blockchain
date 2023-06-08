@@ -8,9 +8,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/elarsaks/Go-blockchain/utils"
-
 	"github.com/btcsuite/btcutil/base58"
+	"github.com/elarsaks/Go-blockchain/utils"
 )
 
 type Wallet struct {
