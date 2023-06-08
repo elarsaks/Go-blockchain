@@ -24,7 +24,7 @@ func (bcs *BlockchainServer) Port() uint16 {
 	return bcs.port
 }
 
-func (bcs *BlockchainServer) Blockchain() *block.Blockchain {
+func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 	bc, ok := cache["blockchain"]
 
 	if !ok {
@@ -39,25 +39,19 @@ func (bcs *BlockchainServer) Blockchain() *block.Blockchain {
 	return bc
 }
 
-/*
-func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, r *http.Request) {
+func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
-	case "GET":
+	case http.MethodGet:
 		w.Header().Add("Content-Type", "application/json")
-		bc := bcs.Blockchain()
-		m._ := bc.MarshalJSON()
-		io.WriteString(w, string(m))
+		bc := bcs.GetBlockchain()
+		m, _ := bc.MarshalJSON()
+		io.WriteString(w, string(m[:]))
 	default:
-		log.Printf("Error: Invalid request method: %v", req.Method)
+		log.Printf("Error: Invalid HTTP Method")
 	}
-} */
-
-func HelloWorld(w http.ResponseWriter, r *http.Request) {
-	io.WriteString(w, "Hello World!")
 }
 
 func (bcs *BlockchainServer) Run() {
-	http.HandleFunc("/hello", HelloWorld)
-	//	http.HandleFunc("/", bcs.GetChain)
+	http.HandleFunc("/", bcs.GetChain)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), nil))
 }
