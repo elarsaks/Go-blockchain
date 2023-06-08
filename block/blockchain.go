@@ -54,7 +54,7 @@ func (b *Block) MarshalJSON() ([]byte, error) {
 		TimeStamp    int64          `json:"time_stamp"`
 	}{
 		Nonce:        b.nonce,
-		PreviousHash: fmt.Printf("%x", b.previousHash),
+		PreviousHash: fmt.Sprintf("%x", b.previousHash),
 		Transactions: b.transactions,
 		TimeStamp:    b.timeStamp,
 	})
