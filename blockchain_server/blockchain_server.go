@@ -10,20 +10,26 @@ import (
 	"github.com/elarsaks/Go-blockchain/wallet"
 )
 
+// cache stores the blockchain instance
 var cache map[string]*block.Blockchain = make(map[string]*block.Blockchain)
 
+// BlockchainServer represents a server that handles blockchain requests.
 type BlockchainServer struct {
 	port uint16
 }
 
+// NewBlockchainServer creates a new instance of BlockchainServer with the specified port.
 func NewBlockchainServer(port uint16) *BlockchainServer {
 	return &BlockchainServer{port}
 }
 
+// Port returns the port on which the server is running.
 func (bcs *BlockchainServer) Port() uint16 {
 	return bcs.port
 }
 
+// GetBlockchain returns the blockchain associated with the server.
+// If the blockchain doesn't exist in the cache, it creates a new one.
 func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 	bc, ok := cache["blockchain"]
 
@@ -39,6 +45,7 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 	return bc
 }
 
+// GetChain handles the HTTP GET request for retrieving the blockchain.
 func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
@@ -51,6 +58,7 @@ func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) 
 	}
 }
 
+// Run starts the server and listens for incoming HTTP requests.
 func (bcs *BlockchainServer) Run() {
 	http.HandleFunc("/", bcs.GetChain)
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), nil))
