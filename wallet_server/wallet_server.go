@@ -9,7 +9,7 @@ import (
 	"text/template"
 )
 
-const tempDir = "wallet_server/templates"
+const tempDir = "templates/"
 
 // WalletServer represents a server that serves a wallet application.
 type WalletServer struct {
