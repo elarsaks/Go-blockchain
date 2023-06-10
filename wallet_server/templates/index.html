@@ -3,33 +3,137 @@
   <head>
     <meta charset="UTF-8" />
     <title>Wallet</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        margin-top: 0;
+        font-size: 24px;
+        color: #333;
+      }
+
+      .section {
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .input-group {
+        margin-bottom: 10px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #666;
+      }
+
+      .input-group input,
+      .input-group textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+      }
+
+      .input-group textarea {
+        resize: none;
+      }
+
+      .button {
+        display: inline-block;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+        text-decoration: none;
+        background-color: #337ab7;
+        color: #fff;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+      }
+
+      .button:hover {
+        background-color: #23527c;
+      }
+
+      .wallet-amount-container {
+        display: flex;
+        align-items: center;
+      }
+
+      .wallet-amount-container #wallet_amount {
+        margin-right: 10px;
+      }
+
+      .wallet-amount-container #reload_wallet {
+        margin-left: auto;
+      }
+    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   </head>
+
   <body>
-    <div>
-      <h1>Wallet</h1>
-      <div id="wallet_amount">0</div>
-      <button id="reload_wallet">Reload Wallet</button>
+    <div class="container">
+      <div class="section">
+        <div class="input-group">
+          <div class="wallet-amount-container">
+            <h1>Wallet</h1>
+            <button id="reload_wallet" class="button">Reload Wallet</button>
+          </div>
+          <label for="wallet_amount" class="section-title">Wallet Amount</label>
+          <div id="wallet_amount">0</div>
+        </div>
+      </div>
 
-      <p>Public Key</p>
-      <textarea id="public_key" rows="2" cols="100"></textarea>
+      <div class="section">
+        <h1>Public Key</h1>
+        <textarea id="public_key" rows="1" size="100"></textarea>
+      </div>
 
-      <p>Private Key</p>
-      <textarea id="private_key" rows="1" cols="100"></textarea>
+      <div class="section">
+        <h1>Private Key</h1>
+        <textarea id="private_key" rows="1" size="100"></textarea>
+      </div>
 
-      <p>Blockchain Address</p>
-      <textarea id="blockchain_address" rows="1" cols="100"></textarea>
-    </div>
-
-    <div>
-      <h1>Send Money</h1>
-      <div>
-        Address:
-        <input id="recipient_blockchain_address" size="100" type="text" />
-        <br />
-        Amount: <input id="send_amount" type="text" />
-        <br />
-        <button id="send_money_button">Send</button>
+      <div class="section">
+        <h1>Blockchain Address</h1>
+        <textarea id="blockchain_address" rows="1"></textarea>
+      </div>
+      <div class="section">
+        <h1>Send Money</h1>
+        <div class="input-group">
+          <label for="recipient_blockchain_address" class="section-title">
+            Recipient's Blockchain Address
+          </label>
+          <input id="recipient_blockchain_address" size="100" type="text" />
+        </div>
+        <div class="input-group">
+          <label for="send_amount" class="section-title">Amount</label>
+          <input id="send_amount" type="text" />
+        </div>
+        <button id="send_money_button" class="button">Send</button>
       </div>
     </div>
   </body>
