@@ -118,13 +118,13 @@
           }
 
           let transaction_data = {
-            sender_private_key: $("#private_key").val(),
-            sender_blockchain_address: $("#blockchain_address").val(),
-            recipient_blockchain_address: $(
+            ["sender_private_key"]: $("#private_key").val(),
+            ["sender_blockchain_address"]: $("#blockchain_address").val(),
+            ["recipient_blockchain_address"]: $(
               "#recipient_blockchain_address"
             ).val(),
-            sender_public_key: $("#public_key").val(),
-            value: $("#send_amount").val(),
+            ["sender_public_key"]: $("#public_key").val(),
+            ["value"]: parseFloat($("#send_amount").val()),
           };
 
           $.ajax({
