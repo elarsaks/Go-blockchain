@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -10,6 +11,7 @@ import (
 	"text/template"
 
 	"github.com/elarsaks/Go-blockchain/utils"
+
 	"github.com/elarsaks/Go-blockchain/wallet"
 )
 
@@ -47,6 +49,7 @@ func (ws *WalletServer) Index(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Returns starting data for the wallet page
 func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPost:
@@ -60,10 +63,28 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// CreateTransaction handles the HTTP POST request for creating a transaction.
 func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPost:
-		io.WriteString(w, string(utils.JsonStatus("Success")))
+		decoder := json.NewDecoder(req.Body)
+		var t wallet.TransactionRequest
+		err := decoder.Decode(&t)
+		if err != nil {
+			log.Printf("Error: %v", err)
+			io.WriteString(w, string(utils.JsonStatus("fail")))
+		}
+		if !t.Validate() {
+			log.Printf("Error: Missing required fields")
+			io.WriteString(w, string(utils.JsonStatus("fail")))
+			return
+		}
+
+		fmt.Println(t.SenderPublicKey)
+		fmt.Println(t.SenderBlockchainAddress)
+		fmt.Println(t.SenderPrivateKey)
+		fmt.Println(t.RecipientBlockchainAddress)
+		fmt.Println(t.Value)
 	default:
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("Error: Invalid HTTP Method")
