@@ -8,12 +8,12 @@
         font-family: Arial, sans-serif;
         background-color: #f2f2f2;
         margin: 0;
-        padding: 20px;
+        padding: 0px;
       }
 
       .container {
         max-width: 500px;
-        margin: 0 auto;
+        margin: 20vh auto;
         background-color: #fff;
         padding: 20px;
         border-radius: 8px;
@@ -92,6 +92,23 @@
       }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      $(function () {
+        $.ajax({
+          url: "wallet",
+          type: "POST",
+          success: function (response) {
+            $("#public_key").val(response["public_key"]);
+            $("#private_key").text(response["private_key"]);
+            $("#blockchain_address").text(response["blockchain_address"]);
+            console.info(response);
+          },
+          error: function (error) {
+            console.error(error);
+          },
+        });
+      });
+    </script>
   </head>
 
   <body>
@@ -107,19 +124,19 @@
         </div>
       </div>
 
-      <div class="section">
+      <div class="section input-group">
         <h1>Public Key</h1>
-        <textarea id="public_key" rows="1" size="100"></textarea>
+        <textarea id="public_key" rows="4"></textarea>
       </div>
 
-      <div class="section">
+      <div class="section input-group">
         <h1>Private Key</h1>
-        <textarea id="private_key" rows="1" size="100"></textarea>
+        <textarea id="private_key" rows="2"></textarea>
       </div>
 
-      <div class="section">
+      <div class="section input-group">
         <h1>Blockchain Address</h1>
-        <textarea id="blockchain_address" rows="1"></textarea>
+        <textarea id="blockchain_address" rows="2"></textarea>
       </div>
       <div class="section">
         <h1>Send Money</h1>
@@ -127,7 +144,7 @@
           <label for="recipient_blockchain_address" class="section-title">
             Recipient's Blockchain Address
           </label>
-          <input id="recipient_blockchain_address" size="100" type="text" />
+          <input id="recipient_blockchain_address" type="text" />
         </div>
         <div class="input-group">
           <label for="send_amount" class="section-title">Amount</label>
