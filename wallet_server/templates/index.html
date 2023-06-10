@@ -92,6 +92,23 @@
       }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      $(function () {
+        $.ajax({
+          url: "wallet",
+          type: "POST",
+          success: function (response) {
+            $("#public_key").val(response["public_key"]);
+            $("#private_key").text(response["private_key"]);
+            $("#blockchain_address").text(response["blockchain_address"]);
+            console.info(response);
+          },
+          error: function (error) {
+            console.error(error);
+          },
+        });
+      });
+    </script>
   </head>
 
   <body>
