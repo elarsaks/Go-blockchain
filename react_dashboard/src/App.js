@@ -1,30 +1,15 @@
-import logo from "./logo.svg";
+import React from "react";
 import "./App.css";
+// import the header component
+import Header from "./components/Header/index";
+// import the eth-overview component
+import EthOverview from "./components/Eth-Overview/index";
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-
-        <div class="ui animated button" tabindex="0">
-          <div class="visible content">Next</div>
-          <div class="hidden content">
-            <i class="right arrow icon"></i>
-          </div>
-        </div>
-      </header>
+      <Header />
+      <EthOverview />
     </div>
   );
 }
