@@ -8,6 +8,7 @@ function App() {
   return (
     <div className="App">
       <Header />
+      <br></br>
       <div className="ui two column doubling stackable grid container">
         <div className="column">
           <Wallet />
