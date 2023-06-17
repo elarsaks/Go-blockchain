@@ -8,6 +8,7 @@ const endpoint = `https://api.etherscan.io/api`;
 
 class LatestBlocks extends Component {
   constructor(props) {
+    super();
     this.state = {
       blocks: [],
     };
