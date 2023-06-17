@@ -5,8 +5,10 @@ import "./header.css";
 
 function AppDashboard() {
   return (
-    <div>
+    
+      <div className="ui container ">
       <Header as="h2" block>
+        
         React | Golang | Blockchain
       </Header>
     </div>

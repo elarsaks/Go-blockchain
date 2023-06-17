@@ -9,6 +9,7 @@ function App() {
     <div className="App">
       <Header />
       <br></br>
+
       <div className="ui two column doubling stackable grid container">
         <div className="column">
           <Wallet />
@@ -17,6 +18,11 @@ function App() {
         <div className="column">
           <Wallet />
         </div>
+      </div>
+
+      <br></br>
+      <div className="ui container">
+        <Wallet />
       </div>
 
       {/* <EthOverview /> */}

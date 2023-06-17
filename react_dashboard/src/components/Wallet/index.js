@@ -3,7 +3,7 @@ import "./wallet.css";
 
 function Wallet() {
   return (
-    <div className="ui segment ">
+    <div className="ui segment column">
       <h2 className="ui header">Wallet</h2>
       <div className="ui form">
         <div className="field">
