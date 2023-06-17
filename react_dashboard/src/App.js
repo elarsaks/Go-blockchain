@@ -1,16 +1,24 @@
 import React from "react";
 import "./App.css";
-// import the header component
 import Header from "./components/Header/index";
-// import the eth-overview component
-import EthOverview from "./components/Eth-Overview/index";
+// import EthOverview from "./components/Eth-Overview/index";
+import Wallet from "./components/Wallet/index";
 
 function App() {
   return (
     <div className="App">
       <Header />
+      <div className="ui two column doubling stackable grid container">
+        <div className="column">
+          <Wallet />
+        </div>
 
-      <EthOverview />
+        <div className="column">
+          <Wallet />
+        </div>
+      </div>
+
+      {/* <EthOverview /> */}
     </div>
   );
 }
