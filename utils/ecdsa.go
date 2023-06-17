@@ -58,5 +58,4 @@ func PrivateKeyFromString(s string, publicKey *ecdsa.PublicKey) *ecdsa.PrivateKe
 	var bi big.Int
 	_ = bi.SetBytes(b)
 	return &ecdsa.PrivateKey{*publicKey, &bi}
-
 }
