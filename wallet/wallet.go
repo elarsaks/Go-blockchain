@@ -119,7 +119,7 @@ func NewTransaction(privateKey *ecdsa.PrivateKey,
 	}
 }
 
-func (t *Transaction) GeneratreSignature() *utils.Signature {
+func (t *Transaction) GenerateSignature() *utils.Signature {
 	m, _ := json.Marshal(t)
 	h := sha256.Sum256([]byte(m))
 	r, s, _ := ecdsa.Sign(rand.Reader, t.senderPrivateKey, h[:])

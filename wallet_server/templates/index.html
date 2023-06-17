@@ -134,8 +134,13 @@
             contentType: "application/json",
             dataType: "json",
             success: function (response) {
-              alert("Send success");
               console.info(response);
+
+              if (($.parseJSON(response).message = "fail")) {
+                alert("failed");
+                return;
+              }
+              alert("Send success");
             },
             error: function (error) {
               alert("Send failed");
