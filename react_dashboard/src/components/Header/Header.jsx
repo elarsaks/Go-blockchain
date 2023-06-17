@@ -7,7 +7,7 @@ function AppDashboard() {
   return (
     <div>
       <Header as="h2" block>
-        Ethereum
+        React | Golang | Blockchain
       </Header>
     </div>
   );
