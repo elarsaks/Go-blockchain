@@ -1,8 +1,8 @@
+import Header from "./components/Header/index";
+import Wallet from "./components/Wallet/index";
+import Table from "./components/Table/index";
 import React from "react";
 import "./App.css";
-import Header from "./components/Header/index";
-// import EthOverview from "./components/Eth-Overview/index";
-import Wallet from "./components/Wallet/index";
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
 
       <br></br>
       <div className="ui container">
-        <Wallet />
+        <Table />
       </div>
 
       {/* <EthOverview /> */}
