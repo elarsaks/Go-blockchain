@@ -133,7 +133,7 @@ func (bc *Blockchain) Chain() []*Block {
 func (bc *Blockchain) Run() {
 	bc.StartSyncNeighbors()
 	bc.ResolveConflicts()
-	bc.StartMining()
+	bc.StartMining() // Start mining automatically
 }
 
 func (bc *Blockchain) SetNeighbors() {
@@ -296,7 +296,7 @@ func (bc *Blockchain) Mining() bool {
 	bc.mux.Lock()
 	defer bc.mux.Unlock()
 
-	/*
+	/*	Mine only if there is a transaction
 		if len(bc.transactionPool) == 0 {
 			return false
 		}
