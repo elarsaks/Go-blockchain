@@ -39,6 +39,7 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 	return bc
 }
 
+// Returns full blockchain
 func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
@@ -211,11 +212,17 @@ func (bcs *BlockchainServer) Consensus(w http.ResponseWriter, req *http.Request)
 func (bcs *BlockchainServer) Run() {
 	bcs.GetBlockchain().Run()
 
+	// TODO: Implement mux router
+	// Create a new router
+	// router := mux.NewRouter()
+	// router.HandleFunc("/", bcs.GetChain)
+	// handler := utils.CorsHandler(router)
+
 	http.HandleFunc("/", bcs.GetChain)
 	http.HandleFunc("/transactions", bcs.Transactions)
 	http.HandleFunc("/mine", bcs.Mine)
 	http.HandleFunc("/mine/start", bcs.StartMine)
 	http.HandleFunc("/amount", bcs.Amount)
-	http.HandleFunc("/consensus", bcs.Consensus)
+	http.HandleFunc("/consensus", bcs.Consensus) 
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), nil))
 }

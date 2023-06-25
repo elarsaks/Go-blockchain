@@ -30,6 +30,8 @@ function App() {
   const fetchData = async () => {
     try {
       const blockchainData = await fetchBlockchainData();
+      console.log("blockchainData", blockchainData);
+
       setBlockchain(blockchainData);
       console.log(blockchainData); // Log the blockchain data
     } catch (error) {
