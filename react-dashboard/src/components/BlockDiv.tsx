@@ -104,17 +104,23 @@ const BlockComponent: React.FC<BlockProps> = ({ block }) => (
         </tr>
       </thead>
       <tbody>
-        {block.transactions.map((transaction, idx) => (
-          <NestedTableRow key={idx}>
-            <NestedTableCell>
-              {transaction.sender_blockchain_address}
-            </NestedTableCell>
-            <NestedTableCell>
-              {transaction.recipient_blockchain_address}
-            </NestedTableCell>
-            <NestedTableCell>{transaction.value}</NestedTableCell>
-          </NestedTableRow>
-        ))}
+        {block.transactions ? (
+          block.transactions.map((transaction, idx) => (
+            <NestedTableRow key={idx}>
+              <NestedTableCell>
+                {transaction.sender_blockchain_address}
+              </NestedTableCell>
+              <NestedTableCell>
+                {transaction.recipient_blockchain_address}
+              </NestedTableCell>
+              <NestedTableCell>{transaction.value}</NestedTableCell>
+            </NestedTableRow>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={3}>No transactions (genesis block).</td>
+          </tr>
+        )}
       </tbody>
     </NestedTable>
   </BlockContainer>

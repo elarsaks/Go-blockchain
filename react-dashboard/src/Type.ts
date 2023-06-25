@@ -11,6 +11,6 @@ type Block = {
   transactions: Transaction[];
 };
 
-type Blockchain = Block[];
+type Blockchain = { chain: Block[] };
 
 export type { Blockchain, Block, Transaction };
