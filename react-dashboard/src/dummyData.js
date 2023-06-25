@@ -30,6 +30,11 @@ const blocks = [
         recipient_blockchain_address: "1PjZNzwNuqiasucL29etmW3uZoz5QWbRpC",
         value: 1,
       },
+      {
+        sender_blockchain_address: "THE BLOCKCHAIN",
+        recipient_blockchain_address: "1PjZNzwNuqiasucL29etmW3uZoz5QWbRpC",
+        value: 1,
+      },
     ],
   },
   {

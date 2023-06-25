@@ -2,6 +2,10 @@ import React from "react";
 import styled from "styled-components";
 
 const Block = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
   background-color: #f2f2f2;
   padding: 1rem;
   margin: 1rem;
@@ -11,7 +15,8 @@ const Block = styled.div`
   width: 100%;
 
   @media (max-width: 768px) {
-    max-width: 100%;
+    max-width: 90%;
+    padding: 0.5rem;
   }
 `;
 
@@ -35,11 +40,18 @@ const Label = styled.span`
 
 const Value = styled.span`
   margin-left: 0.5rem;
+  overflow-wrap: break-word;
+  word-break: break-all;
 `;
 
 const NestedTable = styled.table`
   width: 100%;
   border-collapse: collapse;
+  margin-top: 0.5rem;
+
+  @media (max-width: 768px) {
+    margin-top: 0.25rem;
+  }
 `;
 
 const NestedTableHeader = styled.th`
@@ -58,6 +70,7 @@ const NestedTableRow = styled.tr`
 const NestedTableCell = styled.td`
   padding: 0.5rem;
   border-bottom: 1px solid #ccc;
+  word-break: break-all;
 `;
 
 type Transaction = {
