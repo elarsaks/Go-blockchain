@@ -1,8 +1,9 @@
 import AppHeader from "./components/AppHeader";
 import styled from "styled-components";
 import Wallet from "./components/Wallet";
-import BlockchainTable from "./components/BlockchainTable";
+import Block from "./components/Block";
 import dummyData from "./dummyData";
+import React, { useState } from "react";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -17,15 +18,6 @@ const WalletWrapperContainer = styled.div`
   justify-content: space-evenly;
 `;
 
-const TableContainer = styled.div`
-  display: flex;
-  background-color: #f2f2f2;
-  padding: 1.9rem;
-  margin-top: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-`;
-
 function App() {
   return (
     <div className="App">
@@ -36,9 +28,11 @@ function App() {
           <Wallet />
         </WalletWrapperContainer>
 
-        <TableContainer>
-          <BlockchainTable blocks={dummyData} />
-        </TableContainer>
+        {dummyData.map((block, index) => (
+          <React.Fragment key={index}>
+            <Block block={block} />
+          </React.Fragment>
+        ))}
       </ContentContainer>
     </div>
   );

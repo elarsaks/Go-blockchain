@@ -4,7 +4,7 @@ const blocks = [
     nonce: 0,
     previous_hash:
       "50ef3021dcd17972828e10303eadc7af4ee51a4281fdb53f678dcf73f702c934",
-    transactions: null,
+    transactions: [], // TODO: Add empty transactions on genesis block
   },
   {
     timestamp: 1687628454465952800,
