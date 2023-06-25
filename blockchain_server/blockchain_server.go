@@ -217,7 +217,7 @@ func (bcs *BlockchainServer) Run() {
 	router := mux.NewRouter()
 
 	// Apply CORS middleware to the router
-	router.Use(utils.cors())
+	router.Use(utils.middleware.cors())
 
 	// Define your routes
 	router.HandleFunc("/", bcs.GetChain)
