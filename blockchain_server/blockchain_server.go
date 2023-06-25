@@ -219,15 +219,14 @@ func (bcs *BlockchainServer) Run() {
 	// Apply CORS middleware to the router
 	router.Use(utils.CorsMiddleware())
 
-	// Define your routes
+	// Define routes
 	router.HandleFunc("/", bcs.GetChain)
-
-	/* http.HandleFunc("/", bcs.GetChain)
-	http.HandleFunc("/transactions", bcs.Transactions)
-	http.HandleFunc("/mine", bcs.Mine)
-	http.HandleFunc("/mine/start", bcs.StartMine)
-	http.HandleFunc("/amount", bcs.Amount)
-	http.HandleFunc("/consensus", bcs.Consensus) */
+	router.HandleFunc("/", bcs.GetChain)
+	router.HandleFunc("/transactions", bcs.Transactions)
+	router.HandleFunc("/mine", bcs.Mine)
+	router.HandleFunc("/mine/start", bcs.StartMine)
+	router.HandleFunc("/amount", bcs.Amount)
+	router.HandleFunc("/consensus", bcs.Consensus) 
 
 	// Start the server
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), router))
