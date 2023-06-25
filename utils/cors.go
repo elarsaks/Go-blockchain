@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"net/http"
+	// "net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
@@ -16,12 +16,5 @@ func CorsMiddleware() mux.MiddlewareFunc {
 		AllowCredentials: true, // Allow sending of credentials (cookies, headers)
 	}
 
-	corsMiddleware := cors.New(corsOptions).Handler
-
-	return func(handler http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Access-Control-Allow-Origin", "*") // Add Access-Control-Allow-Origin header
-			corsMiddleware.ServeHTTP(w, r)
-		})
-	}
+	return cors.New(corsOptions).Handler
 }
