@@ -17,6 +17,15 @@ const WalletWrapperContainer = styled.div`
   justify-content: space-evenly;
 `;
 
+const TableContainer = styled.div`
+  display: flex;
+  background-color: #f2f2f2;
+  padding: 1.9rem;
+  margin-top: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+`;
+
 function App() {
   return (
     <div className="App">
@@ -27,10 +36,9 @@ function App() {
           <Wallet />
         </WalletWrapperContainer>
 
-        <div>
-          <h1>Blockchain Data</h1>
+        <TableContainer>
           <BlockchainTable blocks={dummyData} />
-        </div>
+        </TableContainer>
       </ContentContainer>
     </div>
   );
