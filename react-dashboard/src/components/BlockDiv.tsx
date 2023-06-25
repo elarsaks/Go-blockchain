@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { Block } from "../Type";
 
-const Block = styled.div`
+const BlockContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -73,25 +74,12 @@ const NestedTableCell = styled.td`
   word-break: break-all;
 `;
 
-type Transaction = {
-  sender_blockchain_address: string;
-  recipient_blockchain_address: string;
-  value: number;
-};
-
-type Block = {
-  timestamp: number;
-  nonce: number;
-  previous_hash: string;
-  transactions: Transaction[];
-};
-
 type BlockProps = {
   block: Block;
 };
 
-const BlockContainer: React.FC<BlockProps> = ({ block }) => (
-  <Block>
+const BlockComponent: React.FC<BlockProps> = ({ block }) => (
+  <BlockContainer>
     <Title>Block</Title>
     <div>
       <Label>Time:</Label>
@@ -129,7 +117,7 @@ const BlockContainer: React.FC<BlockProps> = ({ block }) => (
         ))}
       </tbody>
     </NestedTable>
-  </Block>
+  </BlockContainer>
 );
 
-export default BlockContainer;
+export default BlockComponent;

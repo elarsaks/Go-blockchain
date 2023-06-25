@@ -1,9 +1,11 @@
 import AppHeader from "./components/AppHeader";
 import styled from "styled-components";
 import Wallet from "./components/Wallet";
-import Block from "./components/Block";
+import BlockDiv from "./components/BlockDiv";
 import dummyData from "./dummyData";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { fetchBlockchainData } from "./api/Blockchain";
+import { Block } from "./Type"; // TODO: Fix types, they should not reuire import
 
 const ContentContainer = styled.div`
   display: flex;
@@ -19,6 +21,22 @@ const WalletWrapperContainer = styled.div`
 `;
 
 function App() {
+  const [blockchain, setBlockchain] = useState<Block[]>([]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const blockchainData = await fetchBlockchainData();
+      setBlockchain(blockchainData);
+      console.log(blockchainData); // Log the blockchain data
+    } catch (error) {
+      console.error("Failed to fetch blockchain data:", error);
+    }
+  };
+
   return (
     <div className="App">
       <AppHeader title="Go Blockchain" />
@@ -30,7 +48,7 @@ function App() {
 
         {dummyData.map((block, index) => (
           <React.Fragment key={index}>
-            <Block block={block} />
+            <BlockDiv block={block} />
           </React.Fragment>
         ))}
       </ContentContainer>
