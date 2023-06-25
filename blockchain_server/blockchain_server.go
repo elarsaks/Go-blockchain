@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"github.com/gorilla/mux"
 
 	"github.com/elarsaks/Go-blockchain/block"
 	"github.com/elarsaks/Go-blockchain/utils"
@@ -212,17 +213,23 @@ func (bcs *BlockchainServer) Consensus(w http.ResponseWriter, req *http.Request)
 func (bcs *BlockchainServer) Run() {
 	bcs.GetBlockchain().Run()
 
-	// TODO: Implement mux router
 	// Create a new router
-	// router := mux.NewRouter()
-	// router.HandleFunc("/", bcs.GetChain)
-	// handler := utils.CorsHandler(router)
+	router := mux.NewRouter()
 
-	http.HandleFunc("/", bcs.GetChain)
+	// Apply CORS middleware to the router
+	router.Use(utils.cors())
+
+	// Define your routes
+	router.HandleFunc("/", bcs.GetChain)
+
+	/* http.HandleFunc("/", bcs.GetChain)
 	http.HandleFunc("/transactions", bcs.Transactions)
 	http.HandleFunc("/mine", bcs.Mine)
 	http.HandleFunc("/mine/start", bcs.StartMine)
 	http.HandleFunc("/amount", bcs.Amount)
-	http.HandleFunc("/consensus", bcs.Consensus) 
-	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), nil))
+	http.HandleFunc("/consensus", bcs.Consensus) */
+
+	// Start the server
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), router))
 }
+
