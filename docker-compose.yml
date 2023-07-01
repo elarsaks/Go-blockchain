@@ -14,18 +14,25 @@ services:
   #    - ./react_dashboard/package.json:/app/package.json
   #    - node_modules:/app/node_modules
 
-  #wallet:
-  #  container_name: wallet_server
-  #  build:
-  #    context: ./api
-  #  depends_on:
-  #    - blockchain_server
-  #  environment:
-  #  volumes:
-  #    - ./api:/app
-  #  ports:
-  #    - ${PORT}:${PORT}
-  #  restart: unless-stopped
+  wallet:
+    container_name: wallet
+    build:
+      context: ./wallet_server
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - PORT=8080
+      - COMMAND=air
+    volumes:
+      - ./wallet_server:/app/wallet_server
+      - ./blockchain:/app/blockchain
+      - ./block:/app/block
+      - ./utils:/app/utils
+      - ./wallet:/app/wallet
+      - ./go.mod:/app/go.mod:ro
+      - ./go.sum:/app/go.sum:ro
+    restart: unless-stopped
 
   miner_1:
     container_name: miner_1
