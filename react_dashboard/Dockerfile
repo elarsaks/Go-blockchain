@@ -4,7 +4,6 @@ WORKDIR /app
 COPY package.json /app/package.json
 RUN chown node:node /app
 USER node
-# TODO: Remove force after dependencies are updated
-RUN npm install --force
+RUN npm install 
 COPY --chown=node . /app
-EXPOSE 8080
+EXPOSE ${DASHBOARD_PORT}
