@@ -1,20 +1,20 @@
 version: "3.8"
 
 services:
-  react_dashboard:
-    build:
-      context: ./react_dashboard
-    command: 'sh -c "npm run start"'
-    container_name: react_dashboard
-    restart: unless-stopped
-    ports:
-      - 3000:3000
-    volumes:
-      - ./react_dashboard/src:/app/src
-      - ./react_dashboard/package.json:/app/package.json
-      - node_modules:/app/node_modules
+  #react_dashboard:
+  #  build:
+  #    context: ./react_dashboard
+  #  command: 'sh -c "npm run start"'
+  #  container_name: react_dashboard
+  #  restart: unless-stopped
+  #  ports:
+  #    - 3000:3000
+  #  volumes:
+  #    - ./react_dashboard/src:/app/src
+  #    - ./react_dashboard/package.json:/app/package.json
+  #    - node_modules:/app/node_modules
 
-  #api:
+  #wallet:
   #  container_name: wallet_server
   #  build:
   #    context: ./api
@@ -26,6 +26,22 @@ services:
   #  ports:
   #    - ${PORT}:${PORT}
   #  restart: unless-stopped
+
+  miner_1:
+    container_name: miner_1
+    build:
+      context: ./blockchain_server
+      dockerfile: Dockerfile
+    ports:
+      - 5001:5001
+    environment:
+      - PORT=5001
+      - COMMAND=air
+    volumes:
+      - ./blockchain_server:/app
+      - ./blockchain_server/go.mod:/app/go.mod
+      - ./blockchain_server/go.sum:/app/go.sum
+    restart: unless-stopped
 
 
 volumes:
