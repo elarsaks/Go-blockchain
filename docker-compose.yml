@@ -47,7 +47,7 @@ services:
       - ./go.sum:/app/go.sum:ro
     restart: unless-stopped
 
-
+# TODO: Use volumes!
 #volumes:
 #  blockchain: ./blockchain
 #  util: ./util
