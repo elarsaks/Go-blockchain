@@ -3,6 +3,10 @@
 ## About
 The Wallet Server is a web server that handles the connection between clients and the blockchain network.
 
+## Dependenies
+- Golang
+- Air
+
 ## Installation
 
 If you haven't already installed the project from the parent folder, follow these steps to set up the Wallet Server:

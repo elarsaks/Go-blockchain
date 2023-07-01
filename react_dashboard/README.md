@@ -11,6 +11,8 @@ Key Features:
 
 By utilizing this UI, users can gain a better understanding of blockchain concepts, such as wallets, blocks, transactions, and the flow of cryptocurrencies. It serves as a visual representation of how the blockchain operates and facilitates learning in an interactive manner.
 
+## Dependenies
+- Node v17
 
 ## Installation
 
