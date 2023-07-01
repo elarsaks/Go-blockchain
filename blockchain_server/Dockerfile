@@ -1,6 +1,6 @@
 FROM golang:1.18.0-alpine
 
-WORKDIR /app
+WORKDIR /app/blockchain_server
 
 RUN go install github.com/cosmtrek/air@latest
 

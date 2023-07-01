@@ -38,18 +38,17 @@ services:
       - PORT=5001
       - COMMAND=air
     volumes:
-      # TODO: There must be a smarter way
-      - ./blockchain_server:/app
+      - ./blockchain_server:/app/blockchain_server
       - ./blockchain:/app/blockchain
       - ./block:/app/block
       - ./utils:/app/utils
       - ./wallet:/app/wallet
-      - ./go.mod:/app/go.mod
-      - ./go.sum:/app/go.sum
+      - ./go.mod:/app/go.mod:ro
+      - ./go.sum:/app/go.sum:ro
     restart: unless-stopped
 
 
 #volumes:
 #  blockchain: ./blockchain
 #  util: ./util
-#  mod: ./mod
+#  mod: ./mod.mod
