@@ -4,7 +4,7 @@ import Wallet from "./components/Wallet";
 import BlockDiv from "./components/BlockDiv";
 import React, { useState, useEffect } from "react";
 import { fetchBlockchainData } from "./api/Blockchain";
-import { Block, Blockchain } from "./Type";
+import { Block, /* Blockchain */ } from "./Type";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -54,7 +54,7 @@ function App() {
         </WalletWrapperContainer>
 
         {isLoading ? (
-          <p>Loading blockchain data...</p>
+          <p>Loading blockchain data... </p>
         ) : (
           blockchain.map((block, index) => (
             <React.Fragment key={index}>
