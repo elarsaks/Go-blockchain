@@ -33,6 +33,7 @@ IN: \Go-blockchain\blockchain_server>
 ### To run
 
 IN: \Go-blockchain\react_dashboard> - npm start
+It starts in port 3000
 
 ### TODO:
 

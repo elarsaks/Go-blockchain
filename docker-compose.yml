@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  client:
+    build:
+      context: ./client
+    command: 'sh -c "npm run serve"'
+    container_name: client
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    volumes:
+      - ./client/src:/app/src
+      - ./client/package.json:/app/package.json
+      - node_modules:/app/node_modules
+
+  api:
+    container_name: golang_api
+    build:
+      context: ./api
+    #links:
+    #  - database
+    depends_on:
+      - database
+    environment:
+      PG_DB_NAME: ${PG_DB_NAME}
+      PG_HOST: ${PG_HOST}
+      PG_PASSWORD: ${PG_PASSWORD}
+      PG_PORT: ${PG_PORT}
+      PG_USER: ${PG_USER}
+      PORT: ${PORT}
+    volumes:
+      - ./api:/app
+    ports:
+      - ${PORT}:${PORT}
+    restart: unless-stopped
+
+  database:
+    container_name: postgres_db
+    build:
+      context: ./data
+    environment:
+      POSTGRES_DB: ${PG_DB_NAME}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_USER: ${PG_USER}
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data: {}
+  node_modules: {}
