@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Go-blockchain</title>
+</head>
+
+<body>
+  <h1>Go-blockchain</h1>
+
+  <h2 style="color: #ff0000;">🚧 UNDER DEVELOPMENT 🚧</h2>
+
+  <h2>About</h2>
+  <p>This Docker-based blockchain application consists of the following components:</p>
+  <ul>
+    <li><strong>Client UI (React Dashboard):</strong><br>A user interface built using React, providing a visual dashboard for interacting with the blockchain.</li>
+    <li><strong>API Gateway (Wallet Server):</strong><br>A Golang web server serving as a gateway between the client UI and the blockchain.<br>It handles requests and forwards them to the appropriate APIs.</li>
+    <li><strong>Blockchain Miner Nodes (Golang APIs):</strong><br>Three Golang APIs that serve as blockchain miner nodes.<br>They perform mining operations and maintain the integrity of the blockchain.</li>
+  </ul>
+  <p>With this setup, users can access the client UI to interact with the blockchain through the API gateway, which communicates with the blockchain miner nodes to process transactions and maintain the blockchain's distributed ledger.</p>
+  <p>The Docker configuration ensures easy deployment and scalability of the blockchain application.</p>
+
+  <h2>Dependencies</h2>
+  <ul>
+    <li>Docker & Docker Compose</li>
+    <li>Golang</li>
+    <li>Air <a href="https://github.com/cosmtrek/air">GitHub repository</a></li>
+    <li>Node v17</li>
+  </ul>
+
+  <h2>Installation &amp; Running</h2>
+  <ol>
+    <li>To install Golang dependencies, at the root of this project folder run:<br><code>go mod tidy</code></li>
+    <li>To install JavaScript dependencies, at the /react_dashboard folder run:<br><code>npm install</code></li>
+    <li>To run it in the docker, at the root of this project folder run:<br><code>docker-compose up --build</code></li>
+  </ol>
+
+  <h3>Apps will start on ports:</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>App</th>
+        <th>URL</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>react_dashboard</td>
+        <td><a href="http://localhost:3000">http://localhost:3000</a></td>
+      </tr>
+      <tr>
+        <td>wallet_server</td>
+        <td><a href="http://localhost:5000">http://localhost:5000</a></td>
+      </tr>
+      <tr>
+        <td>miner_1</td>
+        <td><a href="http://localhost:5001">http://localhost:5001</a></td>
+      </tr>
+      <tr>
+        <td>miner_2</td>
+        <td><a href="http://localhost:5002">http://localhost:5002</a></td>
+      </tr>
+      <tr>
+        <td>miner_3</td>
+        <td><a href="http://localhost:5003">http://localhost:5003</a></td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <p><strong>Note:</strong> To run each app separately, check for ReadMe files in each app folder:</p>
+    <ul>
+      <li><code>react_dashboard/ReadMe.md</code></li>
+      <li><code>wallet_server/ReadMe.md</code></li>
+      <li><code>blockchain_server/Readme.md</code></li>
+    </ul>
+  
+  </body>
+  
+  </html>
+  
