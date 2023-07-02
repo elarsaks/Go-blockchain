@@ -1,6 +1,8 @@
 
 # Go-blockchain
 
+# 🚧 UNDER DEVELOPMENT 🚧
+
 ## About
 This Docker-based blockchain application consists of the following components:
 
