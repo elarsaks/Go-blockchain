@@ -1,5 +1,6 @@
 
 # Ignore node modules 
 node_modules
+# Ignore Go binaries
 tmp
 
