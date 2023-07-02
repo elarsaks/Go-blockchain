@@ -4,4 +4,4 @@ WORKDIR /app/blockchain_server
 
 RUN go install github.com/cosmtrek/air@latest
 
-CMD ["sh", "-c", "${COMMAND}"]
+#CMD ["sh", "-c", "${COMMAND}"]

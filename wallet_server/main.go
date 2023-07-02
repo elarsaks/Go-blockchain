@@ -1,8 +1,9 @@
 package main
 
 import (
-	"flag"
 	"log"
+	"os"
+	"strconv"
 )
 
 func init() {
@@ -10,11 +11,23 @@ func init() {
 }
 
 func main() {
-	port := flag.Uint("port", 8080, "TCP Port Number for Wallet Server")
-	// TODO: Port and host should come from .env file
-	gateway := flag.String("gateway", "http://127.0.0.1:5001", "Blockchain Server Gateway")
-	flag.Parse()
+	// Retrieve gateway from environment variable
+	gateway := os.Getenv("WALLET_SERVER_GATEWAY")
+	if gateway == "" {
+		gateway = "http://127.0.0.1:5001" // Default value
+	}
 
-	app := NewWalletServer(uint16(*port), *gateway)
+	// Retrieve port from environment variable
+	portStr := os.Getenv("WALLET_SERVER_PORT")
+	port, err := strconv.Atoi(portStr)
+	if err != nil || port <= 0 {
+		port = 8080 // Default value
+	}
+
+	// Print gateway and port
+	log.Printf("Gateway: %s\n", gateway)
+	log.Printf("Port: %d\n", port)
+
+	app := NewWalletServer(uint16(port), gateway)
 	app.Run()
 }
