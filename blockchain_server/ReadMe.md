@@ -1,4 +1,4 @@
-# MINER - Blockchain Server
+# MINER / NODE - Blockchain Server
 
 ## About
 Miner is a web server that facilitates the process of verifying and adding new blocks to the blockchain network. In the world of blockchain, it is commonly referred to as a node.

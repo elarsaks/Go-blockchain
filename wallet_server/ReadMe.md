@@ -30,7 +30,5 @@ To run it directly via Golang, execute the following command in this folder:
 go run main.go blockchain_server.go -port 5001
 ```
 
-### TODO:
-- Add info about API endoints
 
 

@@ -60,9 +60,5 @@ docker-compose up --build
 - `blockchain_server/Readme.md`
 
 
-### TODO:
-- Connect Miner Wallet to API
-- Connect Reguar Wallet to API
-- Implement sending crypto from miner to regular wallet
 
 

@@ -1,0 +1,6 @@
+# TODO:
+- Connect Miners
+- Connect Miner Wallet to API
+- Connect Reguar Wallet to API
+- Implement sending crypto from miner to regular wallet
+- Plan API endpoints and add info about them
