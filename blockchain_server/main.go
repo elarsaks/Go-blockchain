@@ -1,8 +1,9 @@
 package main
 
 import (
-	"flag"
 	"log"
+	"os"
+	"strconv"
 )
 
 // Function to initialize the logger
@@ -11,9 +12,16 @@ func init() {
 }
 
 func main() {
-	// TODO: Port and should come from .env file
-	port := flag.Uint("port", 5001, "TCP Port Number for Blockchain Server")
-	flag.Parse()
-	app := NewBlockchainServer(uint16(*port))
+	// Retrieve port from environment variable
+	portStr := os.Getenv("BLOCKCHAIN_SERVER_PORT")
+	port, err := strconv.Atoi(portStr)
+	if err != nil || port <= 0 {
+		port = 5001 // Default value
+	}
+
+	// Print port
+	log.Printf("Port: %d\n", port)
+
+	app := NewBlockchainServer(uint16(port))
 	app.Run()
 }
