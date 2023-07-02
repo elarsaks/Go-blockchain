@@ -20,11 +20,18 @@ go mod tidy
 ```
 
 ## Running
-In this folder run command
+To run the app with the Air library (live reloading), execute the following command in this folder:
 ```bash
 PORT=5001 air
 ```
-Note: This command runs only one miner. If you want to run multiple miners, open multiple new terminals and run the same command with different port numbers.
+
+To run it directly via Golang, execute the following command in this folder:
+```bash
+go run main.go wallet_server.go -port 8080 -gateway http://127.0.0.1:5001
+```
+
+**Note:**  
+These commands run only one miner. If you want to run multiple miners, open multiple new terminals and run the same command with different port numbers.
 
 Feel free to adjust the port numbers as needed to run multiple miners concurrently.
 

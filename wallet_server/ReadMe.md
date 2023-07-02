@@ -20,11 +20,17 @@ go mod tidy
 ```
 
 ## Running
-In this folder run command
+To run the app with the Air library (live reloading), execute the following command in this folder:
 ```bash
 PORT=8081 HOST=127.0.0.1 GATEWAY_PORT=5001 air
 ```
 
-# TODO: Add info about serving server template? (Do we keep a serverside UI, or do we delete it?)
+To run it directly via Golang, execute the following command in this folder:
+```bash
+go run main.go blockchain_server.go -port 5001
+```
+
+### TODO:
+- Add info about API endoints
 
 

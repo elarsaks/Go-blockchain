@@ -54,41 +54,13 @@ docker-compose up --build
 | miner_2         | [http://localhost:5002](http://localhost:5002) |
 | miner_3         | [http://localhost:5003](http://localhost:5003) |
 
+**Note:** To run each apps separately, check for ReadMe files in each app folder:
+- `react_dashboard/ReadMe.md`
+- `wallet_server/ReadMe.md`
+- `blockchain_server/Readme.md`
 
-
-## WALLETS
-
-### To run
-
-IN: \Go-blockchain\wallet_server>
-
-- Run wallet 1: go run main.go wallet_server.go -port 8080 -gateway http://127.0.0.1:5001
-- Run wallet 2: go run main.go wallet_server.go -port 8081 -gateway http://127.0.0.1:5001
 
 ### TODO:
-
-- Start using Mux Router
-- Add live reloading, such as 'air'
-
-## MINERS
-
-### To run
-
-IN: \Go-blockchain\blockchain_server>
-
-- Run miner 1: go run main.go blockchain_server.go -port 5001
-- Run miner 2: go run main.go blockchain_server.go -port 5002
-- Run miner 3: go run main.go blockchain_server.go -port 5003
-
-## DASHBOARD
-
-### To run
-
-IN: \Go-blockchain\react_dashboard> - npm start
-It starts in port 3000
-
-### TODO:
-
 - Connect Miner Wallet to API
 - Connect Reguar Wallet to API
 - Implement sending crypto from miner to regular wallet
