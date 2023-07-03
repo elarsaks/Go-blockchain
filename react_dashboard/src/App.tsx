@@ -31,6 +31,8 @@ function App() {
     try {
       const blockchainData = await fetchBlockchainData();
       setBlockchain(blockchainData.chain);
+
+     //  const walletData = await fetchBlockchainData();
     } catch (error) {
       console.error("Failed to fetch blockchain data:", error);
       // setIsLoading(false);
