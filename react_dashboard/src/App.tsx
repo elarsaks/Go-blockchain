@@ -23,13 +23,12 @@ const WalletWrapperContainer = styled.div`
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [blockchain, setBlockchain] = useState<Block[]>([]);
-  const [userWallet, setUserWallet] = useState<WalletContent >({
+  const [userWallet, setUserWallet] = useState<WalletContent>({
     blockchainAddress: "",
     privateKey: "",
     publicKey: "",
     amount: 0,
   });
-
 
   useEffect(() => {
     fetchData();
@@ -40,9 +39,12 @@ function App() {
       const blockchainData = await fetchBlockchainData();
       setBlockchain(blockchainData.chain);
 
-       const userWalletData = await fetchWalletData();
-        setUserWallet(userWalletData);
+      const userWalletData = await fetchWalletData();
+      setUserWallet(userWalletData);
+
+      setIsLoading(false);
     } catch (error) {
+      // TODO: Handle error
       console.error("Failed to fetch blockchain data:", error);
       // setIsLoading(false);
     }
@@ -60,7 +62,7 @@ function App() {
       <AppHeader title="Go Blockchain" />
       <ContentContainer className="App">
         <WalletWrapperContainer>
-          <Wallet walletContent={userWallet}/>
+          <Wallet walletContent={userWallet} />
           <Wallet walletContent={userWallet} />
         </WalletWrapperContainer>
 

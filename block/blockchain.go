@@ -297,6 +297,11 @@ func (bc *Blockchain) Mining() bool {
 	bc.mux.Lock()
 	defer bc.mux.Unlock()
 
+	// Log out blockchain
+	bc.Print()
+
+	// TODO: Mine only when blockchain is empty
+
 	//	Mine only if there is a transaction
 	if len(bc.transactionPool) == 0 {
 		return false
