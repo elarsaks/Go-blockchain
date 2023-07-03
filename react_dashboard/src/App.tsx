@@ -5,7 +5,7 @@ import BlockDiv from "./components/BlockDiv";
 import React, { useState, useEffect } from "react";
 import { fetchBlockchainData } from "./api/Blockchain";
 import { fetchWalletData } from "./api/Wallet";
-import { Block, /* Blockchain */ } from "./Type";
+import { Block, WalletContent /* Blockchain */ } from "./Type";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -21,8 +21,15 @@ const WalletWrapperContainer = styled.div`
 `;
 
 function App() {
-  const [blockchain, setBlockchain] = useState<Block[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [blockchain, setBlockchain] = useState<Block[]>([]);
+  const [userWallet, setUserWallet] = useState<WalletContent >({
+    blockchainAddress: "",
+    privateKey: "",
+    publicKey: "",
+    amount: 0,
+  });
+
 
   useEffect(() => {
     fetchData();
@@ -33,7 +40,8 @@ function App() {
       const blockchainData = await fetchBlockchainData();
       setBlockchain(blockchainData.chain);
 
-       const walletData = await fetchWalletData();
+       const userWalletData = await fetchWalletData();
+        setUserWallet(userWalletData);
     } catch (error) {
       console.error("Failed to fetch blockchain data:", error);
       // setIsLoading(false);
@@ -52,8 +60,8 @@ function App() {
       <AppHeader title="Go Blockchain" />
       <ContentContainer className="App">
         <WalletWrapperContainer>
-          <Wallet />
-          <Wallet />
+          <Wallet walletContent={userWallet}/>
+          <Wallet walletContent={userWallet} />
         </WalletWrapperContainer>
 
         {isLoading ? (

@@ -1,18 +1,33 @@
 import axios from "axios";
-import { Blockchain, Wallet } from "../Type";
+import { WalletContent } from "../Type";
 
-//? Is there need for a util folder?
 function snakeToCamelCase(snakeCaseString: string): string {
   return snakeCaseString.replace(/(_\w)/g, (match) => match[1].toUpperCase());
 }
 
-function fetchWalletData(): Promise<Wallet> {
+function fetchWalletData(): Promise<WalletContent> {
   return axios
-    .post<Wallet>("http://localhost:5000/wallet")
-    .then((response) => response.data)
+    .post<any>("http://localhost:5000/wallet")
+    .then(({ data }) => {
+      console.log("Fetched wallet data:", data);
+
+      const camelCaseResponseData: WalletContent = {
+        blockchainAddress: data.blockchain_address,
+        privateKey: data.private_key,
+        publicKey: data.public_key,
+        amount: 0, // TODO: Implement this
+      };
+
+      return camelCaseResponseData;
+    })
     .catch((error) => {
       console.error("Failed to fetch wallet data:", error);
-      return { blockchainAddress: "", privateKey: "", publicKey: "" };
+      return {
+        blockchainAddress: "",
+        privateKey: "",
+        publicKey: "",
+        amount: 0,
+      };
     });
 }
 

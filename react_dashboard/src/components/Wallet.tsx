@@ -1,5 +1,6 @@
-import React from "react";
 import styled from "styled-components";
+import { WalletContent } from "../Type";
+import React, { useState, useEffect } from "react";
 
 const WalletContainer = styled.div`
   background-color: #f2f2f2;
@@ -54,33 +55,82 @@ const SubmitButton = styled.button`
   float: right;
 `;
 
-const Wallet: React.FC = () => (
-  <WalletContainer>
-    <Title>Wallet</Title>
-    <Form>
-      <Field>
-        <Label>Public Key</Label>
-        <TextArea rows={4} />
-      </Field>
-      <Field>
-        <Label>Private Key</Label>
-        <TextArea rows={2} />
-      </Field>
-      <Field>
-        <Label>Sender Blockchain Address</Label>
-        <TextArea rows={2} />
-      </Field>
-      <Field>
-        <Label>Recipient Blockchain Address</Label>
-        <TextArea rows={2} />
-      </Field>
-      <Field>
-        <Label>Amount</Label>
-        <Input type="text" placeholder="0" />
-      </Field>
-      <SubmitButton type="submit">Send crypto</SubmitButton>
-    </Form>
-  </WalletContainer>
-);
+type WalletProps = {
+  walletContent: WalletContent;
+};
+
+const Wallet: React.FC<WalletProps> = ({ walletContent }) => {
+  const [localWalletContent, setLocalWalletContent] = useState(walletContent);
+
+  useEffect(() => {
+    setLocalWalletContent(walletContent);
+  }, [walletContent]);
+
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = event.target;
+
+    setLocalWalletContent((prevState: WalletContent) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    // Handle form submission if needed
+    // You can access the updated wallet content in localWalletContent state
+  };
+
+  return (
+    <WalletContainer>
+      <Title>Wallet</Title>
+      <Form onSubmit={handleSubmit}>
+        <Field>
+          <Label>Public Key</Label>
+          <TextArea
+            rows={4}
+            name="publicKey"
+            value={localWalletContent.publicKey}
+            onChange={handleInputChange}
+          />
+        </Field>
+        <Field>
+          <Label>Private Key</Label>
+          <TextArea
+            rows={2}
+            name="privateKey"
+            value={localWalletContent.privateKey}
+            onChange={handleInputChange}
+          />
+        </Field>
+        <Field>
+          <Label>Sender Blockchain Address</Label>
+          <TextArea
+            rows={2}
+            name="blockchainAddress"
+            value={localWalletContent.blockchainAddress}
+            onChange={handleInputChange}
+          />
+        </Field>
+        <Field>
+          <Label>Recipient Blockchain Address</Label>
+          <TextArea rows={2} />
+        </Field>
+        <Field>
+          <Label>Amount</Label>
+          <Input
+            type="text"
+            name="amount"
+            placeholder="0"
+            value={localWalletContent.amount.toString()}
+            onChange={handleInputChange}
+          />
+        </Field>
+        <SubmitButton type="submit">Send crypto</SubmitButton>
+      </Form>
+    </WalletContainer>
+  );
+};
 
 export default Wallet;

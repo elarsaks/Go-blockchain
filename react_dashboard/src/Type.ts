@@ -11,14 +11,15 @@ type Block = {
   transactions: Transaction[];
 };
 
-type Wallet = {
+type WalletContent = {
   blockchainAddress: string;
   privateKey: string;
   publicKey: string;
+  amount: number;
 };
 
 type Blockchain = {
   chain: Block[];
 };
 
-export type { Blockchain, Block, Transaction, Wallet };
+export type { Blockchain, Block, Transaction, WalletContent };
