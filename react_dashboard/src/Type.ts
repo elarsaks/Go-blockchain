@@ -1,16 +1,24 @@
 type Transaction = {
-  sender_blockchain_address: string;
-  recipient_blockchain_address: string;
+  senderBlockchainAddress: string;
+  recipientBlockchainAddress: string;
   value: number;
 };
 
 type Block = {
   timestamp: number;
   nonce: number;
-  previous_hash: string;
+  previousHash: string;
   transactions: Transaction[];
 };
 
-type Blockchain = { chain: Block[] };
+type Wallet = {
+  blockchainAddress: string;
+  privateKey: string;
+  publicKey: string;
+};
 
-export type { Blockchain, Block, Transaction };
+type Blockchain = {
+  chain: Block[];
+};
+
+export type { Blockchain, Block, Transaction, Wallet };

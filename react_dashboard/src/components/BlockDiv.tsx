@@ -91,7 +91,7 @@ const BlockComponent: React.FC<BlockProps> = ({ block }) => (
     </div>
     <div>
       <Label>Previous hash:</Label>
-      <Value>{block.previous_hash}</Value>
+      <Value>{block.previousHash}</Value>
     </div>
 
     <TableTitle>Transactions</TableTitle>
@@ -108,10 +108,10 @@ const BlockComponent: React.FC<BlockProps> = ({ block }) => (
           block.transactions.map((transaction, idx) => (
             <NestedTableRow key={idx}>
               <NestedTableCell>
-                {transaction.sender_blockchain_address}
+                {transaction.senderBlockchainAddress}
               </NestedTableCell>
               <NestedTableCell>
-                {transaction.recipient_blockchain_address}
+                {transaction.recipientBlockchainAddress}
               </NestedTableCell>
               <NestedTableCell>{transaction.value}</NestedTableCell>
             </NestedTableRow>
