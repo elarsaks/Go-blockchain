@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+
 	"github.com/gorilla/mux"
 
 	"github.com/elarsaks/Go-blockchain/block"
@@ -56,6 +57,7 @@ func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) 
 
 func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
+
 	case http.MethodGet:
 		w.Header().Add("Content-Type", "application/json")
 		bc := bcs.GetBlockchain()
@@ -99,6 +101,7 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 			m = utils.JsonStatus("success")
 		}
 		io.WriteString(w, string(m))
+
 	case http.MethodPut:
 		decoder := json.NewDecoder(req.Body)
 		var t block.TransactionRequest
@@ -128,10 +131,12 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 			m = utils.JsonStatus("success")
 		}
 		io.WriteString(w, string(m))
+
 	case http.MethodDelete:
 		bc := bcs.GetBlockchain()
 		bc.ClearTransactionPool()
 		io.WriteString(w, string(utils.JsonStatus("success")))
+
 	default:
 		log.Println("ERROR: Invalid HTTP Method")
 		w.WriteHeader(http.StatusBadRequest)
@@ -226,9 +231,8 @@ func (bcs *BlockchainServer) Run() {
 	router.HandleFunc("/mine", bcs.Mine)
 	router.HandleFunc("/mine/start", bcs.StartMine)
 	router.HandleFunc("/amount", bcs.Amount)
-	router.HandleFunc("/consensus", bcs.Consensus) 
+	router.HandleFunc("/consensus", bcs.Consensus)
 
 	// Start the server
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(bcs.Port())), router))
 }
-
