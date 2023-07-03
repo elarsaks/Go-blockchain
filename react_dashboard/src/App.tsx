@@ -4,6 +4,7 @@ import Wallet from "./components/Wallet";
 import BlockDiv from "./components/BlockDiv";
 import React, { useState, useEffect } from "react";
 import { fetchBlockchainData } from "./api/Blockchain";
+import { fetchWalletData } from "./api/Wallet";
 import { Block, /* Blockchain */ } from "./Type";
 
 const ContentContainer = styled.div`
@@ -32,7 +33,7 @@ function App() {
       const blockchainData = await fetchBlockchainData();
       setBlockchain(blockchainData.chain);
 
-     //  const walletData = await fetchBlockchainData();
+       const walletData = await fetchWalletData();
     } catch (error) {
       console.error("Failed to fetch blockchain data:", error);
       // setIsLoading(false);
