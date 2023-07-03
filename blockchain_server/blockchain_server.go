@@ -7,11 +7,10 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
-
 	"github.com/elarsaks/Go-blockchain/block"
 	"github.com/elarsaks/Go-blockchain/utils"
 	"github.com/elarsaks/Go-blockchain/wallet"
+	"github.com/gorilla/mux"
 )
 
 var cache map[string]*block.Blockchain = make(map[string]*block.Blockchain)
@@ -218,10 +217,7 @@ func (bcs *BlockchainServer) Consensus(w http.ResponseWriter, req *http.Request)
 func (bcs *BlockchainServer) Run() {
 	bcs.GetBlockchain().Run()
 
-	// Create a new router
 	router := mux.NewRouter()
-
-	// Apply CORS middleware to the router
 	router.Use(utils.CorsMiddleware())
 
 	// Define routes

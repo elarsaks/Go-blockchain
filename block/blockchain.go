@@ -293,6 +293,7 @@ func (bc *Blockchain) ProofOfWork() int {
 }
 
 func (bc *Blockchain) Mining() bool {
+	// Lock the blockchain while mining
 	bc.mux.Lock()
 	defer bc.mux.Unlock()
 

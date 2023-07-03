@@ -14,6 +14,7 @@ import (
 	"github.com/elarsaks/Go-blockchain/block"
 	"github.com/elarsaks/Go-blockchain/utils"
 	"github.com/elarsaks/Go-blockchain/wallet"
+	"github.com/gorilla/mux"
 )
 
 const tempDir = "templates/"
@@ -46,6 +47,8 @@ func (ws *WalletServer) Index(w http.ResponseWriter, req *http.Request) {
 }
 
 func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
+
+	fmt.Println("Wallet Called")
 	switch req.Method {
 	case http.MethodPost:
 		w.Header().Add("Content-Type", "application/json")
@@ -161,9 +164,16 @@ func (ws *WalletServer) WalletAmount(w http.ResponseWriter, req *http.Request) {
 }
 
 func (ws *WalletServer) Run() {
-	http.HandleFunc("/", ws.Index)
-	http.HandleFunc("/wallet", ws.Wallet)
-	http.HandleFunc("/wallet/amount", ws.WalletAmount)
-	http.HandleFunc("/transaction", ws.CreateTransaction)
-	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.Port())), nil))
+	// Create router
+	router := mux.NewRouter()
+	router.Use(utils.CorsMiddleware())
+
+	// Define routes
+	router.HandleFunc("/", ws.Index)
+	router.HandleFunc("/wallet", ws.Wallet)
+	router.HandleFunc("/wallet/amount", ws.WalletAmount)
+	router.HandleFunc("/transaction", ws.CreateTransaction)
+
+	// Start server
+	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.Port())), router))
 }

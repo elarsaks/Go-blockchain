@@ -8,7 +8,7 @@ function snakeToCamelCase(snakeCaseString: string): string {
 
 function fetchWalletData(): Promise<Wallet> {
   return axios
-    .get<Wallet>("http://localhost:5001/wallet")
+    .post<Wallet>("http://localhost:5000/wallet")
     .then((response) => response.data)
     .catch((error) => {
       console.error("Failed to fetch wallet data:", error);
