@@ -296,11 +296,10 @@ func (bc *Blockchain) Mining() bool {
 	bc.mux.Lock()
 	defer bc.mux.Unlock()
 
-	/*	Mine only if there is a transaction
-		if len(bc.transactionPool) == 0 {
-			return false
-		}
-	*/
+	//	Mine only if there is a transaction
+	if len(bc.transactionPool) == 0 {
+		return false
+	}
 
 	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD, nil, nil)
 	nonce := bc.ProofOfWork()
