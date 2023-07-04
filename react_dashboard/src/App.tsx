@@ -5,7 +5,6 @@ import BlockDiv from "./components/BlockDiv";
 import React, { useState, useEffect } from "react";
 import { fetchBlockchainData } from "./api/Blockchain";
 import { fetchWalletData } from "./api/Wallet";
-import { Block, WalletContent /* Blockchain */ } from "./Type";
 
 const ContentContainer = styled.div`
   display: flex;

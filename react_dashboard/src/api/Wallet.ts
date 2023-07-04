@@ -1,5 +1,4 @@
 import axios from "axios";
-import { WalletContent } from "../Type";
 
 /*
 function snakeToCamelCase(snakeCaseString: string): string {

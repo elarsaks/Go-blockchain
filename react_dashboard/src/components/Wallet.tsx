@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { WalletContent } from "../Type";
 import React, { useState, useEffect } from "react";
 
 const WalletContainer = styled.div`
