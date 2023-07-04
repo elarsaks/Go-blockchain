@@ -183,7 +183,7 @@ func (bcs *BlockchainServer) Amount(w http.ResponseWriter, req *http.Request) {
 		blockchainAddress := req.URL.Query().Get("blockchain_address")
 		amount := bcs.GetBlockchain().CalculateTotalAmount(blockchainAddress)
 
-		ar := &block.AmountResponse{amount}
+		ar := &block.AmountResponse{Amount: amount}
 		m, _ := ar.MarshalJSON()
 
 		w.Header().Add("Content-Type", "application/json")
