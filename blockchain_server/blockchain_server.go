@@ -221,7 +221,6 @@ func (bcs *BlockchainServer) Run() {
 
 	// Define routes
 	router.HandleFunc("/", bcs.GetChain)
-	router.HandleFunc("/", bcs.GetChain)
 	router.HandleFunc("/transactions", bcs.Transactions)
 	router.HandleFunc("/mine", bcs.Mine)
 	router.HandleFunc("/mine/start", bcs.StartMine)
