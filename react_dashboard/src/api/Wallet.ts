@@ -1,9 +1,10 @@
 import axios from "axios";
 import { WalletContent } from "../Type";
 
+/*
 function snakeToCamelCase(snakeCaseString: string): string {
   return snakeCaseString.replace(/(_\w)/g, (match) => match[1].toUpperCase());
-}
+} */
 
 function fetchWalletData(): Promise<WalletContent> {
   return (
