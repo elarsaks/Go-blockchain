@@ -53,43 +53,43 @@ services:
       - ./go.sum:/app/go.sum:ro
     restart: unless-stopped
 
-  miner_2:
-    container_name: miner_2
-    build:
-      context: ./blockchain_server
-      dockerfile: Dockerfile
-    ports:
-      - "${MINER_2_PORT}:${MINER_2_PORT}"
-    environment:
-      - PORT=${MINER_2_PORT}
-      - COMMAND=air
-    volumes:
-      - ./blockchain_server:/app/blockchain_server
-      - ./block:/app/block
-      - ./utils:/app/utils
-      - ./wallet:/app/wallet
-      - ./go.mod:/app/go.mod:ro
-      - ./go.sum:/app/go.sum:ro
-    restart: unless-stopped
+  # miner_2:
+  #   container_name: miner_2
+  #   build:
+  #     context: ./blockchain_server
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "${MINER_2_PORT}:${MINER_2_PORT}"
+  #   environment:
+  #     - PORT=${MINER_2_PORT}
+  #     - COMMAND=air
+  #   volumes:
+  #     - ./blockchain_server:/app/blockchain_server
+  #     - ./block:/app/block
+  #     - ./utils:/app/utils
+  #     - ./wallet:/app/wallet
+  #     - ./go.mod:/app/go.mod:ro
+  #     - ./go.sum:/app/go.sum:ro
+  #   restart: unless-stopped
 
-  miner_3:
-    container_name: miner_3
-    build:
-      context: ./blockchain_server
-      dockerfile: Dockerfile
-    ports:
-      - "${MINER_3_PORT}:${MINER_3_PORT}"
-    environment:
-      - PORT=${MINER_3_PORT}
-      - COMMAND=air
-    volumes:
-      - ./blockchain_server:/app/blockchain_server
-      - ./block:/app/block
-      - ./utils:/app/utils
-      - ./wallet:/app/wallet
-      - ./go.mod:/app/go.mod:ro
-      - ./go.sum:/app/go.sum:ro
-    restart: unless-stopped
+  # miner_3:
+  #   container_name: miner_3
+  #   build:
+  #     context: ./blockchain_server
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "${MINER_3_PORT}:${MINER_3_PORT}"
+  #   environment:
+  #     - PORT=${MINER_3_PORT}
+  #     - COMMAND=air
+  #   volumes:
+  #     - ./blockchain_server:/app/blockchain_server
+  #     - ./block:/app/block
+  #     - ./utils:/app/utils
+  #     - ./wallet:/app/wallet
+  #     - ./go.mod:/app/go.mod:ro
+  #     - ./go.sum:/app/go.sum:ro
+  #   restart: unless-stopped
 
 volumes:
   node_modules: 
