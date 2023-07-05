@@ -35,6 +35,7 @@ const NotificationWrapper = styled.div`
 const Message = styled.p`
   color: white;
   font-weight: bold;
+  margin: 2em;
 `;
 
 interface NotificationProps {
