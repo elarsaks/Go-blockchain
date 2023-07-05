@@ -36,6 +36,7 @@ const Message = styled.p`
   color: white;
   font-weight: bold;
   margin: 2em;
+  font-size: 1.5em;
 `;
 
 interface NotificationProps {
@@ -50,9 +51,7 @@ const Notification: React.FC<NotificationProps> = ({ message, type }) => {
 
   return (
     <NotificationWrapper className={type}>
-      <Message>
-        <h2>{message}</h2>
-      </Message>
+      <Message>{message}</Message>
     </NotificationWrapper>
   );
 };

@@ -65,14 +65,16 @@ function App() {
           <Wallet walletContent={userWallet} />
         </WalletWrapperContainer>
 
+        {isLoading && (
+          <Notification type="info" message="Loading blockchain data." />
+        )}
+
         {isError.message && (
           <Notification
             type="error"
             message="Sorry, there was an error loading blockchain data."
           />
         )}
-
-        {isLoading && <p>Loading blockchain data...</p>}
 
         {!isLoading &&
           !isError.message &&
