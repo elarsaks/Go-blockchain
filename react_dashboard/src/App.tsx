@@ -1,8 +1,8 @@
-import AppHeader from "./components/AppHeader";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import AppHeader from "./components/AppHeader";
 import Wallet from "./components/Wallet";
 import BlockDiv from "./components/BlockDiv";
-import React, { useState, useEffect } from "react";
 import { fetchBlockchainData } from "./api/Blockchain";
 import { fetchWalletData } from "./api/Wallet";
 
@@ -21,6 +21,7 @@ const WalletWrapperContainer = styled.div`
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState({ message: "" });
   const [blockchain, setBlockchain] = useState<Block[]>([]);
   const [userWallet, setUserWallet] = useState<WalletContent>({
     blockchainAddress: "",
@@ -29,32 +30,30 @@ function App() {
     amount: 0,
   });
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const fetchData = async () => {
-    try {
-      const blockchainData = await fetchBlockchainData();
-      setBlockchain(blockchainData.chain);
+    fetchBlockchainData()
+      .then((blockchainData) => {
+        setBlockchain(blockchainData.chain);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsError({ message: "Failed to fetch blockchain data" });
+        setIsLoading(false);
+      });
 
-      const userWalletData = await fetchWalletData();
-      setUserWallet(userWalletData);
-
-      setIsLoading(false);
-    } catch (error) {
-      // TODO: Handle error
-      console.error("Failed to fetch blockchain data:", error);
-      // setIsLoading(false);
-    }
+    fetchWalletData()
+      .then((walletData) => setUserWallet(walletData))
+      .catch((error) => {
+        console.log(error);
+        setIsError({ message: "Failed to fetch wallet data" });
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
-    if (blockchain != null && blockchain.length > 0) {
-      console.log("Blockchain: ", blockchain);
-      setIsLoading(false);
-    }
-  }, [blockchain]);
+    fetchData();
+  }, []);
 
   return (
     <div className="App">
@@ -65,15 +64,16 @@ function App() {
           <Wallet walletContent={userWallet} />
         </WalletWrapperContainer>
 
-        {isLoading ? (
-          <p>Loading blockchain data... </p>
-        ) : (
+        {isError.message && <p>Sorry, there was an error loading your data.</p>}
+        {isLoading && <p>Loading blockchain data...</p>}
+
+        {!isLoading &&
+          !isError.message &&
           blockchain.map((block, index) => (
             <React.Fragment key={index}>
               <BlockDiv block={block} />
             </React.Fragment>
-          ))
-        )}
+          ))}
       </ContentContainer>
     </div>
   );
