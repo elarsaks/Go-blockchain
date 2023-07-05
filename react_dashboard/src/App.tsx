@@ -5,6 +5,7 @@ import Wallet from "./components/Wallet";
 import BlockDiv from "./components/BlockDiv";
 import { fetchBlockchainData } from "./api/Blockchain";
 import { fetchWalletData } from "./api/Wallet";
+import Notification from "./components/Notification";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -64,7 +65,13 @@ function App() {
           <Wallet walletContent={userWallet} />
         </WalletWrapperContainer>
 
-        {isError.message && <p>Sorry, there was an error loading your data.</p>}
+        {isError.message && (
+          <Notification
+            type="error"
+            message="Sorry, there was an error loading blockchain data."
+          />
+        )}
+
         {isLoading && <p>Loading blockchain data...</p>}
 
         {!isLoading &&
