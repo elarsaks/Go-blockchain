@@ -40,7 +40,6 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 	return bc
 }
 
-// Returns full blockchain
 func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
@@ -184,7 +183,7 @@ func (bcs *BlockchainServer) Amount(w http.ResponseWriter, req *http.Request) {
 		blockchainAddress := req.URL.Query().Get("blockchain_address")
 		amount := bcs.GetBlockchain().CalculateTotalAmount(blockchainAddress)
 
-		ar := &block.AmountResponse{amount}
+		ar := &block.AmountResponse{Amount: amount}
 		m, _ := ar.MarshalJSON()
 
 		w.Header().Add("Content-Type", "application/json")
@@ -221,7 +220,6 @@ func (bcs *BlockchainServer) Run() {
 	router.Use(utils.CorsMiddleware())
 
 	// Define routes
-	router.HandleFunc("/", bcs.GetChain)
 	router.HandleFunc("/", bcs.GetChain)
 	router.HandleFunc("/transactions", bcs.Transactions)
 	router.HandleFunc("/mine", bcs.Mine)

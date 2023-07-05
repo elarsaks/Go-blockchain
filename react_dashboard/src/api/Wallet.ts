@@ -1,5 +1,4 @@
 import axios from "axios";
-import { WalletContent } from "../Type";
 
 /*
 function snakeToCamelCase(snakeCaseString: string): string {
@@ -20,15 +19,6 @@ function fetchWalletData(): Promise<WalletContent> {
         };
 
         return camelCaseResponseData;
-      })
-      .catch((error) => {
-        console.error("Failed to fetch wallet data:", error);
-        return {
-          blockchainAddress: "",
-          privateKey: "",
-          publicKey: "",
-          amount: 0,
-        };
       })
   );
 }
