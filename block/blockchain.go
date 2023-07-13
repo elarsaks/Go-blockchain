@@ -109,6 +109,24 @@ func (bc *Blockchain) LastBlock() *Block {
 	return bc.chain[len(bc.chain)-1]
 }
 
+func (bc *Blockchain) GetLast10Blocks() []*Block {
+	n := len(bc.chain)
+	var last10Blocks []*Block
+	if n > 10 {
+		last10Blocks = append([]*Block(nil), bc.chain[n-10:n]...)
+	} else {
+		last10Blocks = append([]*Block(nil), bc.chain...)
+	}
+
+	// Reverse the slice
+	for i := len(last10Blocks)/2 - 1; i >= 0; i-- {
+		opp := len(last10Blocks) - 1 - i
+		last10Blocks[i], last10Blocks[opp] = last10Blocks[opp], last10Blocks[i]
+	}
+
+	return last10Blocks
+}
+
 func (bc *Blockchain) Print() {
 	for i, block := range bc.chain {
 		fmt.Printf("%s Chain %d %s\n", strings.Repeat("=", 25), i,
@@ -208,10 +226,8 @@ func (bc *Blockchain) Mining() bool {
 	// Log out blockchain
 	bc.Print()
 
-	// TODO: Mine only when blockchain is empty
-
-	//	Mine only if there is a transaction
-	if len(bc.transactionPool) == 0 {
+	//	Dont mine when there is no transaction and blockchain already has few blocks
+	if len(bc.transactionPool) == 0 && len(bc.chain) > 10 {
 		return false
 	}
 
