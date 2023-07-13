@@ -1,8 +1,8 @@
 import axios from "axios";
 
-function fetchBlockchainData(): Promise<Blockchain> {
+function fetchBlockchainData(): Promise<[Block]> {
   return axios
-    .get<Blockchain>("http://localhost:5001/")
+    .get<[Block]>("http://localhost:5001/last10") // TODO: this should be docker container name
     .then((response) => response.data);
 }
 

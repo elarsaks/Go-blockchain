@@ -109,6 +109,15 @@ func (bc *Blockchain) LastBlock() *Block {
 	return bc.chain[len(bc.chain)-1]
 }
 
+// Get last 10 blocks
+func (bc *Blockchain) GetLast10Blocks() []*Block {
+	n := len(bc.chain)
+	if n > 10 {
+		return bc.chain[n-10 : n]
+	}
+	return bc.chain
+}
+
 func (bc *Blockchain) Print() {
 	for i, block := range bc.chain {
 		fmt.Printf("%s Chain %d %s\n", strings.Repeat("=", 25), i,
@@ -209,7 +218,7 @@ func (bc *Blockchain) Mining() bool {
 	bc.Print()
 
 	//	Dont mine when there is no transaction and blockchain already has few blocks
-	if len(bc.transactionPool) == 0 && len(bc.chain) > 2 {
+	if len(bc.transactionPool) == 0 && len(bc.chain) > 10 {
 		return false
 	}
 

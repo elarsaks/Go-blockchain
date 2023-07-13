@@ -33,8 +33,8 @@ function App() {
 
   const fetchData = async () => {
     fetchBlockchainData()
-      .then((blockchainData) => {
-        setBlockchain(blockchainData.chain);
+      .then((blocks) => {
+        setBlockchain(blocks);
         setIsLoading(false);
       })
       .catch((error) => {

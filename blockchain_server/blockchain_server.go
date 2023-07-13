@@ -53,6 +53,18 @@ func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) 
 	}
 }
 
+func (bcs *BlockchainServer) GetLast10Blocks(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case http.MethodGet:
+		w.Header().Add("Content-Type", "application/json")
+		bc := bcs.GetBlockchain()
+		m, _ := json.Marshal(bc.GetLast10Blocks())
+		io.WriteString(w, string(m[:]))
+	default:
+		log.Printf("ERROR: Invalid HTTP Method")
+	}
+}
+
 func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 
@@ -221,6 +233,7 @@ func (bcs *BlockchainServer) Run() {
 
 	// Define routes
 	router.HandleFunc("/", bcs.GetChain)
+	router.HandleFunc("/last10", bcs.GetLast10Blocks)
 	router.HandleFunc("/transactions", bcs.Transactions)
 	router.HandleFunc("/mine", bcs.Mine)
 	router.HandleFunc("/mine/start", bcs.StartMine)
