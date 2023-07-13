@@ -20,15 +20,6 @@ function fetchWalletData(): Promise<WalletContent> {
 
         return camelCaseResponseData;
       })
-      .catch((error) => {
-        console.error("Failed to fetch wallet data:", error);
-        return {
-          blockchainAddress: "",
-          privateKey: "",
-          publicKey: "",
-          amount: 0,
-        };
-      })
   );
 }
 
