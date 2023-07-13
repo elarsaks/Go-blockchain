@@ -208,10 +208,8 @@ func (bc *Blockchain) Mining() bool {
 	// Log out blockchain
 	bc.Print()
 
-	// TODO: Mine only when blockchain is empty
-
-	//	Mine only if there is a transaction
-	if len(bc.transactionPool) == 0 {
+	//	Dont mine when there is no transaction and blockchain already has few blocks
+	if len(bc.transactionPool) == 0 && len(bc.chain) > 2 {
 		return false
 	}
 
