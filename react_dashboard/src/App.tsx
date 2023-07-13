@@ -31,7 +31,17 @@ function App() {
     amount: 0,
   });
 
-  const fetchData = async () => {
+  useEffect(() => {
+    // Fetch wallet data once on component mount
+    fetchWalletData()
+      .then((walletData) => setUserWallet(walletData))
+      .catch((error) => {
+        console.log(error);
+        setIsError({ message: "Failed to fetch wallet data" });
+        setIsLoading(false);
+      });
+
+    // Fetch blockchain data immediately on component mount
     fetchBlockchainData()
       .then((blocks) => {
         setBlockchain(blocks);
@@ -43,17 +53,22 @@ function App() {
         setIsLoading(false);
       });
 
-    fetchWalletData()
-      .then((walletData) => setUserWallet(walletData))
-      .catch((error) => {
-        console.log(error);
-        setIsError({ message: "Failed to fetch wallet data" });
-        setIsLoading(false);
-      });
-  };
+    // Fetch blockchain data every second
+    const intervalId = setInterval(() => {
+      fetchBlockchainData()
+        .then((blocks) => {
+          setBlockchain(blocks);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsError({ message: "Failed to fetch blockchain data" });
+          setIsLoading(false);
+        });
+    }, 1000);
 
-  useEffect(() => {
-    fetchData();
+    // Clean up function to clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
