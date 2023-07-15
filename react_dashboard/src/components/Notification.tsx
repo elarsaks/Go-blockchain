@@ -36,6 +36,7 @@ const NotificationWrapper = styled.div`
 const Message = styled.p`
   color: white;
   font-weight: bold;
+  text-align: center;
   margin: 2em;
   font-size: 1.2em;
 
@@ -73,6 +74,7 @@ const Notification: React.FC<NotificationProps> = ({
   return (
     <NotificationWrapper className={type}>
       <Message className={type}>{message}</Message>
+
       {underDevelopment && (
         <SubMessage className={type}>🚧 UNDER DEVELOPMENT 🚧</SubMessage>
       )}

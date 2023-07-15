@@ -1,11 +1,12 @@
+import { fetchBlockchainData } from "./api/Blockchain";
+import AppHeader from "./components/AppHeader";
+import AppInfo from "./components/AppInfo";
+import BlockDiv from "./components/BlockDiv";
+import Loader from "./components/Loader";
+import Notification from "./components/Notification";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import AppHeader from "./components/AppHeader";
 import Wallet from "./components/Wallet";
-import BlockDiv from "./components/BlockDiv";
-import { fetchBlockchainData } from "./api/Blockchain";
-import Notification from "./components/Notification";
-import AppInfo from "./components/AppInfo";
 
 const AppWrapper = styled.div`
   margin: 0;
@@ -33,7 +34,6 @@ function App() {
   function fetchchainData() {
     return fetchBlockchainData()
       .then((blocks) => {
-        setIsError({ message: "Failed to fetch blockchain data" });
         setBlockchain(blocks);
         setIsLoading(false);
       })
@@ -83,6 +83,7 @@ function App() {
           !isError.message &&
           blockchain.map((block, index) => (
             <React.Fragment key={index}>
+              <Loader height={100} />
               <BlockDiv block={block} />
             </React.Fragment>
           ))}
