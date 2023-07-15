@@ -1,4 +1,5 @@
 import { fetchBlockchainData } from "./api/Blockchain";
+import AppFooter from "./components/AppFooter";
 import AppHeader from "./components/AppHeader";
 import AppInfo from "./components/AppInfo";
 import BlockDiv from "./components/BlockDiv";
@@ -7,7 +8,6 @@ import Notification from "./components/Notification";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Wallet from "./components/Wallet";
-
 const AppWrapper = styled.div`
   margin: 0;
 `;
@@ -89,6 +89,12 @@ function App() {
             </React.Fragment>
           ))}
       </ContentContainer>
+
+      <AppFooter
+        githubUrl="https://github.com/elarsaks"
+        linkedinUrl="https://www.linkedin.com/in/elarsaks/"
+        websiteUrl="https://saks.digital/"
+      />
     </AppWrapper>
   );
 }
