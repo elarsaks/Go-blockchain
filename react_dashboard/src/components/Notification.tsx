@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Loader from "./Loader";
 
 const NotificationWrapper = styled.div`
   display: flex;
@@ -9,6 +10,7 @@ const NotificationWrapper = styled.div`
   padding: 1em;
   margin: 0;
   margin-top: 1em;
+  margin-bottom: 1em;
   width: 90%;
   max-width: 785px;
   border-radius: 5px;
@@ -36,7 +38,8 @@ const NotificationWrapper = styled.div`
 const Message = styled.p`
   color: white;
   font-weight: bold;
-  margin: 2em;
+  text-align: center;
+  margin: 1em;
   font-size: 1.2em;
 
   &.error {
@@ -73,6 +76,9 @@ const Notification: React.FC<NotificationProps> = ({
   return (
     <NotificationWrapper className={type}>
       <Message className={type}>{message}</Message>
+
+      <Loader height={100} />
+
       {underDevelopment && (
         <SubMessage className={type}>🚧 UNDER DEVELOPMENT 🚧</SubMessage>
       )}

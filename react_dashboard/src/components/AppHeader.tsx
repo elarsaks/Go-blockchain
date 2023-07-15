@@ -6,7 +6,9 @@ type AppHeaderProps = {
 };
 
 const HeaderContainer = styled.header`
-  background-color: #00acd7; /* Golang Blue */
+  display: flex;
+  align-items: center;
+  background-color: #00acd7;
   color: white;
   padding: 1rem;
 `;
@@ -14,6 +16,7 @@ const HeaderContainer = styled.header`
 const Title = styled.h1`
   font-size: 2rem;
   margin: 0;
+  margin-left: 1rem;
 `;
 
 const AppHeader: React.FC<AppHeaderProps> = ({ title }) => (
