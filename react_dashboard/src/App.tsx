@@ -24,31 +24,25 @@ function App() {
   const [isError, setIsError] = useState({ message: "" });
   const [blockchain, setBlockchain] = useState<Block[]>([]);
 
-  useEffect(() => {
-    // Fetch blockchain data immediately on component mount
-    fetchBlockchainData()
+  function fetchchainData() {
+    return fetchBlockchainData()
       .then((blocks) => {
         setBlockchain(blocks);
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setIsError({ message: "Failed to fetch blockchain data" });
         setIsLoading(false);
       });
+  }
+
+  useEffect(() => {
+    // Fetch blockchain data immediately on component mount
+    fetchchainData();
 
     // Fetch blockchain data every second
     const intervalId = setInterval(() => {
-      fetchBlockchainData()
-        .then((blocks) => {
-          setBlockchain(blocks);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.log(error);
-          setIsError({ message: "Failed to fetch blockchain data" });
-          setIsLoading(false);
-        });
+      fetchchainData();
     }, 1000);
 
     // Clean up function to clear the interval when the component unmounts
