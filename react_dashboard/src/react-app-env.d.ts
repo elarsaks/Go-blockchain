@@ -13,12 +13,15 @@ type Block = {
   transactions: Transaction[];
 };
 
-type WalletContent = {
+type WalletDetails = {
   blockchainAddress: string;
   privateKey: string;
   publicKey: string;
-  amount: number;
 };
+
+type LocalError = {
+  message: string;
+} | null;
 
 type Blockchain = {
   chain: Block[];

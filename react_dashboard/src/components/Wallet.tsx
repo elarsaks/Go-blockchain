@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
-import { fetchWalletData } from "../api/Wallet";
+import { fetchUserWalletDetails } from "../api/Wallet";
 
 const WalletContainer = styled.div`
   background-color: #f2f2f2;
@@ -80,7 +80,7 @@ type WalletProps = {
 
 const Wallet: React.FC<WalletProps> = ({ type }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState({ message: "" });
+  const [isError, setIsError] = useState<LocalError>(null);
 
   const [selectedMiner, setSelectedMiner] = useState("miner1");
   const [miners, setMiners] = useState([
@@ -91,17 +91,18 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   const selectedMinerText =
     miners.find((miner) => miner.value === selectedMiner)?.text || "";
 
-  const [walletContent, setWalletContent] = useState<WalletContent>({
+  const [walletDetails, setWalletDetails] = useState<WalletDetails>({
     blockchainAddress: "",
     privateKey: "",
     publicKey: "",
-    amount: 0,
   });
 
-  function fetchUserWalletData() {
-    fetchWalletData()
-      .then((walletData) => setWalletContent(walletData))
-      .catch((error) => {
+  const [walletAmount, setWalletAmount] = useState(0);
+
+  function fetchUserDetails() {
+    fetchUserWalletDetails()
+      .then((walletDetails: WalletDetails) => setWalletDetails(walletDetails))
+      .catch((error: LocalError) => {
         console.log(error);
         setIsError({ message: "Failed to fetch wallet data" });
         setIsLoading(false);
@@ -115,10 +116,10 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     if (type === "user") {
       // TODO: Fetch the user's blockchain address and public & private key
 
-      fetchUserWalletData();
+      fetchUserDetails();
       // Fetch user data every 3 seconds
       walletUpdate = setInterval(() => {
-        fetchUserWalletData();
+        fetchUserDetails();
       }, 3000);
     }
     // Miner wallet
@@ -170,7 +171,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           <TextArea
             rows={4}
             name="publicKey"
-            value={walletContent.publicKey}
+            value={walletDetails.publicKey}
             onChange={handleInputChange}
           />
         </Field>
@@ -179,7 +180,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           <TextArea
             rows={2}
             name="privateKey"
-            value={walletContent.privateKey}
+            value={walletDetails.privateKey}
             onChange={handleInputChange}
           />
         </Field>
@@ -188,7 +189,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           <TextArea
             rows={2}
             name="blockchainAddress"
-            value={walletContent.blockchainAddress}
+            value={walletDetails.blockchainAddress}
             onChange={handleInputChange}
           />
         </Field>
@@ -202,7 +203,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type="text"
             name="amount"
             placeholder="0"
-            value={walletContent.amount.toString()}
+            value={walletAmount.toString()}
             onChange={handleInputChange}
           />
         </Field>
