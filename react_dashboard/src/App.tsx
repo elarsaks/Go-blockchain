@@ -76,8 +76,8 @@ function App() {
       <AppHeader title="Go Blockchain" />
       <ContentContainer className="App">
         <WalletWrapperContainer>
-          <Wallet walletContent={userWallet} />
-          <Wallet walletContent={userWallet} />
+          <Wallet walletContent={userWallet} type="Miner" />
+          <Wallet walletContent={userWallet} type="User" />
         </WalletWrapperContainer>
 
         {isLoading && (

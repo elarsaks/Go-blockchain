@@ -10,9 +10,28 @@ const WalletContainer = styled.div`
   width: 350px;
 `;
 
-const Title = styled.h2`
-  font-size: 1.5rem;
-  text-align: left;
+const UserTitle = styled.h2`
+  margin: 0;
+`;
+
+const TitleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const MinerTitle = styled.h2`
+  margin: 0;
+`;
+
+const TypeSelect = styled.select`
+  padding: 0.75rem 1.5rem;
+  background-color: #ffffff;
+  color: #00acd7;
+  border: 1px solid #00acd7;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
 `;
 
 const Form = styled.div`
@@ -56,14 +75,28 @@ const SubmitButton = styled.button`
 
 type WalletProps = {
   walletContent: WalletContent;
+  type: string;
 };
 
-const Wallet: React.FC<WalletProps> = ({ walletContent }) => {
+const Wallet: React.FC<WalletProps> = ({ walletContent, type }) => {
   const [localWalletContent, setLocalWalletContent] = useState(walletContent);
+  const [selectedMiner, setSelectedMiner] = useState("miner1");
+  const [miners, setMiners] = useState([
+    { value: "miner1", text: "Miner 1" },
+    { value: "miner2", text: "Miner 2" },
+    { value: "miner3", text: "Miner 3" },
+  ]);
+
+  const selectedMinerText =
+    miners.find((miner) => miner.value === selectedMiner)?.text || "";
 
   useEffect(() => {
     setLocalWalletContent(walletContent);
   }, [walletContent]);
+
+  const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedMiner(event.target.value);
+  };
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -83,7 +116,21 @@ const Wallet: React.FC<WalletProps> = ({ walletContent }) => {
 
   return (
     <WalletContainer>
-      <Title>Wallet</Title>
+      {type === "User" ? (
+        <UserTitle>User Wallet</UserTitle>
+      ) : (
+        <TitleRow>
+          <MinerTitle>{`${selectedMinerText} Wallet`}</MinerTitle>
+          <TypeSelect value={selectedMiner} onChange={handleMinerChange}>
+            {miners.map((miner) => (
+              <option key={miner.value} value={miner.value}>
+                {miner.text}
+              </option>
+            ))}
+          </TypeSelect>
+        </TitleRow>
+      )}
+
       <Form onSubmit={handleSubmit}>
         <Field>
           <Label>Public Key</Label>
