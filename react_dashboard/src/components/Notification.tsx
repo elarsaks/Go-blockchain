@@ -11,8 +11,8 @@ const NotificationWrapper = styled.div`
   border-radius: 5px;
   color: #333;
   max-width: 817px;
-  width: 90%;
-  height: 383px;
+  width: 100%;
+
   overflow: auto;
   background-color: #f2f2f2;
   border: 1px solid #ccc;
@@ -37,7 +37,7 @@ const Message = styled.p`
   color: white;
   font-weight: bold;
   margin: 2em;
-  font-size: 1.5em;
+  font-size: 1.2em;
 
   &.error {
     color: #d94141;
@@ -48,19 +48,24 @@ const SubMessage = styled.h1`
   color: white;
   font-weight: bold;
   margin: 1em;
-  font-size: 1.3em;
+  font-size: 1.2em;
 
   &.error {
-    color: #d94141;
+    color: black;
   }
 `;
 
 interface NotificationProps {
   message: string;
   type: "info" | "warning" | "error";
+  underDevelopment?: boolean;
 }
 
-const Notification: React.FC<NotificationProps> = ({ message, type }) => {
+const Notification: React.FC<NotificationProps> = ({
+  message,
+  type,
+  underDevelopment,
+}) => {
   if (!message) {
     return null;
   }
@@ -68,7 +73,9 @@ const Notification: React.FC<NotificationProps> = ({ message, type }) => {
   return (
     <NotificationWrapper className={type}>
       <Message className={type}>{message}</Message>
-      <SubMessage className={type}>🚧 UNDER DEVELOPMENT 🚧</SubMessage>
+      {underDevelopment && (
+        <SubMessage className={type}>🚧 UNDER DEVELOPMENT 🚧</SubMessage>
+      )}
     </NotificationWrapper>
   );
 };

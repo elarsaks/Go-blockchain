@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
 import { fetchMinerWalletDetails, fetchUserWalletDetails } from "../api/Wallet";
+import Notification from "../components/Notification";
 
 const WalletContainer = styled.div`
   background-color: #f2f2f2;
@@ -12,7 +13,7 @@ const WalletContainer = styled.div`
 `;
 
 const UserTitle = styled.h2`
-  margin: 0;
+  margin: 9px 0 24px 0;
 `;
 
 const TitleRow = styled.div`
@@ -62,7 +63,7 @@ const Input = styled.input`
   text-align: left;
 `;
 
-const SubmitButton = styled.button`
+const SendButton = styled.button`
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
   background-color: #00acd7;
@@ -101,9 +102,12 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
   function fetchUserDetails() {
     fetchUserWalletDetails()
-      .then((walletDetails: WalletDetails) => setWalletDetails(walletDetails))
+      .then((walletDetails: WalletDetails) => {
+        setWalletDetails(walletDetails);
+        setIsLoading(false);
+      })
       .catch((error: LocalError) => {
-        setIsError({ message: "Failed to USER fetch wallet data" });
+        setIsError({ message: "Failed to USER details" });
         setIsLoading(false);
       });
   }
@@ -112,7 +116,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     fetchMinerWalletDetails()
       .then((walletDetails: WalletDetails) => setWalletDetails(walletDetails))
       .catch((error: LocalError) => {
-        setIsError({ message: "Failed to MINER fetch wallet data" });
+        setIsError({ message: "Failed to fetch MINER details" });
         setIsLoading(false);
       });
   }
@@ -173,6 +177,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             onChange={handleInputChange}
           />
         </Field>
+
         <Field>
           <Label>Private Key</Label>
           <TextArea
@@ -182,6 +187,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             onChange={handleInputChange}
           />
         </Field>
+
         <Field>
           <Label>Sender Blockchain Address</Label>
           <TextArea
@@ -191,10 +197,12 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             onChange={handleInputChange}
           />
         </Field>
+
         <Field>
           <Label>Recipient Blockchain Address</Label>
           <TextArea rows={2} />
         </Field>
+
         <Field>
           <Label>Amount</Label>
           <Input
@@ -205,7 +213,25 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             onChange={handleInputChange}
           />
         </Field>
-        <SubmitButton type="submit">Send crypto</SubmitButton>
+
+        {isLoading && (
+          <Notification
+            type="info"
+            message="Loading data."
+            underDevelopment={false}
+          />
+        )}
+
+        {isError && (
+          <Notification
+            type="error"
+            message={isError.message || "Something went wrong."}
+            underDevelopment={true}
+          />
+        )}
+        <SendButton type="submit" disabled={isError !== null}>
+          Send crypto
+        </SendButton>
       </Form>
     </WalletContainer>
   );

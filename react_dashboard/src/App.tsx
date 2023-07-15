@@ -27,7 +27,8 @@ function App() {
   function fetchchainData() {
     return fetchBlockchainData()
       .then((blocks) => {
-        setBlockchain(blocks);
+        // setBlockchain(blocks);
+        setIsError({ message: "Failed to fetch blockchain data" });
         setIsLoading(false);
       })
       .catch((error) => {
@@ -66,6 +67,7 @@ function App() {
           <Notification
             type="error"
             message="Sorry, there was an error loading blockchain data."
+            underDevelopment={true}
           />
         )}
 
