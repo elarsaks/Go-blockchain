@@ -33,6 +33,7 @@ function App() {
   function fetchchainData() {
     return fetchBlockchainData()
       .then((blocks) => {
+        setIsError({ message: "Failed to fetch blockchain data" });
         setBlockchain(blocks);
         setIsLoading(false);
       })
@@ -67,11 +68,7 @@ function App() {
         </WalletWrapperContainer>
 
         {isLoading && (
-          <Notification
-            type="info"
-            message="Loading blockchain data."
-            width="90%"
-          />
+          <Notification type="info" message="Loading blockchain data." />
         )}
 
         {isError.message && (
@@ -79,7 +76,6 @@ function App() {
             type="error"
             message="Sorry, there was an error loading blockchain data."
             underDevelopment={true}
-            width="90%"
           />
         )}
 
