@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
-import { fetchUserWalletDetails } from "../api/Wallet";
+import { fetchMinerWalletDetails, fetchUserWalletDetails } from "../api/Wallet";
 
 const WalletContainer = styled.div`
   background-color: #f2f2f2;
@@ -103,8 +103,16 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     fetchUserWalletDetails()
       .then((walletDetails: WalletDetails) => setWalletDetails(walletDetails))
       .catch((error: LocalError) => {
-        console.log(error);
-        setIsError({ message: "Failed to fetch wallet data" });
+        setIsError({ message: "Failed to USER fetch wallet data" });
+        setIsLoading(false);
+      });
+  }
+
+  function fetchMinerDetails() {
+    fetchMinerWalletDetails()
+      .then((walletDetails: WalletDetails) => setWalletDetails(walletDetails))
+      .catch((error: LocalError) => {
+        setIsError({ message: "Failed to MINER fetch wallet data" });
         setIsLoading(false);
       });
   }
@@ -112,23 +120,13 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
-    // User wallet
-    if (type === "user") {
-      // TODO: Fetch the user's blockchain address and public & private key
+    if (type === "user") fetchUserDetails();
+    if (type === "miner") fetchMinerDetails();
 
-      fetchUserDetails();
-      // Fetch user data every 3 seconds
-      walletUpdate = setInterval(() => {
-        fetchUserDetails();
-      }, 3000);
-    }
-    // Miner wallet
-    else {
-      // TODO:  Fetch the miners blockchain address and public & private key
-      // fetchMinerWalletData();
-    }
-
-    // TODO: Fetch the wallet amount of coins (call this automatically every 3 seconds)
+    walletUpdate = setInterval(() => {
+      // TODO: Fetch the wallet amount of coins (call this automatically every 3 seconds)
+      // fetchWalletAmount();
+    }, 3000);
 
     return () => clearInterval(walletUpdate);
   }, []);

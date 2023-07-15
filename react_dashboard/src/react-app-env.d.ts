@@ -19,6 +19,12 @@ type WalletDetails = {
   publicKey: string;
 };
 
+type WalletDetailsResponse = {
+  blockchain_address: string;
+  private_key: string;
+  public_key: string;
+};
+
 type LocalError = {
   message: string;
 } | null;
