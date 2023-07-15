@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/Go-blockchain/static/css/main.e6c13ad2.css",
-    "main.js": "/Go-blockchain/static/js/main.61df10d4.js",
+    "main.js": "/Go-blockchain/static/js/main.d4ad5db7.js",
     "static/js/787.f04d8c20.chunk.js": "/Go-blockchain/static/js/787.f04d8c20.chunk.js",
     "index.html": "/Go-blockchain/index.html",
     "main.e6c13ad2.css.map": "/Go-blockchain/static/css/main.e6c13ad2.css.map",
-    "main.61df10d4.js.map": "/Go-blockchain/static/js/main.61df10d4.js.map",
+    "main.d4ad5db7.js.map": "/Go-blockchain/static/js/main.d4ad5db7.js.map",
     "787.f04d8c20.chunk.js.map": "/Go-blockchain/static/js/787.f04d8c20.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.61df10d4.js"
+    "static/js/main.d4ad5db7.js"
   ]
 }
