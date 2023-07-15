@@ -189,7 +189,9 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         </Field>
 
         <Field>
-          <Label>Sender Blockchain Address</Label>
+          <Label>
+            {type === "miner" ? selectedMinerText : "User"} Blockchain Address{" "}
+          </Label>
           <TextArea
             rows={2}
             name="blockchainAddress"
