@@ -79,8 +79,10 @@ const Notification: React.FC<NotificationProps> = ({
 
       <Loader height={100} />
 
-      {underDevelopment && (
+      {underDevelopment ? (
         <SubMessage className={type}>🚧 UNDER DEVELOPMENT 🚧</SubMessage>
+      ) : (
+        <br />
       )}
     </NotificationWrapper>
   );

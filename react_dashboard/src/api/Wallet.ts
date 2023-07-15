@@ -16,7 +16,7 @@ function fetchUserWalletDetails(): Promise<WalletDetails> {
 
 function fetchMinerWalletDetails(): Promise<WalletDetails> {
   return axios
-    .post<WalletDetailsResponse>("http://localhost:5000/miner-wallet-details") // TODO: API endpoint
+    .post<WalletDetailsResponse>("http://localhost:5001/miner/wallet")
     .then(({ data }) => {
       const camelCaseResponseData: WalletDetails = {
         blockchainAddress: data.blockchain_address,

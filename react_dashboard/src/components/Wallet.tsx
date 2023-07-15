@@ -120,6 +120,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     fetchMinerWalletDetails()
       .then((walletDetails: WalletDetails) => setWalletDetails(walletDetails))
       .catch((error: LocalError) => {
+        console.log(error);
         setIsError({ message: "Failed to fetch MINER details" });
         setIsLoading(false);
       });
