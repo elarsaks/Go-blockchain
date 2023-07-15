@@ -1,7 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-const NotificationWrapper = styled.div`
+interface WrapperProps {
+  width: string;
+}
+
+const NotificationWrapper = styled.div<WrapperProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10,16 +14,15 @@ const NotificationWrapper = styled.div`
   margin: 1em 0;
   border-radius: 5px;
   color: #333;
+  width: ${(props) => props.width};
   max-width: 817px;
-  width: 100%;
-
   overflow: auto;
   background-color: #f2f2f2;
   border: 1px solid #ccc;
 
   &.info {
-    background-color: #00acd7;
-    border: 1px solid #066f8a;
+    background-color: #00add8;
+    border: 1px solid #007d9c;
   }
 
   &.warning {
@@ -59,19 +62,21 @@ interface NotificationProps {
   message: string;
   type: "info" | "warning" | "error";
   underDevelopment?: boolean;
+  width: string;
 }
 
 const Notification: React.FC<NotificationProps> = ({
   message,
   type,
   underDevelopment,
+  width,
 }) => {
   if (!message) {
     return null;
   }
 
   return (
-    <NotificationWrapper className={type}>
+    <NotificationWrapper className={type} width={width}>
       <Message className={type}>{message}</Message>
       {underDevelopment && (
         <SubMessage className={type}>🚧 UNDER DEVELOPMENT 🚧</SubMessage>

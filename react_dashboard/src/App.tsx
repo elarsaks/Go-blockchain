@@ -54,13 +54,25 @@ function App() {
     <div className="App">
       <AppHeader title="Go Blockchain" />
       <ContentContainer className="App">
+        <Notification
+          width="90%"
+          type="info"
+          message="This is a simple example of a blockchain. The wallet on the left represents a miner, while the wallet on the right represents a random user. Miner wallets accumulate crypto when they mine blocks. You can experiment by sending this crypto from miners to users and vice versa.
+          Beneath the wallets, you'll find the 10 most recently mined blocks."
+          underDevelopment={false}
+        />
+
         <WalletWrapperContainer>
           <Wallet type="miner" />
           <Wallet type="user" />
         </WalletWrapperContainer>
 
         {isLoading && (
-          <Notification type="info" message="Loading blockchain data." />
+          <Notification
+            type="info"
+            message="Loading blockchain data."
+            width="90%"
+          />
         )}
 
         {isError.message && (
@@ -68,6 +80,7 @@ function App() {
             type="error"
             message="Sorry, there was an error loading blockchain data."
             underDevelopment={true}
+            width="90%"
           />
         )}
 
