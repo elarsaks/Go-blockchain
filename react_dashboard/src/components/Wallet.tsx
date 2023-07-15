@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
+import { fetchWalletData } from "../api/Wallet";
 
 const WalletContainer = styled.div`
   background-color: #f2f2f2;
@@ -74,25 +75,57 @@ const SubmitButton = styled.button`
 `;
 
 type WalletProps = {
-  walletContent: WalletContent;
   type: string;
 };
 
-const Wallet: React.FC<WalletProps> = ({ walletContent, type }) => {
-  const [localWalletContent, setLocalWalletContent] = useState(walletContent);
+const Wallet: React.FC<WalletProps> = ({ type }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState({ message: "" });
+
   const [selectedMiner, setSelectedMiner] = useState("miner1");
   const [miners, setMiners] = useState([
     { value: "miner1", text: "Miner 1" },
     { value: "miner2", text: "Miner 2" },
     { value: "miner3", text: "Miner 3" },
   ]);
-
   const selectedMinerText =
     miners.find((miner) => miner.value === selectedMiner)?.text || "";
 
+  const [walletContent, setWalletContent] = useState<WalletContent>({
+    blockchainAddress: "",
+    privateKey: "",
+    publicKey: "",
+    amount: 0,
+  });
+
+  function fetchUserWalletData() {
+    fetchWalletData()
+      .then((walletData) => setWalletContent(walletData))
+      .catch((error) => {
+        console.log(error);
+        setIsError({ message: "Failed to fetch wallet data" });
+        setIsLoading(false);
+      });
+  }
+
   useEffect(() => {
-    setLocalWalletContent(walletContent);
-  }, [walletContent]);
+    let walletUpdate: NodeJS.Timeout;
+
+    // User wallet
+    if (type === "user") {
+      fetchUserWalletData();
+      // Fetch user data every 3 seconds
+      walletUpdate = setInterval(() => {
+        fetchUserWalletData();
+      }, 3000);
+    }
+    // Miner wallet
+    else {
+      // fetchMinerWalletData();
+    }
+
+    return () => clearInterval(walletUpdate);
+  }, []);
 
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedMiner(event.target.value);
@@ -102,11 +135,6 @@ const Wallet: React.FC<WalletProps> = ({ walletContent, type }) => {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.target;
-
-    setLocalWalletContent((prevState: WalletContent) => ({
-      ...prevState,
-      [name]: value,
-    }));
   };
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -116,7 +144,7 @@ const Wallet: React.FC<WalletProps> = ({ walletContent, type }) => {
 
   return (
     <WalletContainer>
-      {type === "User" ? (
+      {type === "user" ? (
         <UserTitle>User Wallet</UserTitle>
       ) : (
         <TitleRow>
@@ -137,7 +165,7 @@ const Wallet: React.FC<WalletProps> = ({ walletContent, type }) => {
           <TextArea
             rows={4}
             name="publicKey"
-            value={localWalletContent.publicKey}
+            value={walletContent.publicKey}
             onChange={handleInputChange}
           />
         </Field>
@@ -146,7 +174,7 @@ const Wallet: React.FC<WalletProps> = ({ walletContent, type }) => {
           <TextArea
             rows={2}
             name="privateKey"
-            value={localWalletContent.privateKey}
+            value={walletContent.privateKey}
             onChange={handleInputChange}
           />
         </Field>
@@ -155,7 +183,7 @@ const Wallet: React.FC<WalletProps> = ({ walletContent, type }) => {
           <TextArea
             rows={2}
             name="blockchainAddress"
-            value={localWalletContent.blockchainAddress}
+            value={walletContent.blockchainAddress}
             onChange={handleInputChange}
           />
         </Field>
@@ -169,7 +197,7 @@ const Wallet: React.FC<WalletProps> = ({ walletContent, type }) => {
             type="text"
             name="amount"
             placeholder="0"
-            value={localWalletContent.amount.toString()}
+            value={walletContent.amount.toString()}
             onChange={handleInputChange}
           />
         </Field>

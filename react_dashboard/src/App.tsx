@@ -4,7 +4,6 @@ import AppHeader from "./components/AppHeader";
 import Wallet from "./components/Wallet";
 import BlockDiv from "./components/BlockDiv";
 import { fetchBlockchainData } from "./api/Blockchain";
-import { fetchWalletData } from "./api/Wallet";
 import Notification from "./components/Notification";
 
 const ContentContainer = styled.div`
@@ -24,23 +23,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState({ message: "" });
   const [blockchain, setBlockchain] = useState<Block[]>([]);
-  const [userWallet, setUserWallet] = useState<WalletContent>({
-    blockchainAddress: "",
-    privateKey: "",
-    publicKey: "",
-    amount: 0,
-  });
 
   useEffect(() => {
-    // Fetch wallet data once on component mount
-    fetchWalletData()
-      .then((walletData) => setUserWallet(walletData))
-      .catch((error) => {
-        console.log(error);
-        setIsError({ message: "Failed to fetch wallet data" });
-        setIsLoading(false);
-      });
-
     // Fetch blockchain data immediately on component mount
     fetchBlockchainData()
       .then((blocks) => {
@@ -76,8 +60,8 @@ function App() {
       <AppHeader title="Go Blockchain" />
       <ContentContainer className="App">
         <WalletWrapperContainer>
-          <Wallet walletContent={userWallet} type="Miner" />
-          <Wallet walletContent={userWallet} type="User" />
+          <Wallet type="miner" />
+          <Wallet type="user" />
         </WalletWrapperContainer>
 
         {isLoading && (
