@@ -37,6 +37,8 @@ const Carousel = styled.div<{ height: number }>`
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
   gap: 5px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   width: ${(props) => props.height}px;
   height: ${(props) => props.height}px;
   animation: ${spinOpposite} 5s infinite linear;
