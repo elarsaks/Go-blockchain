@@ -5,6 +5,7 @@ import Wallet from "./components/Wallet";
 import BlockDiv from "./components/BlockDiv";
 import { fetchBlockchainData } from "./api/Blockchain";
 import Notification from "./components/Notification";
+import AppInfo from "./components/AppInfo";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -53,13 +54,7 @@ function App() {
     <div className="App">
       <AppHeader title="Go Blockchain" />
       <ContentContainer className="App">
-        <Notification
-          width="90%"
-          type="info"
-          message="This is a simple example of a blockchain. The wallet on the left represents a miner, while the wallet on the right represents a random user. Miner wallets accumulate crypto when they mine blocks. You can experiment by sending this crypto from miners to users and vice versa.
-          Beneath the wallets, you'll find the 10 most recently mined blocks."
-          underDevelopment={false}
-        />
+        <AppInfo />
 
         <WalletWrapperContainer>
           <Wallet type="miner" />
