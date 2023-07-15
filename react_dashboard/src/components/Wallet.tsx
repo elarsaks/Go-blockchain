@@ -10,6 +10,10 @@ const WalletContainer = styled.div`
   border: 1px solid #ccc;
   border-radius: 8px;
   width: 350px;
+
+  @media (max-width: 850px) {
+    width: 100%;
+  }
 `;
 
 const UserTitle = styled.h2`
@@ -221,7 +225,6 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type="info"
             message="Loading data."
             underDevelopment={false}
-            width="100%"
           />
         )}
 
@@ -230,7 +233,6 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type="error"
             message={isError.message || "Something went wrong."}
             underDevelopment={true}
-            width="100%"
           />
         )}
         <SendButton type="submit" disabled={isError !== null}>
