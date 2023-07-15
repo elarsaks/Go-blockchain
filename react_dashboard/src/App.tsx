@@ -1,12 +1,13 @@
+import { fetchBlockchainData } from "./api/Blockchain";
+import AppFooter from "./components/AppFooter";
+import AppHeader from "./components/AppHeader";
+import AppInfo from "./components/AppInfo";
+import BlockDiv from "./components/BlockDiv";
+import Loader from "./components/Loader";
+import Notification from "./components/Notification";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import AppHeader from "./components/AppHeader";
 import Wallet from "./components/Wallet";
-import BlockDiv from "./components/BlockDiv";
-import { fetchBlockchainData } from "./api/Blockchain";
-import Notification from "./components/Notification";
-import AppInfo from "./components/AppInfo";
-
 const AppWrapper = styled.div`
   margin: 0;
 `;
@@ -83,10 +84,17 @@ function App() {
           !isError.message &&
           blockchain.map((block, index) => (
             <React.Fragment key={index}>
+              <Loader height={100} />
               <BlockDiv block={block} />
             </React.Fragment>
           ))}
       </ContentContainer>
+
+      <AppFooter
+        githubUrl="https://github.com/elarsaks"
+        linkedinUrl="https://www.linkedin.com/in/elarsaks/"
+        websiteUrl="https://saks.digital/"
+      />
     </AppWrapper>
   );
 }
