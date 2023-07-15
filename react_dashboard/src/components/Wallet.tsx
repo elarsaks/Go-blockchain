@@ -84,7 +84,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   const [isError, setIsError] = useState<LocalError>(null);
 
   const [selectedMiner, setSelectedMiner] = useState("miner1");
-  const [miners, setMiners] = useState([
+  const [miners /* setMiners */] = useState([
     { value: "miner1", text: "Miner 1" },
     { value: "miner2", text: "Miner 2" },
     { value: "miner3", text: "Miner 3" },
@@ -98,7 +98,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     publicKey: "",
   });
 
-  const [walletAmount, setWalletAmount] = useState(0);
+  const [walletAmount /*setWalletAmount */] = useState(0);
 
   function fetchUserDetails() {
     fetchUserWalletDetails()
@@ -133,7 +133,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     }, 3000);
 
     return () => clearInterval(walletUpdate);
-  }, []);
+  }, [type]);
 
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedMiner(event.target.value);
@@ -142,7 +142,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = event.target;
+    /// const { name, value } = event.target;
   };
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
