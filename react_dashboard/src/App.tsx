@@ -7,10 +7,15 @@ import { fetchBlockchainData } from "./api/Blockchain";
 import Notification from "./components/Notification";
 import AppInfo from "./components/AppInfo";
 
+const AppWrapper = styled.div`
+  margin: 0;
+`;
+
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0;
 `;
 
 const WalletWrapperContainer = styled.div`
@@ -51,7 +56,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <AppWrapper>
       <AppHeader title="Go Blockchain" />
       <ContentContainer className="App">
         <AppInfo />
@@ -86,7 +91,7 @@ function App() {
             </React.Fragment>
           ))}
       </ContentContainer>
-    </div>
+    </AppWrapper>
   );
 }
 
