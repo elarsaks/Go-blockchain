@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 const NotificationWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 0em;
@@ -27,8 +28,8 @@ const NotificationWrapper = styled.div`
   }
 
   &.error {
-    background-color: #f44336;
-    border: 1px solid #db1b0d;
+    color: #d94141;
+    border: 1px solid #d94141;
   }
 `;
 
@@ -37,6 +38,21 @@ const Message = styled.p`
   font-weight: bold;
   margin: 2em;
   font-size: 1.5em;
+
+  &.error {
+    color: #d94141;
+  }
+`;
+
+const SubMessage = styled.h1`
+  color: white;
+  font-weight: bold;
+  margin: 1em;
+  font-size: 1.3em;
+
+  &.error {
+    color: #d94141;
+  }
 `;
 
 interface NotificationProps {
@@ -51,7 +67,8 @@ const Notification: React.FC<NotificationProps> = ({ message, type }) => {
 
   return (
     <NotificationWrapper className={type}>
-      <Message>{message}</Message>
+      <Message className={type}>{message}</Message>
+      <SubMessage className={type}>🚧 UNDER DEVELOPMENT 🚧</SubMessage>
     </NotificationWrapper>
   );
 };

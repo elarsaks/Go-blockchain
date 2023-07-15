@@ -27,7 +27,8 @@ function App() {
   function fetchchainData() {
     return fetchBlockchainData()
       .then((blocks) => {
-        setBlockchain(blocks);
+        setIsError({ message: "Failed to fetch blockchain data" });
+        // setBlockchain(blocks);
         setIsLoading(false);
       })
       .catch((error) => {
