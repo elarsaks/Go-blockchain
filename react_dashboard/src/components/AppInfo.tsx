@@ -15,11 +15,29 @@ const AppInfoWrapper = styled.div`
   overflow: auto;
   background-color: #00add8;
   border: 1px solid #007d9c;
+
+  h3 {
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+
+  p {
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+
+  a {
+    font-size: 18px; 
+    color: black; 
+    background-color: 
+    border: none; 
+    text-decoration: none; 
+  }
 `;
 
 const AppInfo: React.FC = () => (
   <AppInfoWrapper>
-    <h3>This is a simple example of a blockchain.</h3>
+    <h3> This is a simple example of a blockchain.</h3>
     <p>
       The wallet on the left represents a miner, while the wallet on the right
       represents a random user. Miner wallets accumulate crypto when they mine
@@ -31,6 +49,20 @@ const AppInfo: React.FC = () => (
       wallets recipient input.
     </p>
     <p>Beneath the wallets, you'll find the 10 most recently mined blocks.</p>
+    <br />
+    <p>
+      <b>
+        Check out the project on{" "}
+        <a
+          href="https://github.com/elarsaks/Go-blockchain"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>{" "}
+      </b>
+      .
+    </p>
   </AppInfoWrapper>
 );
 
