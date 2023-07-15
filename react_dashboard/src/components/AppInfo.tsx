@@ -7,11 +7,12 @@ const AppInfoWrapper = styled.div`
   justify-content: center;
   align-items: flex-start;
   padding: 1em;
-  margin: 1em;
-  border-radius: 5px;
-  color: #ffffff;
+  margin: 0;
+  margin-top: 1em;
   width: 90%;
   max-width: 785px;
+  border-radius: 5px;
+  color: #ffffff;
   overflow: auto;
   background-color: #00add8;
   border: 1px solid #007d9c;
