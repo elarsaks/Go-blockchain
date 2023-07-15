@@ -113,6 +113,8 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
     // User wallet
     if (type === "user") {
+      // TODO: Fetch the user's blockchain address and public & private key
+
       fetchUserWalletData();
       // Fetch user data every 3 seconds
       walletUpdate = setInterval(() => {
@@ -121,8 +123,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     }
     // Miner wallet
     else {
+      // TODO:  Fetch the miners blockchain address and public & private key
       // fetchMinerWalletData();
     }
+
+    // TODO: Fetch the wallet amount of coins (call this automatically every 3 seconds)
 
     return () => clearInterval(walletUpdate);
   }, []);
