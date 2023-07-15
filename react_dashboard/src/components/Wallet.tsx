@@ -107,7 +107,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         setIsLoading(false);
       })
       .catch((error: LocalError) => {
-        setIsError({ message: "Failed to USER details" });
+        setIsError({ message: "Failed to fetch USER details" });
         setIsLoading(false);
       });
   }
