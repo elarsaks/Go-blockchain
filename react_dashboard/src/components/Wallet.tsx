@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
+import { fetchMinerWalletDetails, fetchUserWalletDetails } from "../api/Wallet";
+import Notification from "../components/Notification";
 
 const WalletContainer = styled.div`
   background-color: #f2f2f2;
@@ -10,9 +12,28 @@ const WalletContainer = styled.div`
   width: 350px;
 `;
 
-const Title = styled.h2`
-  font-size: 1.5rem;
-  text-align: left;
+const UserTitle = styled.h2`
+  margin: 9px 0 24px 0;
+`;
+
+const TitleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const MinerTitle = styled.h2`
+  margin: 0;
+`;
+
+const TypeSelect = styled.select`
+  padding: 0.75rem 1.5rem;
+  background-color: #ffffff;
+  color: #00acd7;
+  border: 1px solid #00acd7;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
 `;
 
 const Form = styled.div`
@@ -42,7 +63,7 @@ const Input = styled.input`
   text-align: left;
 `;
 
-const SubmitButton = styled.button`
+const SendButton = styled.button`
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
   background-color: #00acd7;
@@ -55,25 +76,73 @@ const SubmitButton = styled.button`
 `;
 
 type WalletProps = {
-  walletContent: WalletContent;
+  type: string;
 };
 
-const Wallet: React.FC<WalletProps> = ({ walletContent }) => {
-  const [localWalletContent, setLocalWalletContent] = useState(walletContent);
+const Wallet: React.FC<WalletProps> = ({ type }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState<LocalError>(null);
+
+  const [selectedMiner, setSelectedMiner] = useState("miner1");
+  const [miners, setMiners] = useState([
+    { value: "miner1", text: "Miner 1" },
+    { value: "miner2", text: "Miner 2" },
+    { value: "miner3", text: "Miner 3" },
+  ]);
+  const selectedMinerText =
+    miners.find((miner) => miner.value === selectedMiner)?.text || "";
+
+  const [walletDetails, setWalletDetails] = useState<WalletDetails>({
+    blockchainAddress: "",
+    privateKey: "",
+    publicKey: "",
+  });
+
+  const [walletAmount, setWalletAmount] = useState(0);
+
+  function fetchUserDetails() {
+    fetchUserWalletDetails()
+      .then((walletDetails: WalletDetails) => {
+        setWalletDetails(walletDetails);
+        setIsLoading(false);
+      })
+      .catch((error: LocalError) => {
+        setIsError({ message: "Failed to USER details" });
+        setIsLoading(false);
+      });
+  }
+
+  function fetchMinerDetails() {
+    fetchMinerWalletDetails()
+      .then((walletDetails: WalletDetails) => setWalletDetails(walletDetails))
+      .catch((error: LocalError) => {
+        setIsError({ message: "Failed to fetch MINER details" });
+        setIsLoading(false);
+      });
+  }
 
   useEffect(() => {
-    setLocalWalletContent(walletContent);
-  }, [walletContent]);
+    let walletUpdate: NodeJS.Timeout;
+
+    if (type === "user") fetchUserDetails();
+    if (type === "miner") fetchMinerDetails();
+
+    walletUpdate = setInterval(() => {
+      // TODO: Fetch the wallet amount of coins (call this automatically every 3 seconds)
+      // fetchWalletAmount();
+    }, 3000);
+
+    return () => clearInterval(walletUpdate);
+  }, []);
+
+  const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedMiner(event.target.value);
+  };
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.target;
-
-    setLocalWalletContent((prevState: WalletContent) => ({
-      ...prevState,
-      [name]: value,
-    }));
   };
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -83,50 +152,90 @@ const Wallet: React.FC<WalletProps> = ({ walletContent }) => {
 
   return (
     <WalletContainer>
-      <Title>Wallet</Title>
+      {type === "user" ? (
+        <UserTitle>User Wallet</UserTitle>
+      ) : (
+        <TitleRow>
+          <MinerTitle>{`${selectedMinerText} Wallet`}</MinerTitle>
+          <TypeSelect value={selectedMiner} onChange={handleMinerChange}>
+            {miners.map((miner) => (
+              <option key={miner.value} value={miner.value}>
+                {miner.text}
+              </option>
+            ))}
+          </TypeSelect>
+        </TitleRow>
+      )}
+
       <Form onSubmit={handleSubmit}>
         <Field>
           <Label>Public Key</Label>
           <TextArea
             rows={4}
             name="publicKey"
-            value={localWalletContent.publicKey}
+            value={walletDetails.publicKey}
             onChange={handleInputChange}
           />
         </Field>
+
         <Field>
           <Label>Private Key</Label>
           <TextArea
             rows={2}
             name="privateKey"
-            value={localWalletContent.privateKey}
+            value={walletDetails.privateKey}
             onChange={handleInputChange}
           />
         </Field>
+
         <Field>
-          <Label>Sender Blockchain Address</Label>
+          <Label>
+            {type === "miner" ? selectedMinerText : "User"} Blockchain Address{" "}
+          </Label>
           <TextArea
             rows={2}
             name="blockchainAddress"
-            value={localWalletContent.blockchainAddress}
+            value={walletDetails.blockchainAddress}
             onChange={handleInputChange}
           />
         </Field>
+
         <Field>
           <Label>Recipient Blockchain Address</Label>
           <TextArea rows={2} />
         </Field>
+
         <Field>
           <Label>Amount</Label>
           <Input
             type="text"
             name="amount"
             placeholder="0"
-            value={localWalletContent.amount.toString()}
+            value={walletAmount.toString()}
             onChange={handleInputChange}
           />
         </Field>
-        <SubmitButton type="submit">Send crypto</SubmitButton>
+
+        {isLoading && (
+          <Notification
+            type="info"
+            message="Loading data."
+            underDevelopment={false}
+            width="100%"
+          />
+        )}
+
+        {isError && (
+          <Notification
+            type="error"
+            message={isError.message || "Something went wrong."}
+            underDevelopment={true}
+            width="100%"
+          />
+        )}
+        <SendButton type="submit" disabled={isError !== null}>
+          Send crypto
+        </SendButton>
       </Form>
     </WalletContainer>
   );
