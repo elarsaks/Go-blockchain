@@ -109,13 +109,22 @@ func (bc *Blockchain) LastBlock() *Block {
 	return bc.chain[len(bc.chain)-1]
 }
 
-// Get last 10 blocks
 func (bc *Blockchain) GetLast10Blocks() []*Block {
 	n := len(bc.chain)
+	var last10Blocks []*Block
 	if n > 10 {
-		return bc.chain[n-10 : n]
+		last10Blocks = append([]*Block(nil), bc.chain[n-10:n]...)
+	} else {
+		last10Blocks = append([]*Block(nil), bc.chain...)
 	}
-	return bc.chain
+
+	// Reverse the slice
+	for i := len(last10Blocks)/2 - 1; i >= 0; i-- {
+		opp := len(last10Blocks) - 1 - i
+		last10Blocks[i], last10Blocks[opp] = last10Blocks[opp], last10Blocks[i]
+	}
+
+	return last10Blocks
 }
 
 func (bc *Blockchain) Print() {

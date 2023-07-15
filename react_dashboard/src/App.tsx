@@ -4,8 +4,8 @@ import AppHeader from "./components/AppHeader";
 import Wallet from "./components/Wallet";
 import BlockDiv from "./components/BlockDiv";
 import { fetchBlockchainData } from "./api/Blockchain";
-import { fetchWalletData } from "./api/Wallet";
 import Notification from "./components/Notification";
+import AppInfo from "./components/AppInfo";
 
 const ContentContainer = styled.div`
   display: flex;
@@ -24,55 +24,57 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState({ message: "" });
   const [blockchain, setBlockchain] = useState<Block[]>([]);
-  const [userWallet, setUserWallet] = useState<WalletContent>({
-    blockchainAddress: "",
-    privateKey: "",
-    publicKey: "",
-    amount: 0,
-  });
 
-  const fetchData = async () => {
-    fetchBlockchainData()
+  function fetchchainData() {
+    return fetchBlockchainData()
       .then((blocks) => {
         setBlockchain(blocks);
         setIsLoading(false);
       })
       .catch((error) => {
-        console.log(error);
         setIsError({ message: "Failed to fetch blockchain data" });
         setIsLoading(false);
       });
-
-    fetchWalletData()
-      .then((walletData) => setUserWallet(walletData))
-      .catch((error) => {
-        console.log(error);
-        setIsError({ message: "Failed to fetch wallet data" });
-        setIsLoading(false);
-      });
-  };
+  }
 
   useEffect(() => {
-    fetchData();
+    // Fetch blockchain data immediately on component mount
+    fetchchainData();
+
+    // Fetch blockchain data every second
+    const intervalId = setInterval(() => {
+      fetchchainData();
+    }, 1000);
+
+    // Clean up function to clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
     <div className="App">
       <AppHeader title="Go Blockchain" />
       <ContentContainer className="App">
+        <AppInfo />
+
         <WalletWrapperContainer>
-          <Wallet walletContent={userWallet} />
-          <Wallet walletContent={userWallet} />
+          <Wallet type="miner" />
+          <Wallet type="user" />
         </WalletWrapperContainer>
 
         {isLoading && (
-          <Notification type="info" message="Loading blockchain data." />
+          <Notification
+            type="info"
+            message="Loading blockchain data."
+            width="90%"
+          />
         )}
 
         {isError.message && (
           <Notification
             type="error"
             message="Sorry, there was an error loading blockchain data."
+            underDevelopment={true}
+            width="90%"
           />
         )}
 
