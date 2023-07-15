@@ -87,14 +87,31 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState<LocalError>(null);
 
-  const [selectedMiner, setSelectedMiner] = useState("miner1");
-  const [miners /* setMiners */] = useState([
-    { value: "miner1", text: "Miner 1" },
-    { value: "miner2", text: "Miner 2" },
-    { value: "miner3", text: "Miner 3" },
+  const [selectedMiner, setSelectedMiner] = useState({
+    value: "miner1",
+    text: "Miner 1",
+    url:
+      process.env.MINER_1_WALLET_ADDRESS ||
+      "http://localhost:5001/miner/wallet",
+  });
+
+  const [miners] = useState([
+    selectedMiner,
+    {
+      value: "miner2",
+      text: "Miner 2",
+      url:
+        process.env.MINER_2_WALLET_ADDRESS ||
+        "http://localhost:5002/miner/wallet",
+    },
+    {
+      value: "miner3",
+      text: "Miner 3",
+      url:
+        process.env.MINER_3_WALLET_ADDRESS ||
+        "http://localhost:5003/miner/wallet",
+    },
   ]);
-  const selectedMinerText =
-    miners.find((miner) => miner.value === selectedMiner)?.text || "";
 
   const [walletDetails, setWalletDetails] = useState<WalletDetails>({
     blockchainAddress: "",
@@ -116,8 +133,8 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       });
   }
 
-  function fetchMinerDetails() {
-    fetchMinerWalletDetails()
+  function fetchMinerDetails(selectedMinerUrl: string) {
+    fetchMinerWalletDetails(selectedMinerUrl)
       .then((walletDetails: WalletDetails) => setWalletDetails(walletDetails))
       .catch((error: LocalError) => {
         console.log(error);
@@ -126,11 +143,22 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       });
   }
 
+  const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedValue = event.target.value;
+
+    const selectedMinerObj = miners.find(
+      (miner) => miner.value === selectedValue
+    );
+
+    setSelectedMiner(selectedMinerObj ? selectedMinerObj : selectedMiner);
+    fetchMinerDetails(selectedMiner.url);
+  };
+
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
     if (type === "user") fetchUserDetails();
-    if (type === "miner") fetchMinerDetails();
+    if (type === "miner") fetchMinerDetails(selectedMiner.url);
 
     walletUpdate = setInterval(() => {
       // TODO: Fetch the wallet amount of coins (call this automatically every 3 seconds)
@@ -138,11 +166,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     }, 3000);
 
     return () => clearInterval(walletUpdate);
-  }, [type]);
-
-  const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMiner(event.target.value);
-  };
+  }, [type, miners]);
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -161,8 +185,8 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         <UserTitle>User Wallet</UserTitle>
       ) : (
         <TitleRow>
-          <MinerTitle>{`${selectedMinerText} Wallet`}</MinerTitle>
-          <TypeSelect value={selectedMiner} onChange={handleMinerChange}>
+          <MinerTitle>{`${selectedMiner.text} Wallet`}</MinerTitle>
+          <TypeSelect value={selectedMiner.value} onChange={handleMinerChange}>
             {miners.map((miner) => (
               <option key={miner.value} value={miner.value}>
                 {miner.text}
@@ -195,7 +219,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
         <Field>
           <Label>
-            {type === "miner" ? selectedMinerText : "User"} Blockchain Address{" "}
+            {type === "miner" ? selectedMiner.text : "User"} Blockchain Address{" "}
           </Label>
           <TextArea
             rows={2}
