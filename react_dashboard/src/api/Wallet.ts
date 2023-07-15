@@ -14,10 +14,14 @@ function fetchUserWalletDetails(): Promise<WalletDetails> {
     });
 }
 
-function fetchMinerWalletDetails(): Promise<WalletDetails> {
+function fetchMinerWalletDetails(
+  selectedMinerUrl: string
+): Promise<WalletDetails> {
+  console.log("data", selectedMinerUrl);
   return axios
-    .post<WalletDetailsResponse>("http://localhost:5000/miner-wallet-details") // TODO: API endpoint
+    .post<WalletDetailsResponse>(selectedMinerUrl)
     .then(({ data }) => {
+      console.log("data", data);
       const camelCaseResponseData: WalletDetails = {
         blockchainAddress: data.blockchain_address,
         privateKey: data.private_key,
