@@ -33,6 +33,10 @@ const NotificationWrapper = styled.div`
     color: #d94141;
     border: 1px solid #d94141;
   }
+
+  @media (max-width: 850px) {
+    max-width: 350px;
+  }
 `;
 
 const Message = styled.p`
@@ -50,7 +54,7 @@ const Message = styled.p`
 const SubMessage = styled.h1`
   color: white;
   font-weight: bold;
-  margin: 1em;
+  margin: 10px;
   font-size: 1.2em;
 
   &.error {

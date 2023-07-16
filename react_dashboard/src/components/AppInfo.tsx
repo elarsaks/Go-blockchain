@@ -34,6 +34,10 @@ const AppInfoWrapper = styled.div`
     border: none; 
     text-decoration: none; 
   }
+
+  @media (max-width: 850px) {
+    max-width: 350px;
+  }
 `;
 
 const AppInfo: React.FC = () => (

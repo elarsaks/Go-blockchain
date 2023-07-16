@@ -8,6 +8,7 @@ const FooterContainer = styled.footer`
   display: flex;
   justify-content: center;
   align-items: center;
+  bottom: 0;
 `;
 
 const Link = styled.a`
