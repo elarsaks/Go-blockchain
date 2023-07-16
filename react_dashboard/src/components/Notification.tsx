@@ -1,8 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import Loader from "./Loader";
+type WrapperProps = {
+  insideContainer: boolean;
+};
 
-const NotificationWrapper = styled.div`
+const NotificationWrapper = styled.div<WrapperProps>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -35,7 +38,7 @@ const NotificationWrapper = styled.div`
   }
 
   @media (max-width: 850px) {
-    max-width: 350px;
+    width: ${(props) => (props.insideContainer ? "90%" : "84%")};
   }
 `;
 
@@ -66,19 +69,21 @@ interface NotificationProps {
   message: string;
   type: "info" | "warning" | "error";
   underDevelopment?: boolean;
+  insideContainer: boolean;
 }
 
 const Notification: React.FC<NotificationProps> = ({
   message,
   type,
   underDevelopment,
+  insideContainer,
 }) => {
   if (!message) {
     return null;
   }
 
   return (
-    <NotificationWrapper className={type}>
+    <NotificationWrapper className={type} insideContainer={insideContainer}>
       <Message className={type}>{message}</Message>
 
       <Loader height={100} />

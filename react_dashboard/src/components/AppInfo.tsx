@@ -36,7 +36,7 @@ const AppInfoWrapper = styled.div`
   }
 
   @media (max-width: 850px) {
-    max-width: 350px;
+    width: 84%;
   }
 `;
 
