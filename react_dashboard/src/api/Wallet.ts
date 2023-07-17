@@ -15,9 +15,7 @@ function fetchUserWalletDetails(): Promise<WalletDetails> {
 }
 
 function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
-  console.log("data", minerAdress);
   return axios.post<WalletDetailsResponse>(minerAdress).then(({ data }) => {
-    console.log("data", data);
     const camelCaseResponseData: WalletDetails = {
       blockchainAddress: data.blockchain_address,
       privateKey: data.private_key,
@@ -28,4 +26,12 @@ function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
   });
 }
 
-export { fetchMinerWalletDetails, fetchUserWalletDetails };
+function fetchWalletAmount(blockchainAddress: string): Promise<number> {
+  return axios
+    .get<AmountResponse>(
+      `http://localhost:5000/wallet/amount?blockchain_address=${blockchainAddress}`
+    )
+    .then(({ data }) => data.amount);
+}
+
+export { fetchMinerWalletDetails, fetchUserWalletDetails, fetchWalletAmount };

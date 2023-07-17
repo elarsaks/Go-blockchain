@@ -1,9 +1,8 @@
 /// <reference types="react-scripts" />
 
-type Transaction = {
-  senderBlockchainAddress: string;
-  recipientBlockchainAddress: string;
-  value: number;
+type AmountResponse = {
+  message: string;
+  amount: number;
 };
 
 type Block = {
@@ -11,6 +10,20 @@ type Block = {
   nonce: number;
   previousHash: string;
   transactions: Transaction[];
+};
+
+type Blockchain = {
+  chain: Block[];
+};
+
+type LocalError = {
+  message: string;
+} | null;
+
+type Transaction = {
+  senderBlockchainAddress: string;
+  recipientBlockchainAddress: string;
+  value: number;
 };
 
 type WalletDetails = {
@@ -23,12 +36,4 @@ type WalletDetailsResponse = {
   blockchain_address: string;
   private_key: string;
   public_key: string;
-};
-
-type LocalError = {
-  message: string;
-} | null;
-
-type Blockchain = {
-  chain: Block[];
 };

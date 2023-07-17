@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
-import { fetchMinerWalletDetails, fetchUserWalletDetails } from "../api/Wallet";
+import {
+  fetchMinerWalletDetails,
+  fetchUserWalletDetails,
+  fetchWalletAmount,
+} from "../api/Wallet";
 import Notification from "../components/Notification";
 
 const WalletContainer = styled.div`
@@ -84,6 +88,7 @@ type WalletProps = {
 };
 
 const Wallet: React.FC<WalletProps> = ({ type }) => {
+  // State
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState<LocalError>(null);
 
@@ -119,31 +124,45 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     publicKey: "",
   });
 
-  const [walletAmount /*setWalletAmount */] = useState(0);
+  const [walletAmount, setWalletAmount] = useState(0);
 
-  function fetchUserDetails() {
-    fetchUserWalletDetails()
-      .then((walletDetails: WalletDetails) => {
-        setWalletDetails(walletDetails);
-        setIsLoading(false);
-      })
-      .catch((error: LocalError) => {
-        setIsError({ message: "Failed to fetch USER details" });
-        setIsLoading(false);
-      });
+  // Methods
+  function fetchAmount(blockchainAddress: string) {
+    fetchWalletAmount(blockchainAddress)
+      .then((walletAmount) => setWalletAmount(walletAmount))
+      .catch((error: LocalError) =>
+        setError({ message: "Failed to fetch wallet amount" })
+      );
   }
 
   function fetchMinerDetails(selectedMinerUrl: string) {
     setIsLoading(true);
     fetchMinerWalletDetails(selectedMinerUrl)
       .then((walletDetails: WalletDetails) => {
+        fetchAmount(walletDetails.blockchainAddress);
         setWalletDetails(walletDetails);
         setIsLoading(false);
       })
-      .catch((error: LocalError) => {
-        setIsError({ message: "Failed to fetch MINER details" });
+      .catch((error: LocalError) =>
+        setError({ message: "Failed to fetch MINER details" })
+      );
+  }
+
+  function fetchUserDetails() {
+    fetchUserWalletDetails()
+      .then((walletDetails: WalletDetails) => {
+        fetchAmount(walletDetails.blockchainAddress);
+        setWalletDetails(walletDetails);
         setIsLoading(false);
-      });
+      })
+      .catch((error: LocalError) =>
+        setError({ message: "Failed to fetch USER details" })
+      );
+  }
+
+  function setError(error: LocalError) {
+    setIsError(error);
+    setIsLoading(false);
   }
 
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
