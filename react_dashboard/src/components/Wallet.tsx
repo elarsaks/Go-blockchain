@@ -250,6 +250,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type="info"
             message="Loading data."
             underDevelopment={false}
+            insideContainer={true}
           />
         )}
 
@@ -258,6 +259,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type="error"
             message={isError.message || "Something went wrong."}
             underDevelopment={true}
+            insideContainer={true}
           />
         )}
         <SendButton type="submit" disabled={isError !== null}>
