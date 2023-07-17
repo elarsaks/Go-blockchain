@@ -134,10 +134,13 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   }
 
   function fetchMinerDetails(selectedMinerUrl: string) {
+    setIsLoading(true);
     fetchMinerWalletDetails(selectedMinerUrl)
-      .then((walletDetails: WalletDetails) => setWalletDetails(walletDetails))
+      .then((walletDetails: WalletDetails) => {
+        setWalletDetails(walletDetails);
+        setIsLoading(false);
+      })
       .catch((error: LocalError) => {
-        console.log(error);
         setIsError({ message: "Failed to fetch MINER details" });
         setIsLoading(false);
       });
@@ -157,6 +160,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
+    console.log(selectedMiner.url);
     if (type === "user") fetchUserDetails();
     if (type === "miner") fetchMinerDetails(selectedMiner.url);
 
