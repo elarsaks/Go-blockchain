@@ -173,17 +173,20 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     }
   };
 
+  // TODO: Fix using effects whitout disabling eslint
   // Effects
   useEffect(() => {
     if (type === "user") {
       fetchUserDetails();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
   useEffect(() => {
     if (type === "miner") {
       fetchMinerDetails(selectedMiner.url);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, selectedMiner.url]);
 
   useEffect(() => {
