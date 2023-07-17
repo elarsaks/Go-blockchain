@@ -9,6 +9,10 @@ services:
     restart: unless-stopped
     ports:
       - "${DASHBOARD_PORT}:${DASHBOARD_PORT}"
+    environment:
+      - REACT_APP_MINER_1=${REACT_APP_MINER_1}
+      - REACT_APP_MINER_2=${REACT_APP_MINER_2}
+      - REACT_APP_MINER_3=${REACT_APP_MINER_3}
     volumes:
       - ./react_dashboard/src:/app/src
       - ./react_dashboard/package.json:/app/package.json
@@ -61,7 +65,7 @@ services:
     ports:
       - "${MINER_2_PORT}:${MINER_2_PORT}"
     environment:
-      - PORT=${MINER_2_PORT}
+      - BLOCKCHAIN_SERVER_PORT=${MINER_2_PORT}
       - COMMAND=air
     volumes:
       - ./blockchain_server:/app/blockchain_server
@@ -80,7 +84,7 @@ services:
     ports:
       - "${MINER_3_PORT}:${MINER_3_PORT}"
     environment:
-      - PORT=${MINER_3_PORT}
+      - BLOCKCHAIN_SERVER_PORT=${MINER_3_PORT}
       - COMMAND=air
     volumes:
       - ./blockchain_server:/app/blockchain_server

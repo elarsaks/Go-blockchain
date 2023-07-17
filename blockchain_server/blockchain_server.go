@@ -17,10 +17,16 @@ var cache map[string]*block.Blockchain = make(map[string]*block.Blockchain)
 
 type BlockchainServer struct {
 	port uint16
+	//* NOTE: In real we would not attach the wallet to the server
+	// but for the sake of simplicity we will do it here
+	Wallet *wallet.Wallet
 }
 
 func NewBlockchainServer(port uint16) *BlockchainServer {
-	return &BlockchainServer{port}
+	return &BlockchainServer{
+		port:   port,
+		Wallet: nil,
+	}
 }
 
 func (bcs *BlockchainServer) Port() uint16 {
@@ -33,8 +39,12 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 		minersWallet := wallet.NewWallet()
 		bc = block.NewBlockchain(minersWallet.BlockchainAddress(), bcs.Port())
 		cache["blockchain"] = bc
+
+		// Setting the wallet in the BlockchainServer object
+		bcs.Wallet = minersWallet
+
 		log.Printf("private_key %v", minersWallet.PrivateKeyStr())
-		log.Printf("publick_key %v", minersWallet.PublicKeyStr())
+		log.Printf("public_key %v", minersWallet.PublicKeyStr())
 		log.Printf("blockchain_address %v", minersWallet.BlockchainAddress())
 	}
 	return bc
@@ -225,6 +235,19 @@ func (bcs *BlockchainServer) Consensus(w http.ResponseWriter, req *http.Request)
 	}
 }
 
+func (bcs *BlockchainServer) MinerWallet(w http.ResponseWriter, req *http.Request) {
+	switch req.Method {
+	case http.MethodPost:
+		w.Header().Add("Content-Type", "application/json")
+		myWallet := bcs.Wallet
+		m, _ := myWallet.MarshalJSON()
+		io.WriteString(w, string(m[:]))
+	default:
+		w.WriteHeader(http.StatusBadRequest)
+		log.Println("ERROR: Invalid HTTP Method")
+	}
+}
+
 func (bcs *BlockchainServer) Run() {
 	bcs.GetBlockchain().Run()
 
@@ -232,6 +255,7 @@ func (bcs *BlockchainServer) Run() {
 	router.Use(utils.CorsMiddleware())
 
 	// Define routes
+	router.HandleFunc("/miner/wallet", bcs.MinerWallet)
 	router.HandleFunc("/", bcs.GetChain)
 	router.HandleFunc("/last10", bcs.GetLast10Blocks)
 	router.HandleFunc("/transactions", bcs.Transactions)

@@ -1,5 +1,7 @@
 
 # Go-blockchain
+Live example of the project: [https://elarsaks.github.io/Go-blockchain/](https://elarsaks.github.io/Go-blockchain/)
+
 ![Image Description](https://saks.digital/wp-content/uploads/2023/07/some.png)
 
 # 🚧 UNDER DEVELOPMENT 🚧
@@ -62,8 +64,8 @@ docker-compose up --build
 - `wallet_server/ReadMe.md`
 - `blockchain_server/Readme.md`
 
-### React Dashboard UI example
-![Image Description](https://saks.digital/wp-content/uploads/2023/07/Screenshot-from-2023-07-02-19-41-40.png)
+
+
 
 
 

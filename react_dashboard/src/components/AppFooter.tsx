@@ -13,8 +13,12 @@ const FooterContainer = styled.footer`
 
 const Link = styled.a`
   margin: 0 1rem;
-  color: white; /* Make the link text white */
+  color: white;
   text-decoration: none;
+
+  &:hover {
+    color: yellow;
+  }
 `;
 
 type FooterProps = {

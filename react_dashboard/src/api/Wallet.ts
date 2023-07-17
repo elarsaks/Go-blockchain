@@ -14,18 +14,24 @@ function fetchUserWalletDetails(): Promise<WalletDetails> {
     });
 }
 
-function fetchMinerWalletDetails(): Promise<WalletDetails> {
-  return axios
-    .post<WalletDetailsResponse>("http://localhost:5000/miner-wallet-details") // TODO: API endpoint
-    .then(({ data }) => {
-      const camelCaseResponseData: WalletDetails = {
-        blockchainAddress: data.blockchain_address,
-        privateKey: data.private_key,
-        publicKey: data.public_key,
-      };
+function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
+  return axios.post<WalletDetailsResponse>(minerAdress).then(({ data }) => {
+    const camelCaseResponseData: WalletDetails = {
+      blockchainAddress: data.blockchain_address,
+      privateKey: data.private_key,
+      publicKey: data.public_key,
+    };
 
-      return camelCaseResponseData;
-    });
+    return camelCaseResponseData;
+  });
 }
 
-export { fetchMinerWalletDetails, fetchUserWalletDetails };
+function fetchWalletAmount(blockchainAddress: string): Promise<number> {
+  return axios
+    .get<AmountResponse>(
+      `http://localhost:5000/wallet/amount?blockchain_address=${blockchainAddress}`
+    )
+    .then(({ data }) => data.amount);
+}
+
+export { fetchMinerWalletDetails, fetchUserWalletDetails, fetchWalletAmount };
