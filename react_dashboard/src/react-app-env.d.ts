@@ -32,6 +32,11 @@ type WalletDetails = {
   publicKey: string;
 };
 
+type WalletState = WalletDetails & {
+  amount: number;
+  recipientAddress: string;
+};
+
 type WalletDetailsResponse = {
   blockchain_address: string;
   private_key: string;

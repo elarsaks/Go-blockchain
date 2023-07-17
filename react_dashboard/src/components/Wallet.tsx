@@ -118,29 +118,29 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     },
   ]);
 
-  const [walletDetails, setWalletDetails] = useState<WalletDetails>({
+  const [walletDetails, setWalletDetails] = useState<WalletState>({
     blockchainAddress: "",
     privateKey: "",
     publicKey: "",
+    recipientAddress: "",
+    amount: 0,
   });
-
-  const [walletAmount, setWalletAmount] = useState(0);
-
-  // Methods
-  function fetchAmount(blockchainAddress: string) {
-    fetchWalletAmount(blockchainAddress)
-      .then((walletAmount) => setWalletAmount(walletAmount))
-      .catch((error: LocalError) =>
-        setError({ message: "Failed to fetch wallet amount" })
-      );
-  }
 
   function fetchMinerDetails(selectedMinerUrl: string) {
     setIsLoading(true);
     fetchMinerWalletDetails(selectedMinerUrl)
-      .then((walletDetails: WalletDetails) => {
-        fetchAmount(walletDetails.blockchainAddress);
-        setWalletDetails(walletDetails);
+      .then((minerWalletDetails: WalletDetails) => {
+        fetchWalletAmount(minerWalletDetails.blockchainAddress).then(
+          (walletAmount) =>
+            setWalletDetails({
+              ...walletDetails,
+              blockchainAddress: minerWalletDetails.blockchainAddress,
+              privateKey: minerWalletDetails.privateKey,
+              publicKey: minerWalletDetails.publicKey,
+              amount: walletAmount,
+            })
+        );
+
         setIsLoading(false);
       })
       .catch((error: LocalError) =>
@@ -150,9 +150,17 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
   function fetchUserDetails() {
     fetchUserWalletDetails()
-      .then((walletDetails: WalletDetails) => {
-        fetchAmount(walletDetails.blockchainAddress);
-        setWalletDetails(walletDetails);
+      .then((userWalletDetails: WalletDetails) => {
+        fetchWalletAmount(userWalletDetails.blockchainAddress).then(
+          (walletAmount) =>
+            setWalletDetails({
+              ...walletDetails,
+              blockchainAddress: userWalletDetails.blockchainAddress,
+              privateKey: userWalletDetails.privateKey,
+              publicKey: userWalletDetails.publicKey,
+              amount: walletAmount,
+            })
+        );
         setIsLoading(false);
       })
       .catch((error: LocalError) =>
@@ -192,7 +200,13 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
     if (walletDetails.blockchainAddress) {
       walletUpdate = setInterval(() => {
-        fetchAmount(walletDetails.blockchainAddress);
+        fetchWalletAmount(walletDetails.blockchainAddress).then(
+          (walletAmount) =>
+            setWalletDetails({
+              ...walletDetails,
+              amount: walletAmount,
+            })
+        );
       }, 3000);
     }
 
@@ -278,7 +292,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type="text"
             name="amount"
             placeholder="0"
-            value={walletAmount.toString()}
+            value={walletDetails.amount.toString()}
             onChange={handleInputChange}
           />
         </Field>
