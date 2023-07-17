@@ -176,21 +176,30 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     fetchMinerDetails(selectedMiner.url);
   };
 
+  // Effects
+  useEffect(() => {
+    if (type === "user") fetchUserDetails();
+  }, [type]);
+
+  useEffect(() => {
+    if (type === "miner") {
+      fetchMinerDetails(selectedMiner.url);
+    }
+  }, [type, selectedMiner.url]);
+
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
-    console.log(selectedMiner.url);
-    if (type === "user") fetchUserDetails();
-    if (type === "miner") fetchMinerDetails(selectedMiner.url);
-
-    walletUpdate = setInterval(() => {
-      // TODO: Fetch the wallet amount of coins (call this automatically every 3 seconds)
-      // fetchWalletAmount();
-    }, 3000);
+    if (walletDetails.blockchainAddress) {
+      walletUpdate = setInterval(() => {
+        fetchAmount(walletDetails.blockchainAddress);
+      }, 3000);
+    }
 
     return () => clearInterval(walletUpdate);
-  }, [type, miners]);
+  }, [walletDetails.blockchainAddress]);
 
+  // Event Handlers
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
