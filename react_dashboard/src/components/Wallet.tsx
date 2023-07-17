@@ -203,8 +203,14 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    /// const { name, value } = event.target;
+    const { name, value } = event.target;
+
+    setWalletDetails((prevDetails) => ({
+      ...prevDetails, // spread to keep the existing state
+      [name]: value, // update the value of the property defined by 'name'
+    }));
   };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     // Handle form submission if needed
