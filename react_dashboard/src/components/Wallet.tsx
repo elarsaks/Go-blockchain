@@ -95,9 +95,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   const [selectedMiner, setSelectedMiner] = useState({
     value: "miner1",
     text: "Miner 1",
-    url:
-      process.env.MINER_1_WALLET_ADDRESS ||
-      "http://localhost:5001/miner/wallet",
+    url: process.env.REACT_APP_MINER_1 + "/miner/wallet",
   });
 
   const [miners] = useState([
@@ -105,16 +103,12 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     {
       value: "miner2",
       text: "Miner 2",
-      url:
-        process.env.MINER_2_WALLET_ADDRESS ||
-        "http://localhost:5002/miner/wallet",
+      url: process.env.REACT_APP_MINER_2 + "/miner/wallet",
     },
     {
       value: "miner3",
       text: "Miner 3",
-      url:
-        process.env.MINER_3_WALLET_ADDRESS ||
-        "http://localhost:5003/miner/wallet",
+      url: process.env.REACT_APP_MINER_3 + "/miner/wallet",
     },
   ]);
 
