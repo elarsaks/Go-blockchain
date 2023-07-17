@@ -91,27 +91,6 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   // State
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState<LocalError>(null);
-
-  const [selectedMiner, setSelectedMiner] = useState({
-    value: "miner1",
-    text: "Miner 1",
-    url: process.env.REACT_APP_MINER_1 + "/miner/wallet",
-  });
-
-  const [miners] = useState([
-    selectedMiner,
-    {
-      value: "miner2",
-      text: "Miner 2",
-      url: process.env.REACT_APP_MINER_2 + "/miner/wallet",
-    },
-    {
-      value: "miner3",
-      text: "Miner 3",
-      url: process.env.REACT_APP_MINER_3 + "/miner/wallet",
-    },
-  ]);
-
   const [walletDetails, setWalletDetails] = useState<WalletState>({
     blockchainAddress: "",
     privateKey: "",
@@ -120,45 +99,62 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     amount: 0,
   });
 
-  function fetchMinerDetails(selectedMinerUrl: string) {
-    setIsLoading(true);
-    fetchMinerWalletDetails(selectedMinerUrl)
-      .then((minerWalletDetails: WalletDetails) => {
-        fetchWalletAmount(minerWalletDetails.blockchainAddress).then(
-          (walletAmount) =>
-            setWalletDetails({
-              ...walletDetails,
-              blockchainAddress: minerWalletDetails.blockchainAddress,
-              privateKey: minerWalletDetails.privateKey,
-              publicKey: minerWalletDetails.publicKey,
-              amount: walletAmount,
-            })
-        );
+  const [selectedMiner, setSelectedMiner] = useState<{
+    value: string;
+    text: string;
+    url: string;
+  }>({
+    value: "miner1",
+    text: "Miner 1",
+    url: process.env.REACT_APP_MINER_1 + "/miner/wallet",
+  });
 
-        setIsLoading(false);
-      })
+  const selectedMinerUrls = {
+    miner1: process.env.REACT_APP_MINER_1 + "/miner/wallet",
+    miner2: process.env.REACT_APP_MINER_2 + "/miner/wallet",
+    miner3: process.env.REACT_APP_MINER_3 + "/miner/wallet",
+  };
+
+  const miners = [
+    { value: "miner1", text: "Miner 1", url: selectedMinerUrls.miner1 },
+    { value: "miner2", text: "Miner 2", url: selectedMinerUrls.miner2 },
+    { value: "miner3", text: "Miner 3", url: selectedMinerUrls.miner3 },
+  ];
+
+  // Methods
+  function fetchWalletDetails(walletDetails: WalletDetails) {
+    setIsLoading(true);
+    fetchWalletAmount(walletDetails.blockchainAddress)
+      .then((walletAmount) =>
+        setWalletDetails((prevDetails) => ({
+          ...prevDetails,
+          ...walletDetails,
+          amount: walletAmount,
+        }))
+      )
       .catch((error: LocalError) =>
-        setError({ message: "Failed to fetch MINER details" })
-      );
+        setError({ message: "Failed to fetch wallet details" })
+      )
+      .finally(() => setIsLoading(false));
   }
 
   function fetchUserDetails() {
     fetchUserWalletDetails()
-      .then((userWalletDetails: WalletDetails) => {
-        fetchWalletAmount(userWalletDetails.blockchainAddress).then(
-          (walletAmount) =>
-            setWalletDetails({
-              ...walletDetails,
-              blockchainAddress: userWalletDetails.blockchainAddress,
-              privateKey: userWalletDetails.privateKey,
-              publicKey: userWalletDetails.publicKey,
-              amount: walletAmount,
-            })
-        );
-        setIsLoading(false);
-      })
+      .then((userWalletDetails: WalletDetails) =>
+        fetchWalletDetails(userWalletDetails)
+      )
       .catch((error: LocalError) =>
-        setError({ message: "Failed to fetch USER details" })
+        setError({ message: "Failed to fetch user details" })
+      );
+  }
+
+  function fetchMinerDetails(selectedMinerUrl: string) {
+    fetchMinerWalletDetails(selectedMinerUrl)
+      .then((minerWalletDetails: WalletDetails) =>
+        fetchWalletDetails(minerWalletDetails)
+      )
+      .catch((error: LocalError) =>
+        setError({ message: "Failed to fetch miner details" })
       );
   }
 
@@ -169,18 +165,19 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
+    const selectedMiner = miners.find((miner) => miner.value === selectedValue);
 
-    const selectedMinerObj = miners.find(
-      (miner) => miner.value === selectedValue
-    );
-
-    setSelectedMiner(selectedMinerObj ? selectedMinerObj : selectedMiner);
-    fetchMinerDetails(selectedMiner.url);
+    if (selectedMiner) {
+      setSelectedMiner(selectedMiner);
+      fetchMinerDetails(selectedMiner.url);
+    }
   };
 
   // Effects
   useEffect(() => {
-    if (type === "user") fetchUserDetails();
+    if (type === "user") {
+      fetchUserDetails();
+    }
   }, [type]);
 
   useEffect(() => {
@@ -194,13 +191,16 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
     if (walletDetails.blockchainAddress) {
       walletUpdate = setInterval(() => {
-        fetchWalletAmount(walletDetails.blockchainAddress).then(
-          (walletAmount) =>
-            setWalletDetails({
-              ...walletDetails,
+        fetchWalletAmount(walletDetails.blockchainAddress)
+          .then((walletAmount) =>
+            setWalletDetails((prevDetails) => ({
+              ...prevDetails,
               amount: walletAmount,
-            })
-        );
+            }))
+          )
+          .catch((error: LocalError) =>
+            setError({ message: "Failed to fetch wallet amount" })
+          );
       }, 3000);
     }
 
@@ -214,15 +214,15 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     const { name, value } = event.target;
 
     setWalletDetails((prevDetails) => ({
-      ...prevDetails, // spread to keep the existing state
-      [name]: value, // update the value of the property defined by 'name'
+      ...prevDetails,
+      [name]: value,
     }));
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     // Handle form submission if needed
-    // You can access the updated wallet content in localWalletContent state
+    // You can access the updated wallet content in walletDetails state
   };
 
   return (
