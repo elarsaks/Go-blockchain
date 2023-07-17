@@ -6,23 +6,44 @@ import (
 	"strings"
 )
 
+// --- Types ---
+// Transaction represents a single transaction in the blockchain.
 type Transaction struct {
 	senderBlockchainAddress    string
 	recipientBlockchainAddress string
 	value                      float32
 }
 
+// TransactionRequest represents a request to create a new transaction.
+type TransactionRequest struct {
+	SenderBlockchainAddress    *string  `json:"senderBlockchainAddress"`
+	RecipientBlockchainAddress *string  `json:"recipientBlockchainAddress"`
+	SenderPublicKey            *string  `json:"senderPublicKey"`
+	Value                      *float32 `json:"value"`
+	Signature                  *string  `json:"signature"`
+}
+
+// AmountResponse represents the response with the amount in a transaction.
+type AmountResponse struct {
+	Amount float32 `json:"amount"`
+}
+
+// --- Functions ---
+// NewTransaction creates a new transaction.
 func NewTransaction(sender string, recipient string, value float32) *Transaction {
 	return &Transaction{sender, recipient, value}
 }
 
+// --- Methods ---
+// Print outputs the details of the transaction.
 func (t *Transaction) Print() {
 	fmt.Printf("%s\n", strings.Repeat("-", 40))
-	fmt.Printf(" sender_blockchain_address      %s\n", t.senderBlockchainAddress)
+	fmt.Printf(" senderBlockchainAddress      %s\n", t.senderBlockchainAddress)
 	fmt.Printf(" recipientBlockchainAddress   %s\n", t.recipientBlockchainAddress)
 	fmt.Printf(" value                          %.1f\n", t.value)
 }
 
+// MarshalJSON implements the Marshaler interface for the Transaction type.
 func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Sender    string  `json:"senderBlockchainAddress"`
@@ -35,6 +56,7 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 	})
 }
 
+// UnmarshalJSON implements the Unmarshaler interface for the Transaction type.
 func (t *Transaction) UnmarshalJSON(data []byte) error {
 	v := &struct {
 		Sender    *string  `json:"senderBlockchainAddress"`
@@ -51,14 +73,7 @@ func (t *Transaction) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-type TransactionRequest struct {
-	SenderBlockchainAddress    *string  `json:"sender_blockchain_address"`
-	RecipientBlockchainAddress *string  `json:"recipient_blockchain_address"`
-	SenderPublicKey            *string  `json:"sender_public_key"`
-	Value                      *float32 `json:"value"`
-	Signature                  *string  `json:"signature"`
-}
-
+// Validate checks if the transaction request is valid.
 func (tr *TransactionRequest) Validate() bool {
 	if tr.SenderBlockchainAddress == nil ||
 		tr.RecipientBlockchainAddress == nil ||
@@ -70,10 +85,7 @@ func (tr *TransactionRequest) Validate() bool {
 	return true
 }
 
-type AmountResponse struct {
-	Amount float32 `json:"amount"`
-}
-
+// MarshalJSON implements the Marshaler interface for the AmountResponse type.
 func (ar *AmountResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Amount float32 `json:"amount"`
