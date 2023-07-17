@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// Constants related to blockchain configuration
 const (
 	// TODO: Use env variables
 	MINING_DIFFICULTY = 3
@@ -22,6 +23,7 @@ const (
 	BLOCKCHIN_NEIGHBOR_SYNC_TIME_SEC = 20
 )
 
+// Definition of the Block type
 type Block struct {
 	timestamp    int64
 	nonce        int
@@ -29,6 +31,7 @@ type Block struct {
 	transactions []*Transaction
 }
 
+// Constructor for the Block type
 func NewBlock(nonce int, previousHash [32]byte, transactions []*Transaction) *Block {
 	b := new(Block)
 	b.timestamp = time.Now().UnixNano()
@@ -38,6 +41,7 @@ func NewBlock(nonce int, previousHash [32]byte, transactions []*Transaction) *Bl
 	return b
 }
 
+// Accessor methods for the Block type
 func (b *Block) PreviousHash() [32]byte {
 	return b.previousHash
 }
@@ -50,6 +54,7 @@ func (b *Block) Transactions() []*Transaction {
 	return b.transactions
 }
 
+// Methods related to handling and presenting the Block
 func (b *Block) Print() {
 	fmt.Printf("timestamp       %d\n", b.timestamp)
 	fmt.Printf("nonce           %d\n", b.nonce)
@@ -64,6 +69,7 @@ func (b *Block) Hash() [32]byte {
 	return sha256.Sum256([]byte(m))
 }
 
+// Methods for JSON (un)marshalling
 func (b *Block) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Timestamp    int64          `json:"timestamp"`
