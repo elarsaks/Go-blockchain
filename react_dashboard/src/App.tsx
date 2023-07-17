@@ -68,7 +68,11 @@ function App() {
         </WalletWrapperContainer>
 
         {isLoading && (
-          <Notification type="info" message="Loading blockchain data." />
+          <Notification
+            type="info"
+            insideContainer={false}
+            message="Loading blockchain data."
+          />
         )}
 
         {isError.message && (
@@ -76,6 +80,7 @@ function App() {
             type="error"
             message="Sorry, there was an error loading blockchain data."
             underDevelopment={true}
+            insideContainer={false}
           />
         )}
 

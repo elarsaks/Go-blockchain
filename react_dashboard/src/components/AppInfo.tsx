@@ -34,6 +34,10 @@ const AppInfoWrapper = styled.div`
     border: none; 
     text-decoration: none; 
   }
+
+  @media (max-width: 850px) {
+    width: 84%;
+  }
 `;
 
 const AppInfo: React.FC = () => (
@@ -42,7 +46,8 @@ const AppInfo: React.FC = () => (
     <p>
       The wallet on the left represents a miner, while the wallet on the right
       represents a random user. Miner wallets accumulate crypto when they mine
-      blocks.
+      blocks. At first, they mine 10 blocks, and then they mine 1 block only if
+      there is transactions to be mined..
     </p>
     <p>
       You can experiment by sending this crypto from miners to users and vice

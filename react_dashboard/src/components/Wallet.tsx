@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import React, { useState, useEffect } from "react";
-import { fetchMinerWalletDetails, fetchUserWalletDetails } from "../api/Wallet";
+import {
+  fetchMinerWalletDetails,
+  fetchUserWalletDetails,
+  fetchWalletAmount,
+} from "../api/Wallet";
 import Notification from "../components/Notification";
 
 const WalletContainer = styled.div`
@@ -84,99 +88,141 @@ type WalletProps = {
 };
 
 const Wallet: React.FC<WalletProps> = ({ type }) => {
+  // State
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState<LocalError>(null);
-
-  const [selectedMiner, setSelectedMiner] = useState({
-    value: "miner1",
-    text: "Miner 1",
-    url:
-      process.env.MINER_1_WALLET_ADDRESS ||
-      "http://localhost:5001/miner/wallet",
-  });
-
-  const [miners] = useState([
-    selectedMiner,
-    {
-      value: "miner2",
-      text: "Miner 2",
-      url:
-        process.env.MINER_2_WALLET_ADDRESS ||
-        "http://localhost:5002/miner/wallet",
-    },
-    {
-      value: "miner3",
-      text: "Miner 3",
-      url:
-        process.env.MINER_3_WALLET_ADDRESS ||
-        "http://localhost:5003/miner/wallet",
-    },
-  ]);
-
-  const [walletDetails, setWalletDetails] = useState<WalletDetails>({
+  const [walletDetails, setWalletDetails] = useState<WalletState>({
     blockchainAddress: "",
     privateKey: "",
     publicKey: "",
+    recipientAddress: "",
+    amount: 0,
   });
 
-  const [walletAmount /*setWalletAmount */] = useState(0);
+  const [selectedMiner, setSelectedMiner] = useState<{
+    value: string;
+    text: string;
+    url: string;
+  }>({
+    value: "miner1",
+    text: "Miner 1",
+    url: process.env.REACT_APP_MINER_1 + "/miner/wallet",
+  });
+
+  const selectedMinerUrls = {
+    miner1: process.env.REACT_APP_MINER_1 + "/miner/wallet",
+    miner2: process.env.REACT_APP_MINER_2 + "/miner/wallet",
+    miner3: process.env.REACT_APP_MINER_3 + "/miner/wallet",
+  };
+
+  const miners = [
+    { value: "miner1", text: "Miner 1", url: selectedMinerUrls.miner1 },
+    { value: "miner2", text: "Miner 2", url: selectedMinerUrls.miner2 },
+    { value: "miner3", text: "Miner 3", url: selectedMinerUrls.miner3 },
+  ];
+
+  // Methods
+  function fetchWalletDetails(walletDetails: WalletDetails) {
+    setIsLoading(true);
+    fetchWalletAmount(walletDetails.blockchainAddress)
+      .then((walletAmount) =>
+        setWalletDetails((prevDetails) => ({
+          ...prevDetails,
+          ...walletDetails,
+          amount: walletAmount,
+        }))
+      )
+      .catch((error: LocalError) =>
+        setError({ message: "Failed to fetch wallet details" })
+      )
+      .finally(() => setIsLoading(false));
+  }
 
   function fetchUserDetails() {
     fetchUserWalletDetails()
-      .then((walletDetails: WalletDetails) => {
-        setWalletDetails(walletDetails);
-        setIsLoading(false);
-      })
-      .catch((error: LocalError) => {
-        setIsError({ message: "Failed to fetch USER details" });
-        setIsLoading(false);
-      });
+      .then((userWalletDetails: WalletDetails) =>
+        fetchWalletDetails(userWalletDetails)
+      )
+      .catch((error: LocalError) =>
+        setError({ message: "Failed to fetch user details" })
+      );
   }
 
   function fetchMinerDetails(selectedMinerUrl: string) {
     fetchMinerWalletDetails(selectedMinerUrl)
-      .then((walletDetails: WalletDetails) => setWalletDetails(walletDetails))
-      .catch((error: LocalError) => {
-        console.log(error);
-        setIsError({ message: "Failed to fetch MINER details" });
-        setIsLoading(false);
-      });
+      .then((minerWalletDetails: WalletDetails) =>
+        fetchWalletDetails(minerWalletDetails)
+      )
+      .catch((error: LocalError) =>
+        setError({ message: "Failed to fetch miner details" })
+      );
+  }
+
+  function setError(error: LocalError) {
+    setIsError(error);
+    setIsLoading(false);
   }
 
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
+    const selectedMiner = miners.find((miner) => miner.value === selectedValue);
 
-    const selectedMinerObj = miners.find(
-      (miner) => miner.value === selectedValue
-    );
-
-    setSelectedMiner(selectedMinerObj ? selectedMinerObj : selectedMiner);
-    fetchMinerDetails(selectedMiner.url);
+    if (selectedMiner) {
+      setSelectedMiner(selectedMiner);
+      fetchMinerDetails(selectedMiner.url);
+    }
   };
+
+  // Effects
+  useEffect(() => {
+    if (type === "user") {
+      fetchUserDetails();
+    }
+  }, [type]);
+
+  useEffect(() => {
+    if (type === "miner") {
+      fetchMinerDetails(selectedMiner.url);
+    }
+  }, [type, selectedMiner.url]);
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
-    if (type === "user") fetchUserDetails();
-    if (type === "miner") fetchMinerDetails(selectedMiner.url);
-
-    walletUpdate = setInterval(() => {
-      // TODO: Fetch the wallet amount of coins (call this automatically every 3 seconds)
-      // fetchWalletAmount();
-    }, 3000);
+    if (walletDetails.blockchainAddress) {
+      walletUpdate = setInterval(() => {
+        fetchWalletAmount(walletDetails.blockchainAddress)
+          .then((walletAmount) =>
+            setWalletDetails((prevDetails) => ({
+              ...prevDetails,
+              amount: walletAmount,
+            }))
+          )
+          .catch((error: LocalError) =>
+            setError({ message: "Failed to fetch wallet amount" })
+          );
+      }, 3000);
+    }
 
     return () => clearInterval(walletUpdate);
-  }, [type, miners]);
+  }, [walletDetails.blockchainAddress]);
 
+  // Event Handlers
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    /// const { name, value } = event.target;
+    const { name, value } = event.target;
+
+    setWalletDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]: value,
+    }));
   };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     // Handle form submission if needed
-    // You can access the updated wallet content in localWalletContent state
+    // You can access the updated wallet content in walletDetails state
   };
 
   return (
@@ -240,7 +286,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type="text"
             name="amount"
             placeholder="0"
-            value={walletAmount.toString()}
+            value={walletDetails.amount.toString()}
             onChange={handleInputChange}
           />
         </Field>
@@ -250,6 +296,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type="info"
             message="Loading data."
             underDevelopment={false}
+            insideContainer={true}
           />
         )}
 
@@ -258,6 +305,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type="error"
             message={isError.message || "Something went wrong."}
             underDevelopment={true}
+            insideContainer={true}
           />
         )}
         <SendButton type="submit" disabled={isError !== null}>
