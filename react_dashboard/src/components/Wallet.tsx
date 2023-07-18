@@ -80,16 +80,20 @@ const Input = styled.input`
   text-align: left;
 `;
 
-const SendButton = styled.button`
+interface ButtonProps {
+  disabled: boolean;
+}
+const SendButton = styled.button<ButtonProps>`
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
-  background-color: #00acd7;
+  background-color: ${(props) => (props.disabled ? "#ccc" : "#00acd7")};
   color: white;
   border: none;
   border-radius: 3px;
   font-weight: bold;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   float: right;
+  opacity: ${(props) => (props.disabled ? "0.6" : "1")};
 `;
 
 type WalletProps = {
@@ -100,6 +104,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   // State
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState<LocalError>(null);
+  const [isAnyFieldEmpty, setIsAnyFieldEmpty] = useState(false);
   const [walletDetails, setWalletDetails] = useState<WalletState>({
     blockchainAddress: "",
     privateKey: "",
@@ -189,14 +194,14 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       fetchUserDetails();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, JSON.stringify(fetchUserDetails)]);
+  }, [type]);
 
   useEffect(() => {
     if (type === "miner") {
       fetchMinerDetails(selectedMiner.url);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, selectedMiner.url, JSON.stringify(fetchUserDetails)]);
+  }, [type, selectedMiner.url]);
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
@@ -218,6 +223,16 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
     return () => clearInterval(walletUpdate);
   }, [walletDetails.blockchainAddress]);
+
+  useEffect(() => {
+    setIsAnyFieldEmpty(
+      walletDetails.blockchainAddress === "" ||
+        walletDetails.privateKey === "" ||
+        walletDetails.publicKey === "" ||
+        walletDetails.recipientAddress === "" ||
+        walletDetails.amount === 0
+    );
+  }, [walletDetails]);
 
   // Event Handlers
   const handleInputChange = (
@@ -289,7 +304,12 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
         <Field>
           <Label>Recipient Blockchain Address</Label>
-          <TextArea rows={2} />
+          <TextArea
+            rows={2}
+            name="recipientAddress"
+            value={walletDetails.recipientAddress}
+            onChange={handleInputChange}
+          />
         </Field>
 
         <Field>
@@ -320,7 +340,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             insideContainer={true}
           />
         )}
-        <SendButton type="submit" disabled={isError !== null}>
+        <SendButton type="submit" disabled={isAnyFieldEmpty}>
           Send crypto
         </SendButton>
       </Form>
