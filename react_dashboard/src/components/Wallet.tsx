@@ -4,6 +4,7 @@ import {
   fetchMinerWalletDetails,
   fetchUserWalletDetails,
   fetchWalletAmount,
+  transaction,
 } from "../api/Wallet";
 import Notification from "../components/Notification";
 
@@ -246,10 +247,18 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Handle form submission if needed
-    // You can access the updated wallet content in walletDetails state
+  const sendCrypto = () => {
+    transaction(
+      walletDetails.blockchainAddress,
+      walletDetails.recipientAddress,
+      walletDetails.amount
+    )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -269,7 +278,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         </TitleRow>
       )}
 
-      <Form onSubmit={handleSubmit}>
+      <Form>
         <Field>
           <Label>Public Key</Label>
           <TextArea
@@ -307,6 +316,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           <TextArea
             rows={2}
             name="recipientAddress"
+            placeholder={
+              type === "miner"
+                ? "User Blockchain Address"
+                : "Miner Blockchain Address"
+            }
             value={walletDetails.recipientAddress}
             onChange={handleInputChange}
           />
@@ -340,7 +354,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             insideContainer={true}
           />
         )}
-        <SendButton type="submit" disabled={isAnyFieldEmpty}>
+        <SendButton
+          type="submit"
+          disabled={isAnyFieldEmpty}
+          onClick={sendCrypto}
+        >
           Send crypto
         </SendButton>
       </Form>
