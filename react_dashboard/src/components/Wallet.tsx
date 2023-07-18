@@ -4,6 +4,7 @@ import {
   fetchMinerWalletDetails,
   fetchUserWalletDetails,
   fetchWalletAmount,
+  transaction,
 } from "../api/Wallet";
 import Notification from "../components/Notification";
 
@@ -80,16 +81,20 @@ const Input = styled.input`
   text-align: left;
 `;
 
-const SendButton = styled.button`
+interface ButtonProps {
+  disabled: boolean;
+}
+const SendButton = styled.button<ButtonProps>`
   margin-top: 1rem;
   padding: 0.75rem 1.5rem;
-  background-color: #00acd7;
+  background-color: ${(props) => (props.disabled ? "#ccc" : "#00acd7")};
   color: white;
   border: none;
   border-radius: 3px;
   font-weight: bold;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   float: right;
+  opacity: ${(props) => (props.disabled ? "0.6" : "1")};
 `;
 
 type WalletProps = {
@@ -100,12 +105,13 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   // State
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState<LocalError>(null);
+  const [isAnyFieldEmpty, setIsAnyFieldEmpty] = useState(false);
   const [walletDetails, setWalletDetails] = useState<WalletState>({
     blockchainAddress: "",
     privateKey: "",
     publicKey: "",
     recipientAddress: "",
-    amount: 0,
+    amount: "",
   });
 
   const [selectedMiner, setSelectedMiner] = useState<{
@@ -189,14 +195,14 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       fetchUserDetails();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, JSON.stringify(fetchUserDetails)]);
+  }, [type]);
 
   useEffect(() => {
     if (type === "miner") {
       fetchMinerDetails(selectedMiner.url);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, selectedMiner.url, JSON.stringify(fetchUserDetails)]);
+  }, [type, selectedMiner.url]);
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
@@ -219,6 +225,16 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     return () => clearInterval(walletUpdate);
   }, [walletDetails.blockchainAddress]);
 
+  useEffect(() => {
+    setIsAnyFieldEmpty(
+      walletDetails.blockchainAddress === "" ||
+        walletDetails.privateKey === "" ||
+        walletDetails.publicKey === "" ||
+        walletDetails.recipientAddress === "" ||
+        walletDetails.amount === ""
+    );
+  }, [walletDetails]);
+
   // Event Handlers
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -231,10 +247,18 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     }));
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    // Handle form submission if needed
-    // You can access the updated wallet content in walletDetails state
+  const sendCrypto = () => {
+    transaction({
+      senderBlockchainAddress: walletDetails.blockchainAddress,
+      recipientBlockchainAddress: walletDetails.recipientAddress,
+      value: walletDetails.amount,
+    })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -254,7 +278,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         </TitleRow>
       )}
 
-      <Form onSubmit={handleSubmit}>
+      <Form>
         <Field>
           <Label>Public Key</Label>
           <TextArea
@@ -289,7 +313,17 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
         <Field>
           <Label>Recipient Blockchain Address</Label>
-          <TextArea rows={2} />
+          <TextArea
+            rows={2}
+            name="recipientAddress"
+            placeholder={
+              type === "miner"
+                ? "User Blockchain Address"
+                : "Miner Blockchain Address"
+            }
+            value={walletDetails.recipientAddress}
+            onChange={handleInputChange}
+          />
         </Field>
 
         <Field>
@@ -320,7 +354,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             insideContainer={true}
           />
         )}
-        <SendButton type="submit" disabled={isError !== null}>
+        <SendButton
+          type="submit"
+          disabled={isAnyFieldEmpty}
+          onClick={sendCrypto}
+        >
           Send crypto
         </SendButton>
       </Form>

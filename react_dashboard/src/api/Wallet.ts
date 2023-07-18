@@ -26,7 +26,7 @@ function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
   });
 }
 
-function fetchWalletAmount(blockchainAddress: string): Promise<number> {
+function fetchWalletAmount(blockchainAddress: string): Promise<string> {
   return axios
     .get<AmountResponse>(
       `http://localhost:5000/wallet/amount?blockchain_address=${blockchainAddress}`
@@ -34,4 +34,15 @@ function fetchWalletAmount(blockchainAddress: string): Promise<number> {
     .then(({ data }) => data.amount);
 }
 
-export { fetchMinerWalletDetails, fetchUserWalletDetails, fetchWalletAmount };
+function transaction(transaction: Transaction): Promise<string> {
+  return axios
+    .post<string>(`http://localhost:5000/transaction`, transaction)
+    .then(({ data }) => data);
+}
+
+export {
+  fetchMinerWalletDetails,
+  fetchUserWalletDetails,
+  fetchWalletAmount,
+  transaction,
+};
