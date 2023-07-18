@@ -22,8 +22,11 @@ const ContentContainer = styled.div`
 const WalletWrapperContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: space-evenly;
+  justify-content: space-between;
+
+  @media (max-width: 850px) {
+    justify-content: center;
+  }
 `;
 
 function App() {

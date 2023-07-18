@@ -11,12 +11,11 @@ const BlockContainer = styled.div`
   margin: 1rem;
   border: 1px solid #ccc;
   border-radius: 8px;
-  max-width: 780px;
+  max-width: 800px;
   width: 100%;
 
   @media (max-width: 768px) {
-    max-width: 90%;
-    padding: 0.5rem;
+    max-width: 80vw;
   }
 `;
 

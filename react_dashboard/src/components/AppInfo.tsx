@@ -10,7 +10,7 @@ const AppInfoWrapper = styled.div`
   margin: 0;
   margin-top: 1em;
   width: 90%;
-  max-width: 785px;
+  max-width: 800px;
   border-radius: 5px;
   color: #ffffff;
   overflow: auto;
@@ -36,7 +36,7 @@ const AppInfoWrapper = styled.div`
   }
 
   @media (max-width: 850px) {
-    width: 84%;
+    width: 80vw;
   }
 `;
 
