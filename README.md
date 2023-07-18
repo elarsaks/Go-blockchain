@@ -108,6 +108,10 @@ To run it directly via Golang, execute the following command in this folder:
 ```bash
 go run main.go blockchain_server.go -port 5001
 ```
+**App will start on port:**
+| App              | URL                                 |
+|------------------|-------------------------------------|
+| wallet_server | [http://localhost:3000](http://localhost:3000) |
 
 ---
 <br></br>
@@ -136,10 +140,15 @@ To run it directly via Golang, execute the following command in *Go-Blockchain/b
 go run main.go wallet_server.go -port 8080 -gateway http://127.0.0.1:5001
 ```
 
-**Note:**  
-These commands run only one miner. If you want to run multiple miners, open multiple new terminals and run the same command with different port numbers.
+**App will start on port:**
+| App              | URL                                 |
+|------------------|-------------------------------------|
+| blockshain_server | [http://localhost:3000](http://localhost:3000) |
 
-Feel free to adjust the port numbers as needed to run multiple miners concurrently.
+**NOTE:**  
+**These commands run only one miner. If you want to run multiple miners, open multiple new terminals and run the same command with different port numbers.**
+
+**Feel free to adjust the port numbers as needed to run multiple miners concurrently.**
 
 
 
