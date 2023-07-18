@@ -38,7 +38,11 @@ const NotificationWrapper = styled.div<WrapperProps>`
   }
 
   @media (max-width: 850px) {
-    width: ${(props) => (props.insideContainer ? "90%" : "84%")};
+    width: ${(props) => (props.insideContainer ? "93%" : "80vw")};
+  }
+
+  @media (max-width: 700px) {
+    width: ${(props) => (props.insideContainer ? "90%" : "80vw")};
   }
 `;
 
