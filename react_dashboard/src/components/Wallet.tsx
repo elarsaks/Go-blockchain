@@ -183,18 +183,19 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   };
 
   // Effects
+  // TODO: Fix using effects whitout disabling eslint (Learn React Hooks)
   useEffect(() => {
     if (type === "user") {
       fetchUserDetails();
     }
-    // JSON.stringify is used to avoid infinite loop (Hacky solution)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, JSON.stringify(fetchUserDetails)]);
 
   useEffect(() => {
     if (type === "miner") {
       fetchMinerDetails(selectedMiner.url);
     }
-    // JSON.stringify is used to avoid infinite loop (Hacky solution)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, selectedMiner.url, JSON.stringify(fetchUserDetails)]);
 
   useEffect(() => {
