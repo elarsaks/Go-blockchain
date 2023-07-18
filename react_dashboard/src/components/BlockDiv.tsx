@@ -14,7 +14,7 @@ const BlockContainer = styled.div`
   max-width: 800px;
   width: 100%;
 
-  @media (max-width: 768px) {
+  @media (max-width: 850px) {
     max-width: 80vw;
   }
 `;
