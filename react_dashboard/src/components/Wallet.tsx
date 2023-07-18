@@ -182,6 +182,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     }
   };
 
+  // TODO: Fix using effects whitout disabling eslint (Learn React Hooks)
   // Effects
   const fetchUserDetailsCallback = useCallback(() => {
     fetchUserDetails();
@@ -193,15 +194,17 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
   useEffect(() => {
     if (type === "user") {
-      fetchUserDetailsCallback();
+      fetchUserDetails();
     }
-  }, [type, fetchUserDetailsCallback]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type]);
 
   useEffect(() => {
     if (type === "miner") {
-      fetchMinerDetailsCallback();
+      fetchMinerDetails(selectedMiner.url);
     }
-  }, [type, selectedMiner.url, fetchMinerDetailsCallback]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type, selectedMiner.url]);
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
