@@ -1,68 +1,41 @@
 
-# Go-blockchain
-Live example of the project: [https://elarsaks.github.io/Go-blockchain/](https://elarsaks.github.io/Go-blockchain/)
+# Go-blockchain # 🚧 UNDER DEVELOPMENT 🚧
+<img src="https://saks.digital/wp-content/uploads/2023/07/some.png" alt="Image Description" />
 
-![Image Description](https://saks.digital/wp-content/uploads/2023/07/some.png)
+This project is a Docker-based blockchain application that is currently under development. It is written in Golang and features a user interface built in React. The application is composed of several key components, each serving a unique role in the overall functionality of the system.
 
-# 🚧 UNDER DEVELOPMENT 🚧
+## Components
 
-## About
-This Docker-based blockchain application consists of the following components:
+- **Client UI (React Dashboard):** The client user interface is a visual dashboard built using React. This dashboard serves as the primary point of interaction for users with the blockchain. It provides a user-friendly interface for executing various operations on the blockchain.
 
-- **Client UI (React Dashboard):**  
-A user interface built using React, providing a visual dashboard for interacting with the blockchain.  
+- **API Gateway (Wallet Server):** The API Gateway, also known as the Wallet Server, is a web server developed in Golang. It acts as a bridge between the client UI and the blockchain, managing requests from the client and forwarding them to the appropriate APIs.
 
-- **API Gateway (Wallet Server):**  
-A Golang web server serving as a gateway between the client UI and the blockchain.  
-It handles requests and forwards them to the appropriate APIs.  
-
-- **Blockchain Miner Nodes (Golang APIs):**  
-Three Golang APIs that serve as blockchain miner nodes.  
-They perform mining operations and maintain the integrity of the blockchain.
-
-With this setup, users can access the client UI to interact with the blockchain through the API gateway, which communicates with the blockchain miner nodes to process transactions and maintain the blockchain's distributed ledger.
-
-The Docker configuration ensures easy deployment and scalability of the blockchain application.
+- **Blockchain Miner Nodes (Golang APIs):** The backbone of the blockchain is formed by three Golang APIs that function as blockchain miner nodes. These nodes are responsible for performing mining operations and maintaining the integrity of the blockchain.
 
 
-## Dependencies
-- Docker & Docker Compose
-- Golang
-- Air [GitHub repository](https://github.com/cosmtrek/air)
-- Node v17
+## Workflow
 
-## Installation & Running
+Users can access the client UI to interact with the blockchain. The API gateway processes these interactions and communicates with the blockchain miner nodes. These nodes then process transactions and maintain the distributed ledger of the blockchain.
 
-1. To install Golang dependencies, at the root of this project folder run:
+The Docker configuration of this application ensures easy deployment and scalability, making it a robust and flexible solution for blockchain applications.
 
-```bash
-go mod tidy
-```
+## Project Goals
 
-2. To install JavaScript dependencies, at the /react_dashboard folder run:
+This project serves two main purposes:
 
-```bash
-npm install
-```
+1. **Skill Development:** It provides an excellent opportunity to push the boundaries of my technical skills and deepen my understanding of Blockchain technology.
 
-3. To run it in the docker, at the root of this project folder run:
-```bash
-docker-compose up --build
-```
+2. **Community Resource:** I'm dedicated to creating a robust codebase that can serve as a valuable learning resource for anyone interested in this technology.
 
-### Apps will start on ports:
-| App              | URL                                 |
-|------------------|-------------------------------------|
-| react_dashboard | [http://localhost:3000](http://localhost:3000) |
-| wallet_server   | [http://localhost:5000](http://localhost:5000) |
-| miner_1         | [http://localhost:5001](http://localhost:5001) |
-| miner_2         | [http://localhost:5002](http://localhost:5002) |
-| miner_3         | [http://localhost:5003](http://localhost:5003) |
 
-**Note:** To run each apps separately, check for ReadMe files in each app folder:
-- `react_dashboard/ReadMe.md`
-- `wallet_server/ReadMe.md`
-- `blockchain_server/Readme.md`
+**The Docker configuration ensures easy deployment and scalability of the blockchain application.**  
+
+## Links:
+- [Live example](https://elarsaks.github.io/Go-blockchain)
+- [Project Overview](https://github.com/elarsaks/Go-blockchain/wiki/Project-Overview)
+- [Installation and running](https://github.com/elarsaks/Go-blockchain/wiki/Project-Overview#installation--running)
+
+
 
 
 
