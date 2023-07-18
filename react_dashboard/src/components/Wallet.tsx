@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   fetchMinerWalletDetails,
   fetchUserWalletDetails,
@@ -7,7 +7,11 @@ import {
 } from "../api/Wallet";
 import Notification from "../components/Notification";
 
-const WalletContainer = styled.div`
+interface WalletContainerProps {
+  isMiner: boolean;
+}
+
+const WalletContainer = styled.div<WalletContainerProps>`
   background-color: #f2f2f2;
   padding: 1rem;
   margin: 1rem;
@@ -15,8 +19,13 @@ const WalletContainer = styled.div`
   border-radius: 8px;
   width: 350px;
 
+  @media (min-width: 850px) {
+    margin-left: ${(props) => (props.isMiner ? "0" : "2rem")};
+    margin-right: ${(props) => (props.isMiner ? "2rem" : "0")};
+  }
+
   @media (max-width: 850px) {
-    width: 100%;
+    width: 80vw;
   }
 `;
 
@@ -174,17 +183,25 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   };
 
   // Effects
+  const fetchUserDetailsCallback = useCallback(() => {
+    fetchUserDetails();
+  }, []);
+
+  const fetchMinerDetailsCallback = useCallback(() => {
+    fetchMinerDetails(selectedMiner.url);
+  }, [selectedMiner.url]);
+
   useEffect(() => {
     if (type === "user") {
-      fetchUserDetails();
+      fetchUserDetailsCallback();
     }
-  }, [type]);
+  }, [type, fetchUserDetailsCallback]);
 
   useEffect(() => {
     if (type === "miner") {
-      fetchMinerDetails(selectedMiner.url);
+      fetchMinerDetailsCallback();
     }
-  }, [type, selectedMiner.url]);
+  }, [type, selectedMiner.url, fetchMinerDetailsCallback]);
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
@@ -226,7 +243,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   };
 
   return (
-    <WalletContainer>
+    <WalletContainer isMiner={type === "miner"}>
       {type === "user" ? (
         <UserTitle>User Wallet</UserTitle>
       ) : (
