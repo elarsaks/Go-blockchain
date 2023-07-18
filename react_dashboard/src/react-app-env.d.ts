@@ -2,7 +2,7 @@
 
 type AmountResponse = {
   message: string;
-  amount: number;
+  amount: string;
 };
 
 type Block = {
@@ -23,7 +23,7 @@ type LocalError = {
 type Transaction = {
   senderBlockchainAddress: string;
   recipientBlockchainAddress: string;
-  value: number;
+  value: string;
 };
 
 type WalletDetails = {
@@ -33,7 +33,7 @@ type WalletDetails = {
 };
 
 type WalletState = WalletDetails & {
-  amount: number;
+  amount: string;
   recipientAddress: string;
 };
 

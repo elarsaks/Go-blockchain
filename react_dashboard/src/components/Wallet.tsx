@@ -111,7 +111,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     privateKey: "",
     publicKey: "",
     recipientAddress: "",
-    amount: 0,
+    amount: "",
   });
 
   const [selectedMiner, setSelectedMiner] = useState<{
@@ -231,7 +231,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         walletDetails.privateKey === "" ||
         walletDetails.publicKey === "" ||
         walletDetails.recipientAddress === "" ||
-        walletDetails.amount === 0
+        walletDetails.amount === ""
     );
   }, [walletDetails]);
 
@@ -248,11 +248,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   };
 
   const sendCrypto = () => {
-    transaction(
-      walletDetails.blockchainAddress,
-      walletDetails.recipientAddress,
-      walletDetails.amount
-    )
+    transaction({
+      senderBlockchainAddress: walletDetails.blockchainAddress,
+      recipientBlockchainAddress: walletDetails.recipientAddress,
+      value: walletDetails.amount,
+    })
       .then((response) => {
         console.log(response);
       })
