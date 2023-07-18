@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   fetchMinerWalletDetails,
   fetchUserWalletDetails,
@@ -182,16 +182,9 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     }
   };
 
-  // TODO: Fix using effects whitout disabling eslint (Learn React Hooks)
   // Effects
-  const fetchUserDetailsCallback = useCallback(() => {
-    fetchUserDetails();
-  }, []);
 
-  const fetchMinerDetailsCallback = useCallback(() => {
-    fetchMinerDetails(selectedMiner.url);
-  }, [selectedMiner.url]);
-
+  // TODO: Fix using effects whitout disabling eslint (Learn React Hooks)
   useEffect(() => {
     if (type === "user") {
       fetchUserDetails();
