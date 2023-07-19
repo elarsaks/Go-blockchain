@@ -26,7 +26,7 @@ services:
     ports:
       - "${WALLET_SERVER_PORT}:${WALLET_SERVER_PORT}"
     environment:
-      - WALLET_SERVER_GATEWAY=http://miner_1:${MINER_1_PORT}
+      - WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN=${WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN}
       - WALLET_SERVER_PORT=${WALLET_SERVER_PORT}
       - COMMAND=air
     volumes:

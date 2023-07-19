@@ -22,12 +22,12 @@ go mod tidy
 ## Running
 To run the app with the Air library (live reloading), execute the following command in this folder:
 ```bash
-PORT=5001 air
+PORT=5001 HOST=127.0.0.1 air
 ```
 
 To run it directly via Golang, execute the following command in this folder:
 ```bash
-go run main.go wallet_server.go -port 8080 -gateway http://127.0.0.1:5001
+go run main.go -port 5001
 ```
 
 **Note:**  

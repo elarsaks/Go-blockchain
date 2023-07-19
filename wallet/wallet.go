@@ -19,6 +19,23 @@ type Wallet struct {
 	blockchainAddress string
 }
 
+type Transaction struct {
+	senderPrivateKey           *ecdsa.PrivateKey
+	senderPublicKey            *ecdsa.PublicKey
+	senderBlockchainAddress    string
+	recipientBlockchainAddress string
+	value                      float32
+}
+
+type TransactionRequest struct {
+	RecipientBlockchainAddress *string `json:"recipientBlockchainAddress"`
+	SenderBlockchainAddress    *string `json:"senderBlockchainAddress"`
+	SenderPrivateKey           *string `json:"senderPrivateKey"`
+	SenderPublicKey            *string `json:"senderPublicKey"`
+	Value                      *string `json:"value"`
+}
+
+// TODO: There is a bug in the code below. Fix it.
 func NewWallet() *Wallet {
 	// 1. Creating ECDSA private key (32 bytes) public key (64 bytes)
 	w := new(Wallet)
@@ -96,14 +113,6 @@ func (w *Wallet) MarshalJSON() ([]byte, error) {
 	})
 }
 
-type Transaction struct {
-	senderPrivateKey           *ecdsa.PrivateKey
-	senderPublicKey            *ecdsa.PublicKey
-	senderBlockchainAddress    string
-	recipientBlockchainAddress string
-	value                      float32
-}
-
 // NewTransaction creates a new transaction with the given details.
 func NewTransaction(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey,
 	sender string, recipient string, value float32) *Transaction {
@@ -121,22 +130,14 @@ func (t *Transaction) GenerateSignature() *utils.Signature {
 // MarshalJSON returns the JSON representation of the transaction.
 func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Sender    string  `json:"sender_blockchain_address"`
-		Recipient string  `json:"recipient_blockchain_address"`
+		Sender    string  `json:"recipientBlockchainAddress"`
+		Recipient string  `json:"senderBlockchainAddress"`
 		Value     float32 `json:"value"`
 	}{
 		Sender:    t.senderBlockchainAddress,
 		Recipient: t.recipientBlockchainAddress,
 		Value:     t.value,
 	})
-}
-
-type TransactionRequest struct {
-	SenderPrivateKey           *string `json:"sender_private_key"`
-	SenderBlockchainAddress    *string `json:"sender_blockchain_address"`
-	RecipientBlockchainAddress *string `json:"recipient_blockchain_address"`
-	SenderPublicKey            *string `json:"sender_public_key"`
-	Value                      *string `json:"value"`
 }
 
 // Validate checks if all the required fields in the transaction request are present.
