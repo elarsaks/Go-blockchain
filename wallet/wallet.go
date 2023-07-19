@@ -58,26 +58,32 @@ func NewWallet() *Wallet {
 	return w
 }
 
+// PrivateKey returns the ECDSA private key of the wallet.
 func (w *Wallet) PrivateKey() *ecdsa.PrivateKey {
 	return w.privateKey
 }
 
+// PrivateKeyStr returns the hexadecimal representation of the private key.
 func (w *Wallet) PrivateKeyStr() string {
 	return fmt.Sprintf("%x", w.privateKey.D.Bytes())
 }
 
+// PublicKey returns the ECDSA public key of the wallet.
 func (w *Wallet) PublicKey() *ecdsa.PublicKey {
 	return w.publicKey
 }
 
+// PublicKeyStr returns the hexadecimal representation of the public key.
 func (w *Wallet) PublicKeyStr() string {
 	return fmt.Sprintf("%064x%064x", w.publicKey.X.Bytes(), w.publicKey.Y.Bytes())
 }
 
+// BlockchainAddress returns the blockchain address associated with the wallet.
 func (w *Wallet) BlockchainAddress() string {
 	return w.blockchainAddress
 }
 
+// MarshalJSON returns the JSON representation of the wallet.
 func (w *Wallet) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		PrivateKey        string `json:"private_key"`
@@ -98,11 +104,13 @@ type Transaction struct {
 	value                      float32
 }
 
+// NewTransaction creates a new transaction with the given details.
 func NewTransaction(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey,
 	sender string, recipient string, value float32) *Transaction {
 	return &Transaction{privateKey, publicKey, sender, recipient, value}
 }
 
+// GenerateSignature generates the signature for the transaction.
 func (t *Transaction) GenerateSignature() *utils.Signature {
 	m, _ := json.Marshal(t)
 	h := sha256.Sum256([]byte(m))
@@ -110,6 +118,7 @@ func (t *Transaction) GenerateSignature() *utils.Signature {
 	return &utils.Signature{r, s}
 }
 
+// MarshalJSON returns the JSON representation of the transaction.
 func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Sender    string  `json:"sender_blockchain_address"`
@@ -130,6 +139,7 @@ type TransactionRequest struct {
 	Value                      *string `json:"value"`
 }
 
+// Validate checks if all the required fields in the transaction request are present.
 func (tr *TransactionRequest) Validate() bool {
 	if tr.SenderPrivateKey == nil ||
 		tr.SenderBlockchainAddress == nil ||
