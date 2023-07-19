@@ -2,6 +2,7 @@ import { fetchBlockchainData } from "api/blockchain";
 import AppFooter from "components/layout/AppFooter";
 import AppHeader from "components/layout/AppHeader";
 import AppInfo from "components/layout/AppInfo";
+import Background from "components/layout/Background";
 import BlockDiv from "components/BlockDiv";
 import Loader from "components/shared/Loader";
 import Notification from "components/shared/Notification";
@@ -10,13 +11,18 @@ import styled from "styled-components";
 import Wallet from "components/wallet/Wallet";
 const AppWrapper = styled.div`
   margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
 `;
 
 const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0;
 `;
 
 const WalletWrapperContainer = styled.div`
@@ -36,13 +42,11 @@ function App() {
 
   function fetchchainData() {
     return fetchBlockchainData()
-      .then((blocks: any) => {
-        // TODO: Fix any
+      .then((blocks) => {
         setBlockchain(blocks);
         setIsLoading(false);
       })
-      .catch((error: any) => {
-        // TODO: Fix any
+      .catch((error) => {
         setIsError({ message: "Failed to fetch blockchain data" });
         setIsLoading(false);
       });
@@ -63,6 +67,7 @@ function App() {
 
   return (
     <AppWrapper>
+      <Background />
       <AppHeader title="Go Blockchain" />
       <ContentContainer className="App">
         <AppInfo />
