@@ -123,12 +123,14 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     if (type === "User") {
       fetchUserDetails();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
   useEffect(() => {
     if (type === "Miner") {
       fetchMinerDetails(selectedMiner.url);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, selectedMiner]);
 
   useEffect(() => {
@@ -150,7 +152,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     }
 
     return () => clearInterval(walletUpdate);
-  }, [walletDetails.blockchainAddress]);
+  }, [walletDetails.blockchainAddress, setIsError]);
 
   return (
     <div>
