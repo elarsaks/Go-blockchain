@@ -114,51 +114,51 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 	}
 }
 
-// Get the amount of the wallet
+// Get wallet balance
 func (ws *WalletServer) WalletAmount(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
-	case http.MethodGet:
-		blockchainAddress := req.URL.Query().Get("blockchain_address")
-		endpoint := fmt.Sprintf("%s/amount", ws.Gateway())
+	// Check if the HTTP method is GET
+	if req.Method != http.MethodGet {
+		log.Println("ERROR: Invalid HTTP Method")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-		client := &http.Client{}
-		bcsReq, _ := http.NewRequest("GET", endpoint, nil)
-		q := bcsReq.URL.Query()
-		q.Add("blockchain_address", blockchainAddress)
-		bcsReq.URL.RawQuery = q.Encode()
+	// Extract the blockchain address from the URL query parameters
+	blockchainAddress := req.URL.Query().Get("blockchain_address")
 
-		bcsResp, err := client.Do(bcsReq)
+	// Construct the endpoint URL for the blockchain API
+	endpoint := fmt.Sprintf("%s/amount?blockchain_address=%s", ws.Gateway(), blockchainAddress)
+
+	// Send a GET request to the blockchain API
+	resp, err := http.Get(endpoint)
+	if err != nil {
+		log.Printf("ERROR: %v", err)
+		io.WriteString(w, string(utils.JsonStatus("fail")))
+		return
+	}
+	defer resp.Body.Close()
+
+	// Set the response header to indicate JSON content type
+	w.Header().Set("Content-Type", "application/json")
+
+	// Check the response status code
+	if resp.StatusCode == http.StatusOK {
+		// Decode the response JSON into a struct containing the balance amount
+		var response struct {
+			Amount float32 `json:"amount"`
+		}
+		err := json.NewDecoder(resp.Body).Decode(&response)
 		if err != nil {
 			log.Printf("ERROR: %v", err)
 			io.WriteString(w, string(utils.JsonStatus("fail")))
 			return
 		}
 
-		w.Header().Add("Content-Type", "application/json")
-		if bcsResp.StatusCode == 200 {
-			decoder := json.NewDecoder(bcsResp.Body)
-			var bar block.AmountResponse
-			err := decoder.Decode(&bar)
-			if err != nil {
-				log.Printf("ERROR: %v", err)
-				io.WriteString(w, string(utils.JsonStatus("fail")))
-				return
-			}
-
-			m, _ := json.Marshal(struct {
-				Message string  `json:"message"`
-				Amount  float32 `json:"amount"`
-			}{
-				Message: "success",
-				Amount:  bar.Amount,
-			})
-			io.WriteString(w, string(m[:]))
-		} else {
-			io.WriteString(w, string(utils.JsonStatus("fail")))
-		}
-	default:
-		log.Printf("ERROR: Invalid HTTP Method")
-		w.WriteHeader(http.StatusBadRequest)
+		// Marshal the response struct to JSON and write it as the response
+		m, _ := json.Marshal(response)
+		io.WriteString(w, string(m))
+	} else {
+		io.WriteString(w, string(utils.JsonStatus("fail")))
 	}
 }
 
