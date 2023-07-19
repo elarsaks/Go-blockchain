@@ -16,10 +16,11 @@ import (
 var cache map[string]*block.Blockchain = make(map[string]*block.Blockchain)
 
 type BlockchainServer struct {
-	port uint16
-	//* NOTE: In real we would not attach the wallet to the server
-	// but for the sake of simplicity we will do it here
+	port   uint16
 	Wallet *wallet.Wallet
+	//* NOTE: In real world app we would not attach the wallet to the server
+	// But for the sake of simplicity we will do it here,
+	// because we dont store miners credentials in a database.
 }
 
 func NewBlockchainServer(port uint16) *BlockchainServer {
