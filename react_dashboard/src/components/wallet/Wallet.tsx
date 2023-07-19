@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React, { useEffect, useState } from "react";
 import { transaction } from "../../api/Wallet";
-import Notification from "../Notification";
+import Notification from "../shared/Notification";
 import WalletHead from "./WalletHead";
 
 interface WalletContainerProps {

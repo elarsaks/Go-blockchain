@@ -1,10 +1,10 @@
 import { fetchBlockchainData } from "./api/Blockchain";
-import AppFooter from "./components/AppFooter";
-import AppHeader from "./components/AppHeader";
-import AppInfo from "./components/AppInfo";
+import AppFooter from "./components/layout/AppFooter";
+import AppHeader from "./components/layout/AppHeader";
+import AppInfo from "./components/layout/AppInfo";
 import BlockDiv from "./components/BlockDiv";
-import Loader from "./components/Loader";
-import Notification from "./components/Notification";
+import Loader from "./components/shared/Loader";
+import Notification from "./components/shared/Notification";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Wallet from "./components/wallet/Wallet";
