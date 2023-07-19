@@ -1,13 +1,13 @@
-import { fetchBlockchainData } from "./api/Blockchain";
-import AppFooter from "./components/AppFooter";
-import AppHeader from "./components/AppHeader";
-import AppInfo from "./components/AppInfo";
-import BlockDiv from "./components/BlockDiv";
-import Loader from "./components/Loader";
-import Notification from "./components/Notification";
+import { fetchBlockchainData } from "api/blockchain";
+import AppFooter from "components/layout/AppFooter";
+import AppHeader from "components/layout/AppHeader";
+import AppInfo from "components/layout/AppInfo";
+import BlockDiv from "components/BlockDiv";
+import Loader from "components/shared/Loader";
+import Notification from "components/shared/Notification";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Wallet from "./components/Wallet";
+import Wallet from "components/wallet/Wallet";
 const AppWrapper = styled.div`
   margin: 0;
 `;
@@ -36,11 +36,13 @@ function App() {
 
   function fetchchainData() {
     return fetchBlockchainData()
-      .then((blocks) => {
+      .then((blocks: any) => {
+        // TODO: Fix any
         setBlockchain(blocks);
         setIsLoading(false);
       })
-      .catch((error) => {
+      .catch((error: any) => {
+        // TODO: Fix any
         setIsError({ message: "Failed to fetch blockchain data" });
         setIsLoading(false);
       });
@@ -53,7 +55,7 @@ function App() {
     // Fetch blockchain data every second
     const intervalId = setInterval(() => {
       fetchchainData();
-    }, 1000);
+    }, 3000);
 
     // Clean up function to clear the interval when the component unmounts
     return () => clearInterval(intervalId);
@@ -66,8 +68,8 @@ function App() {
         <AppInfo />
 
         <WalletWrapperContainer>
-          <Wallet type="miner" />
-          <Wallet type="user" />
+          <Wallet type="Miner" />
+          <Wallet type="User" />
         </WalletWrapperContainer>
 
         {isLoading && (

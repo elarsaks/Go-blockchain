@@ -34,6 +34,7 @@ type WalletDetails = {
 
 type WalletState = WalletDetails & {
   amount: string;
+  balance: string;
   recipientAddress: string;
 };
 
