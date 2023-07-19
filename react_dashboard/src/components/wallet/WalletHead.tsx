@@ -152,7 +152,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     }
 
     return () => clearInterval(walletUpdate);
-  }, [walletDetails.blockchainAddress, setIsError]);
+  }, [setIsError, setWalletDetails, walletDetails.blockchainAddress]);
 
   return (
     <div>
