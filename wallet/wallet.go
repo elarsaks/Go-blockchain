@@ -35,6 +35,7 @@ type TransactionRequest struct {
 	Value                      *string `json:"value"`
 }
 
+// TODO: There is a bug in the code below. Fix it.
 func NewWallet() *Wallet {
 	// 1. Creating ECDSA private key (32 bytes) public key (64 bytes)
 	w := new(Wallet)
