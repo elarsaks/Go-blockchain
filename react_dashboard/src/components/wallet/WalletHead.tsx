@@ -4,7 +4,6 @@ import {
   fetchMinerWalletDetails,
   fetchUserWalletDetails,
   fetchWalletAmount,
-  transaction,
 } from "../../api/Wallet";
 
 const UserTitle = styled.h2`
@@ -39,28 +38,30 @@ interface WalletHeadProps {
   setIsError: Dispatch<SetStateAction<LocalError>>;
 }
 
-const WalletHead: React.FC<WalletHeadProps> = (props) => {
-  const selectedMinerUrls = {
-    miner1: process.env.REACT_APP_MINER_1 + "/miner/wallet",
-    miner2: process.env.REACT_APP_MINER_2 + "/miner/wallet",
-    miner3: process.env.REACT_APP_MINER_3 + "/miner/wallet",
-  };
+const selectedMinerUrls = {
+  miner1: process.env.REACT_APP_MINER_1 + "/miner/wallet",
+  miner2: process.env.REACT_APP_MINER_2 + "/miner/wallet",
+  miner3: process.env.REACT_APP_MINER_3 + "/miner/wallet",
+};
 
-  const miners = [
-    { value: "miner1", text: "Miner 1", url: selectedMinerUrls.miner1 },
-    { value: "miner2", text: "Miner 2", url: selectedMinerUrls.miner2 },
-    { value: "miner3", text: "Miner 3", url: selectedMinerUrls.miner3 },
-  ];
+const miners = [
+  { value: "miner1", text: "Miner 1", url: selectedMinerUrls.miner1 },
+  { value: "miner2", text: "Miner 2", url: selectedMinerUrls.miner2 },
+  { value: "miner3", text: "Miner 3", url: selectedMinerUrls.miner3 },
+];
 
+const WalletHead: React.FC<WalletHeadProps> = ({
+  type,
+  walletDetails,
+  setWalletDetails,
+  setIsLoading,
+  setIsError,
+}) => {
   const [selectedMiner, setSelectedMiner] = useState<{
     value: string;
     text: string;
     url: string;
-  }>({
-    value: "miner1",
-    text: "Miner 1",
-    url: process.env.REACT_APP_MINER_1 + "/miner/wallet",
-  });
+  }>(miners[0]);
 
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
@@ -72,82 +73,80 @@ const WalletHead: React.FC<WalletHeadProps> = (props) => {
     }
   };
 
-  function fetchWalletDetails(walletDetails: WalletDetails) {
-    // setIsLoading(true);
-    fetchWalletAmount(walletDetails.blockchainAddress);
-    /*  .then((balance) =>
-        setWalletDetails((prevDetails) => ({
-          ...prevDetails,
-          ...walletDetails,
-          amount: balance,
-        }))
-      ) 
-      .catch((error: LocalError) =>
-        setError({ message: "Failed to fetch wallet details" })
-      )
-      .finally(() => setIsLoading(false)); */
-  }
-
   function fetchUserDetails() {
-    fetchUserWalletDetails();
-    /*  .then((userWalletDetails: WalletDetails) =>
-        fetchWalletDetails(userWalletDetails)
-      )
+    setIsLoading(true);
+    fetchUserWalletDetails()
+      .then((userWalletDetails: WalletDetails) => {
+        return fetchWalletAmount(userWalletDetails.blockchainAddress).then(
+          (balance) =>
+            setWalletDetails((prevDetails) => ({
+              ...prevDetails,
+              ...userWalletDetails,
+              amount: balance,
+            }))
+        );
+      })
       .catch((error: LocalError) =>
-        setError({ message: "Failed to fetch user details" })
-      ); */
+        setIsError({ message: "Failed to fetch user details" })
+      )
+      .finally(() => setIsLoading(false));
   }
 
   function fetchMinerDetails(selectedMinerUrl: string) {
-    fetchMinerWalletDetails(selectedMinerUrl);
-    /*  .then((minerWalletDetails: WalletDetails) =>
-        fetchWalletDetails(minerWalletDetails)
-      )
+    setIsLoading(true);
+    fetchMinerWalletDetails(selectedMinerUrl)
+      .then((minerWalletDetails: WalletDetails) => {
+        return fetchWalletAmount(minerWalletDetails.blockchainAddress).then(
+          (balance) =>
+            setWalletDetails((prevDetails) => ({
+              ...prevDetails,
+              ...minerWalletDetails,
+              amount: balance,
+            }))
+        );
+      })
       .catch((error: LocalError) =>
-        setError({ message: "Failed to fetch miner details" })
-      ); */
+        setIsError({ message: "Failed to fetch miner details" })
+      )
+      .finally(() => setIsLoading(false));
   }
 
-  // Effects
-  // TODO: Fix using effects whitout disabling eslint (Learn React Hooks)
   useEffect(() => {
-    if (props.type === "user") {
+    if (type === "User") {
       fetchUserDetails();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.type]);
+  }, [type]);
 
   useEffect(() => {
-    if (props.type === "miner") {
+    if (type === "Miner") {
       fetchMinerDetails(selectedMiner.url);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.type, selectedMiner.url]);
+  }, [type, selectedMiner]);
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
-    if (props.walletDetails.blockchainAddress) {
+    if (walletDetails.blockchainAddress) {
       walletUpdate = setInterval(() => {
-        fetchWalletAmount(props.walletDetails.blockchainAddress);
-        /*  .then((balance) =>
+        fetchWalletAmount(walletDetails.blockchainAddress)
+          .then((balance) =>
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
               amount: balance,
             }))
           )
           .catch((error: LocalError) =>
-            setError({ message: "Failed to fetch wallet amount" })
-          ); */
+            setIsError({ message: "Failed to fetch wallet amount" })
+          );
       }, 3000);
     }
 
     return () => clearInterval(walletUpdate);
-  }, [props.walletDetails.blockchainAddress]);
+  }, [walletDetails.blockchainAddress]);
 
   return (
     <div>
-      {props.type === "user" ? (
+      {type === "User" ? (
         <UserTitle>User Wallet</UserTitle>
       ) : (
         <TitleRow>

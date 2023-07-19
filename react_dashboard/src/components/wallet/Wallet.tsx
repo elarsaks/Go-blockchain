@@ -123,7 +123,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   };
 
   return (
-    <WalletContainer isMiner={type === "miner"}>
+    <WalletContainer isMiner={type === "Miner"}>
       <WalletHead
         type={type}
         walletDetails={walletDetails}
