@@ -138,6 +138,7 @@ func (bc *Blockchain) Print() {
 
 func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32,
 	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
+
 	isTransacted := bc.AddTransaction(sender, recipient, value, senderPublicKey, s)
 
 	if isTransacted {
@@ -170,10 +171,9 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 	}
 
 	// TODO: Return error messages
-
 	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
-		if bc.CalculateTotalAmount(sender) < value {
 
+		if bc.CalculateTotalAmount(sender) < value {
 			log.Println("ERROR: Not enough balance in a wallet")
 			return false
 		}
@@ -181,6 +181,7 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 		bc.transactionPool = append(bc.transactionPool, t)
 		return true
 	} else {
+
 		log.Println("ERROR: Verify Transaction")
 	}
 	return false
@@ -190,6 +191,9 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 func (bc *Blockchain) VerifyTransactionSignature(
 	senderPublicKey *ecdsa.PublicKey, s *utils.Signature, t *Transaction) bool {
 	m, _ := json.Marshal(t)
+	fmt.Println("Verify TransactionSignature")
+	// Print out the transaction
+	fmt.Printf("%v\n", string(m[:]))
 	h := sha256.Sum256([]byte(m))
 	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
 }

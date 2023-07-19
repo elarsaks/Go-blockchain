@@ -24,6 +24,7 @@ type BlockchainServer struct {
 	// because we dont store miners credentials in a database.
 }
 
+// Create a new instance of BlockchainServer
 func NewBlockchainServer(port uint16) *BlockchainServer {
 	return &BlockchainServer{
 		port:   port,
@@ -31,10 +32,12 @@ func NewBlockchainServer(port uint16) *BlockchainServer {
 	}
 }
 
+// Get the port of the BlockchainServer
 func (bcs *BlockchainServer) Port() uint16 {
 	return bcs.port
 }
 
+// Get the blockchain of the BlockchainServer
 func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 	bc, ok := cache["blockchain"]
 	if !ok {
@@ -52,6 +55,7 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 	return bc
 }
 
+// Get the gateway of the BlockchainServer
 func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
@@ -65,6 +69,7 @@ func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) 
 	}
 }
 
+// Get the last 10 blocks of the BlockchainServer
 func (bcs *BlockchainServer) GetLast10Blocks(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
@@ -77,6 +82,7 @@ func (bcs *BlockchainServer) GetLast10Blocks(w http.ResponseWriter, req *http.Re
 	}
 }
 
+// Get the transactions of the BlockchainServer
 func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 
@@ -165,6 +171,7 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 	}
 }
 
+// Mine the Block in the BlockchainServer
 func (bcs *BlockchainServer) Mine(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
@@ -186,6 +193,7 @@ func (bcs *BlockchainServer) Mine(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Start the mining process in the BlockchainServer
 func (bcs *BlockchainServer) StartMine(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
@@ -201,6 +209,7 @@ func (bcs *BlockchainServer) StartMine(w http.ResponseWriter, req *http.Request)
 	}
 }
 
+// Get the total amount of the BlockchainServer
 func (bcs *BlockchainServer) Amount(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
@@ -219,6 +228,7 @@ func (bcs *BlockchainServer) Amount(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Resolve the conflicts in the BlockchainServer
 func (bcs *BlockchainServer) Consensus(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPut:
@@ -237,6 +247,7 @@ func (bcs *BlockchainServer) Consensus(w http.ResponseWriter, req *http.Request)
 	}
 }
 
+// Get the wallet of the BlockchainServer // NOTE: This is not a part of the blockchain
 func (bcs *BlockchainServer) MinerWallet(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPost:
@@ -250,6 +261,7 @@ func (bcs *BlockchainServer) MinerWallet(w http.ResponseWriter, req *http.Reques
 	}
 }
 
+// Run the BlockchainServer
 func (bcs *BlockchainServer) Run() {
 	bcs.GetBlockchain().Run()
 
@@ -275,6 +287,7 @@ func init() {
 	log.SetPrefix("Blockchain: ")
 }
 
+// Main function
 func main() {
 	// Retrieve port from environment variable
 	portStr := os.Getenv("PORT")
