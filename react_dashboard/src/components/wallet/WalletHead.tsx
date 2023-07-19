@@ -6,28 +6,36 @@ import {
   fetchWalletAmount,
 } from "../../api/Wallet";
 
-const UserTitle = styled.h2`
-  margin: 9px 0 24px 0;
-`;
-
 const TitleRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 3rem;
 `;
 
-const MinerTitle = styled.h2`
-  margin: 0;
+const MinerTitleContainer = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const TypeSelect = styled.select`
   padding: 0.75rem 1.5rem;
+  margin-right: 1rem;
   background-color: #ffffff;
   color: #00acd7;
   border: 1px solid #00acd7;
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
+`;
+
+const Title = styled.h2`
+  margin: 0 0 0 0;
+`;
+
+const Balance = styled.h2`
+  margin: 0 0 0 0;
+  color: #00acd7;
 `;
 
 interface WalletHeadProps {
@@ -82,7 +90,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
               ...userWalletDetails,
-              amount: balance,
+              balance: balance,
             }))
         );
       })
@@ -101,7 +109,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
               ...minerWalletDetails,
-              amount: balance,
+              balance: balance,
             }))
         );
       })
@@ -147,17 +155,27 @@ const WalletHead: React.FC<WalletHeadProps> = ({
   return (
     <div>
       {type === "User" ? (
-        <UserTitle>User Wallet</UserTitle>
+        <TitleRow>
+          <Title>User Wallet</Title>
+          <Balance>{`${walletDetails.balance}₿`}</Balance>
+        </TitleRow>
       ) : (
         <TitleRow>
-          <MinerTitle>{`${selectedMiner.text} Wallet`}</MinerTitle>
-          <TypeSelect value={selectedMiner.value} onChange={handleMinerChange}>
-            {miners.map((miner) => (
-              <option key={miner.value} value={miner.value}>
-                {miner.text}
-              </option>
-            ))}
-          </TypeSelect>
+          <MinerTitleContainer>
+            <TypeSelect
+              value={selectedMiner.value}
+              onChange={handleMinerChange}
+            >
+              {miners.map((miner) => (
+                <option key={miner.value} value={miner.value}>
+                  {miner.text}
+                </option>
+              ))}
+            </TypeSelect>
+            <Title>{` Wallet`}</Title>
+          </MinerTitleContainer>
+
+          <Balance>{`${walletDetails.balance}₿`}</Balance>
         </TitleRow>
       )}
     </div>
