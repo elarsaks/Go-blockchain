@@ -148,7 +148,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
           .catch((error: LocalError) =>
             setIsError({ message: "Failed to fetch wallet balance" })
           );
-      }, 3000);
+      }, 10000);
     }
 
     return () => clearInterval(walletUpdate);

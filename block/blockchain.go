@@ -169,11 +169,15 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 		return true
 	}
 
+	// TODO: Return error messages
+
 	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
 		if bc.CalculateTotalAmount(sender) < value {
+
 			log.Println("ERROR: Not enough balance in a wallet")
 			return false
 		}
+
 		bc.transactionPool = append(bc.transactionPool, t)
 		return true
 	} else {
@@ -224,7 +228,7 @@ func (bc *Blockchain) Mining() bool {
 	defer bc.mux.Unlock()
 
 	// Log out blockchain
-	bc.Print()
+	// bc.Print() // TODO: Remove debug
 
 	//	Dont mine when there is no transaction and blockchain already has few blocks
 	if len(bc.transactionPool) == 0 && len(bc.chain) > 10 {

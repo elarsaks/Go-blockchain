@@ -59,7 +59,7 @@ function App() {
     // Fetch blockchain data every second
     const intervalId = setInterval(() => {
       fetchchainData();
-    }, 3000);
+    }, 10000);
 
     // Clean up function to clear the interval when the component unmounts
     return () => clearInterval(intervalId);
