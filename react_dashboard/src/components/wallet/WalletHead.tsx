@@ -4,7 +4,7 @@ import {
   fetchMinerWalletDetails,
   fetchUserWalletDetails,
   fetchWalletBalance,
-} from "../../api/Wallet";
+} from "../../api/wallet";
 
 const TitleRow = styled.div`
   display: flex;
