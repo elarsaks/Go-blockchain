@@ -15,6 +15,7 @@ import (
 	"github.com/elarsaks/Go-blockchain/utils"
 )
 
+// Constants related to blockchain configuration
 type Blockchain struct {
 	transactionPool   []*Transaction
 	chain             []*Block
@@ -25,6 +26,7 @@ type Blockchain struct {
 	muxNeighbors      sync.Mutex
 }
 
+// Create a new instance of Blockchain
 func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 	b := &Block{}
 	bc := new(Blockchain)
@@ -34,16 +36,19 @@ func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 	return bc
 }
 
+// Get chain of the Blockchain
 func (bc *Blockchain) Chain() []*Block {
 	return bc.chain
 }
 
+// Run the Blockchain
 func (bc *Blockchain) Run() {
 	bc.StartSyncNeighbors()
 	bc.ResolveConflicts()
 	bc.StartMining() // Start mining automatically
 }
 
+// Find neighbors of the Blockchain
 func (bc *Blockchain) SetNeighbors() {
 	bc.neighbors = utils.FindNeighbors(
 		utils.GetHost(), bc.port,
@@ -52,25 +57,30 @@ func (bc *Blockchain) SetNeighbors() {
 	log.Printf("%v", bc.neighbors)
 }
 
+// Sync neighbors of the Blockchain
 func (bc *Blockchain) SyncNeighbors() {
 	bc.muxNeighbors.Lock()
 	defer bc.muxNeighbors.Unlock()
 	bc.SetNeighbors()
 }
 
+// Start syncing neighbors of the Blockchain
 func (bc *Blockchain) StartSyncNeighbors() {
 	bc.SyncNeighbors()
 	_ = time.AfterFunc(time.Second*BLOCKCHIN_NEIGHBOR_SYNC_TIME_SEC, bc.StartSyncNeighbors)
 }
 
+// Get the transaction pool the Blockchain
 func (bc *Blockchain) TransactionPool() []*Transaction {
 	return bc.transactionPool
 }
 
+// Empty the transaction pool the Blockchain
 func (bc *Blockchain) ClearTransactionPool() {
 	bc.transactionPool = bc.transactionPool[:0]
 }
 
+// MarshalJSON implements the Marshaler interface for the Blockchain type.
 func (bc *Blockchain) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Blocks []*Block `json:"chain"`
@@ -79,6 +89,7 @@ func (bc *Blockchain) MarshalJSON() ([]byte, error) {
 	})
 }
 
+// UnmarshalJSON implements the Unmarshaler interface for the Blockchain type.
 func (bc *Blockchain) UnmarshalJSON(data []byte) error {
 	v := &struct {
 		Blocks *[]*Block `json:"chain"`
@@ -91,6 +102,7 @@ func (bc *Blockchain) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Create a new block
 func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
 	b := NewBlock(nonce, previousHash, bc.transactionPool)
 	bc.chain = append(bc.chain, b)
@@ -105,10 +117,12 @@ func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
 	return b
 }
 
+// Get the last block of the Blockchain
 func (bc *Blockchain) LastBlock() *Block {
 	return bc.chain[len(bc.chain)-1]
 }
 
+// Get last 10 blocks of the Blockchain
 func (bc *Blockchain) GetLast10Blocks() []*Block {
 	n := len(bc.chain)
 	var last10Blocks []*Block
@@ -127,6 +141,7 @@ func (bc *Blockchain) GetLast10Blocks() []*Block {
 	return last10Blocks
 }
 
+// Print the Blockchain
 func (bc *Blockchain) Print() {
 	for i, block := range bc.chain {
 		fmt.Printf("%s Chain %d %s\n", strings.Repeat("=", 25), i,
@@ -136,6 +151,7 @@ func (bc *Blockchain) Print() {
 	fmt.Printf("%s\n", strings.Repeat("*", 25))
 }
 
+// Create a new transaction
 func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32,
 	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
 
@@ -161,6 +177,7 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, value f
 	return isTransacted
 }
 
+// Add a new transaction to the transaction pool
 func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32,
 	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
 	t := NewTransaction(sender, recipient, value)
@@ -188,6 +205,7 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 
 }
 
+// Verify the signature of the transaction
 func (bc *Blockchain) VerifyTransactionSignature(
 	senderPublicKey *ecdsa.PublicKey, s *utils.Signature, t *Transaction) bool {
 	m, _ := json.Marshal(t)
@@ -198,6 +216,7 @@ func (bc *Blockchain) VerifyTransactionSignature(
 	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
 }
 
+// Copy the transaction pool
 func (bc *Blockchain) CopyTransactionPool() []*Transaction {
 	transactions := make([]*Transaction, 0)
 	for _, t := range bc.transactionPool {
@@ -209,6 +228,7 @@ func (bc *Blockchain) CopyTransactionPool() []*Transaction {
 	return transactions
 }
 
+// Validate the proof of work
 func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
 	zeros := strings.Repeat("0", difficulty)
 	guessBlock := Block{0, nonce, previousHash, transactions}
@@ -216,6 +236,7 @@ func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions 
 	return guessHashStr[:difficulty] == zeros
 }
 
+// Proof of work
 func (bc *Blockchain) ProofOfWork() int {
 	transactions := bc.CopyTransactionPool()
 	previousHash := bc.LastBlock().Hash()
@@ -226,6 +247,7 @@ func (bc *Blockchain) ProofOfWork() int {
 	return nonce
 }
 
+// Mining
 func (bc *Blockchain) Mining() bool {
 	// Lock the blockchain while mining
 	bc.mux.Lock()
@@ -256,11 +278,13 @@ func (bc *Blockchain) Mining() bool {
 	return true
 }
 
+// Start mining
 func (bc *Blockchain) StartMining() {
 	bc.Mining()
 	_ = time.AfterFunc(time.Second*MINING_TIMER_SEC, bc.StartMining)
 }
 
+// Calculate the total amount of coins in the Blockchain
 func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) float32 {
 	var totalAmount float32 = 0.0
 	for _, b := range bc.chain {
@@ -278,6 +302,7 @@ func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) float32 {
 	return totalAmount
 }
 
+// Validate the chain
 func (bc *Blockchain) ValidChain(chain []*Block) bool {
 	preBlock := chain[0]
 	currentIndex := 1
@@ -297,6 +322,7 @@ func (bc *Blockchain) ValidChain(chain []*Block) bool {
 	return true
 }
 
+// Resolve conflicts
 func (bc *Blockchain) ResolveConflicts() bool {
 	var longestChain []*Block = nil
 	maxLength := len(bc.chain)
