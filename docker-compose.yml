@@ -24,7 +24,7 @@ services:
       context: ./wallet_server
       dockerfile: Dockerfile
     ports:
-       - "${WALLET_SERVER_PORT}:${WALLET_SERVER_PORT}"
+      - "${WALLET_SERVER_PORT}:${WALLET_SERVER_PORT}"
     environment:
       - WALLET_SERVER_GATEWAY=http://miner_1:${MINER_1_PORT}
       - WALLET_SERVER_PORT=${WALLET_SERVER_PORT}
@@ -96,4 +96,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  node_modules: 
+  node_modules:
