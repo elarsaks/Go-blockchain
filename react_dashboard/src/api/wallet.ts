@@ -15,15 +15,17 @@ function fetchUserWalletDetails(): Promise<WalletDetails> {
 }
 
 function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
-  return axios.post<WalletDetailsResponse>(minerAdress).then(({ data }) => {
-    const camelCaseResponseData: WalletDetails = {
-      blockchainAddress: data.blockchain_address,
-      privateKey: data.private_key,
-      publicKey: data.public_key,
-    };
+  return axios
+    .post<WalletDetailsResponse>(minerAdress + "/miner/wallet")
+    .then(({ data }) => {
+      const camelCaseResponseData: WalletDetails = {
+        blockchainAddress: data.blockchain_address,
+        privateKey: data.private_key,
+        publicKey: data.public_key,
+      };
 
-    return camelCaseResponseData;
-  });
+      return camelCaseResponseData;
+    });
 }
 
 function fetchWalletBalance(blockchainAddress: string): Promise<string> {

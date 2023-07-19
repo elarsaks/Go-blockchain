@@ -47,9 +47,9 @@ interface WalletHeadProps {
 }
 
 const selectedMinerUrls = {
-  miner1: process.env.REACT_APP_MINER_1 + "/miner/wallet",
-  miner2: process.env.REACT_APP_MINER_2 + "/miner/wallet",
-  miner3: process.env.REACT_APP_MINER_3 + "/miner/wallet",
+  miner1: process.env.REACT_APP_MINER_1 || "http://localhost:5001",
+  miner2: process.env.REACT_APP_MINER_2 || "http://localhost:5001",
+  miner3: process.env.REACT_APP_MINER_3 || "http://localhost:5001",
 };
 
 const miners = [

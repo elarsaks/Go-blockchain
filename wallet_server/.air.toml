@@ -4,7 +4,7 @@
   # Read binary.
   bin = "tmp/app/main"
   # Run binary.
-  full_bin = "./tmp/app/main -port ${PORT} -gateway ${HOST}:${GATEWAY_PORT}"
+  full_bin = "./tmp/app/main -port ${PORT} "
   # Watch changes in those files
   include_ext = ["go", "yml"]
   # Ignore changes in these files
