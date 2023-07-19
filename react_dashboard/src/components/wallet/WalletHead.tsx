@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {
   fetchMinerWalletDetails,
   fetchUserWalletDetails,
-  fetchWalletAmount,
+  fetchWalletBalance,
 } from "../../api/Wallet";
 
 const TitleRow = styled.div`
@@ -85,7 +85,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     setIsLoading(true);
     fetchUserWalletDetails()
       .then((userWalletDetails: WalletDetails) => {
-        return fetchWalletAmount(userWalletDetails.blockchainAddress).then(
+        return fetchWalletBalance(userWalletDetails.blockchainAddress).then(
           (balance) =>
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
@@ -104,7 +104,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     setIsLoading(true);
     fetchMinerWalletDetails(selectedMinerUrl)
       .then((minerWalletDetails: WalletDetails) => {
-        return fetchWalletAmount(minerWalletDetails.blockchainAddress).then(
+        return fetchWalletBalance(minerWalletDetails.blockchainAddress).then(
           (balance) =>
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
@@ -136,15 +136,15 @@ const WalletHead: React.FC<WalletHeadProps> = ({
 
     if (walletDetails.blockchainAddress) {
       walletUpdate = setInterval(() => {
-        fetchWalletAmount(walletDetails.blockchainAddress)
+        fetchWalletBalance(walletDetails.blockchainAddress)
           .then((balance) =>
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
-              amount: balance,
+              balance: balance,
             }))
           )
           .catch((error: LocalError) =>
-            setIsError({ message: "Failed to fetch wallet amount" })
+            setIsError({ message: "Failed to fetch wallet balance" })
           );
       }, 3000);
     }
