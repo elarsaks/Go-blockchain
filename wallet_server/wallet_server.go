@@ -7,9 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"path"
 	"strconv"
-	"text/template"
 
 	"github.com/elarsaks/Go-blockchain/block"
 	"github.com/elarsaks/Go-blockchain/utils"
@@ -17,35 +15,27 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const tempDir = "templates/"
-
 type WalletServer struct {
 	port    uint16
 	gateway string
 }
 
+// Create a new instance of WalletServer
 func NewWalletServer(port uint16, gateway string) *WalletServer {
 	return &WalletServer{port, gateway}
 }
 
+// Get the port of the WalletServer
 func (ws *WalletServer) Port() uint16 {
 	return ws.port
 }
 
+// Get the gateway of the WalletServer
 func (ws *WalletServer) Gateway() string {
 	return ws.gateway
 }
 
-func (ws *WalletServer) Index(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
-	case http.MethodGet:
-		t, _ := template.ParseFiles(path.Join(tempDir, "index.html"))
-		t.Execute(w, "")
-	default:
-		log.Printf("ERROR: Invalid HTTP Method")
-	}
-}
-
+// Get the wallet of the WalletServer
 func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPost:
@@ -59,6 +49,7 @@ func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Create a new transaction
 func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodPost:
@@ -119,6 +110,7 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 	}
 }
 
+// Get the amount of the wallet
 func (ws *WalletServer) WalletAmount(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
@@ -166,13 +158,13 @@ func (ws *WalletServer) WalletAmount(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Run the WalletServer
 func (ws *WalletServer) Run() {
 	// Create router
 	router := mux.NewRouter()
 	router.Use(utils.CorsMiddleware())
 
 	// Define routes
-	router.HandleFunc("/", ws.Index)
 	router.HandleFunc("/wallet", ws.Wallet)
 	router.HandleFunc("/wallet/amount", ws.WalletAmount)
 	router.HandleFunc("/transaction", ws.CreateTransaction)
