@@ -110,8 +110,10 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
   const sendCrypto = () => {
     transaction({
-      senderBlockchainAddress: walletDetails.blockchainAddress,
       recipientBlockchainAddress: walletDetails.recipientAddress,
+      senderBlockchainAddress: walletDetails.blockchainAddress,
+      senderPrivateKey: walletDetails.privateKey,
+      senderPublicKey: walletDetails.publicKey,
       value: walletDetails.amount,
     })
       .then((response) => {
@@ -170,7 +172,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           <TextArea
             rows={2}
             name="recipientAddress"
-            placeholder={`${type} Blockchain Address`}
+            placeholder={
+              type === "Miner"
+                ? "User Blockchain Address"
+                : "Miner Blockchain Address"
+            }
             value={walletDetails.recipientAddress}
             onChange={handleInputChange}
           />

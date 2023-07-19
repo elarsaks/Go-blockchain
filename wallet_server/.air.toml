@@ -1,19 +1,13 @@
-root = "."
-tmp_dir = "tmp"
-
 [build]
   # Build binary.
-  cmd = "go build -o ./tmp/app/engine main.go wallet_server.go"
+  cmd = "go build -o ./tmp/app/main main.go"
   # Read binary.
-  bin = "tmp/app"
+  bin = "tmp/app/main"
   # Run binary.
-  full_bin = "./tmp/app/engine -port ${PORT} -gateway ${HOST}:${GATEWAY_PORT}"
+  full_bin = "./tmp/app/main -port ${PORT} "
   # Watch changes in those files
-  include_ext = [ "go", "yml"]
+  include_ext = ["go", "yml"]
   # Ignore changes in these files
   exclude_dir = ["tmp"]
   # Stop builds from triggering too fast
   delay = 1000 # ms
-
-[misc]
-  clean_on_exit = true
