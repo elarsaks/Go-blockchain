@@ -7,7 +7,7 @@ import Loader from "./components/Loader";
 import Notification from "./components/Notification";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Wallet from "./components/Wallet";
+import Wallet from "./components/wallet/Wallet";
 const AppWrapper = styled.div`
   margin: 0;
 `;
@@ -66,8 +66,8 @@ function App() {
         <AppInfo />
 
         <WalletWrapperContainer>
-          <Wallet type="miner" />
-          <Wallet type="user" />
+          <Wallet type="Miner" />
+          <Wallet type="User" />
         </WalletWrapperContainer>
 
         {isLoading && (
