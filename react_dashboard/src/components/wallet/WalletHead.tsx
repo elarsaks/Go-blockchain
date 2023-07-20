@@ -84,16 +84,12 @@ const WalletHead: React.FC<WalletHeadProps> = ({
   function fetchUserDetails() {
     setIsLoading(true);
     fetchUserWalletDetails()
-      .then((userWalletDetails: WalletDetails) => {
-        return fetchWalletBalance(userWalletDetails.blockchainAddress).then(
-          (balance) =>
-            setWalletDetails((prevDetails) => ({
-              ...prevDetails,
-              ...userWalletDetails,
-              balance: balance,
-            }))
-        );
-      })
+      .then((userWalletDetails: WalletDetails) =>
+        setWalletDetails((prevDetails) => ({
+          ...prevDetails,
+          ...userWalletDetails,
+        }))
+      )
       .catch((error: LocalError) => setIsError(error))
       .finally(() => setIsLoading(false));
   }
@@ -107,7 +103,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
               ...minerWalletDetails,
-              balance: balance,
+              balance: balance === "0" ? "0.00" : balance,
             }))
         );
       })
@@ -137,15 +133,14 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     if (walletDetails.blockchainAddress) {
       walletUpdate = setInterval(() => {
         fetchWalletBalance(walletDetails.blockchainAddress)
-          .then((balance) =>
+          .then((balance) => {
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
               balance: balance,
-            }))
-          )
-          .catch((error: LocalError) =>
-            setIsError({ message: "Failed to fetch wallet balance" })
-          );
+            }));
+            setIsError(null);
+          })
+          .catch((error: LocalError) => setIsError(error));
       }, 10000);
     }
 

@@ -285,6 +285,13 @@ func (bc *Blockchain) Mining() bool {
 	return true
 }
 
+// Register new wallet address
+func (bc *Blockchain) RegisterNewWallet(blockchainAddress string) bool {
+	bc.AddTransaction(MINING_SENDER, blockchainAddress, 0, nil, nil)
+
+	return true
+}
+
 // Start mining
 func (bc *Blockchain) StartMining() {
 	bc.Mining()

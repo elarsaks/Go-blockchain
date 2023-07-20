@@ -79,7 +79,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   const [isAnyFieldEmpty, setIsAnyFieldEmpty] = useState(false);
   const [walletDetails, setWalletDetails] = useState<WalletState>({
     amount: "",
-    balance: "",
+    balance: "0.00",
     blockchainAddress: "",
     privateKey: "",
     publicKey: "",
