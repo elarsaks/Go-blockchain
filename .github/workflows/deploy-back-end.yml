@@ -1,0 +1,47 @@
+name: Deploy Docker Compose
+
+on:
+  push:
+    branches:
+      - deploy-back-end
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: docker/setup-docker@v1
+
+      - name: Build and Push Docker images
+        env:
+          ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
+          ACR_REPOSITORY_NAME: my-repository
+        run: |
+          docker-compose build wallet miner_1 miner_2 miner_3
+          docker-compose push wallet miner_1 miner_2 miner_3
+
+      - name: Log in to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Deploy to Azure Container Instances
+        uses: azure/container-instances-deploy@v1
+        with:
+          resource-group: my-resource-group
+          dns-name-label: Go-Blockchain
+          ports: |
+            wallet:5000:5000
+            miner_1:5001:5001
+            miner_2:5002:5002
+            miner_3:5003:5003
+          image: ${{ env.ACR_LOGIN_SERVER }}/GoBlockchain
+          registry-login-server: ${{ env.ACR_LOGIN_SERVER }}
+          registry-username: ${{ secrets.ACR_USERNAME }}
+          registry-password: ${{ secrets.ACR_PASSWORD }}
