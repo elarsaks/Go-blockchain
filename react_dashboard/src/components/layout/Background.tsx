@@ -8,6 +8,8 @@ const BackgroundCanvas = styled.canvas`
   width: 100%;
   height: 100%;
   z-index: -1;
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
 `;
 
 const BackgroundComponent: React.FC = () => {
@@ -30,7 +32,7 @@ const BackgroundComponent: React.FC = () => {
     resizeCanvas();
 
     // Draw squares in the background
-    const squareSize = 50;
+    const squareSize = 25;
     const numSquaresX = Math.ceil(canvas.width / squareSize);
     const numSquaresY = Math.ceil(canvas.height / squareSize);
 
