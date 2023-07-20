@@ -24,8 +24,9 @@ type TransactionRequest struct {
 }
 
 // AmountResponse represents the response with the amount in a transaction.
-type AmountResponse struct {
-	Amount float32 `json:"amount"`
+type BalanceResponse struct {
+	Balance float32 `json:"balance"`
+	Error   string  `json:"error"`
 }
 
 // --- Functions ---
@@ -86,10 +87,12 @@ func (tr *TransactionRequest) Validate() bool {
 }
 
 // MarshalJSON implements the Marshaler interface for the AmountResponse type.
-func (ar *AmountResponse) MarshalJSON() ([]byte, error) {
+func (br *BalanceResponse) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Amount float32 `json:"amount"`
+		Balance float32 `json:"balance"`
+		Error   string  `json:"error"`
 	}{
-		Amount: ar.Amount,
+		Balance: br.Balance,
+		Error:   br.Error,
 	})
 }
