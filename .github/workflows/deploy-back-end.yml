@@ -34,9 +34,11 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Deploy to Azure Container Instances
-        uses: azure/container-instances-deploy@v1
+        uses: "azure/aci-deploy@v1"
         with:
-          resource-group: my-resource-group
+          name: GoBlockchain
+          resource-group: development
+          location: Sweden Central
           dns-name-label: Go-Blockchain
           ports: |
             wallet:5000:5000
