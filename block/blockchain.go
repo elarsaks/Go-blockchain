@@ -187,28 +187,31 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 		return true
 	}
 
-	// TODO: Return error messages
-	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
+	bc.transactionPool = append(bc.transactionPool, t)
+	return true
+	// TODO: Return Verify transactions
+	/*
+		if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
 
-		balance, err := bc.CalculateTotalBalance(sender)
+			balance, err := bc.CalculateTotalBalance(sender)
 
-		if err != nil {
-			log.Println("ERROR: CalculateTotalAmount") // TODO: Error handling
-			return false
+			if err != nil {
+				log.Println("ERROR: CalculateTotalAmount") // TODO: Error handling
+				return false
+			}
+
+			if balance < value {
+				log.Println("ERROR: Not enough balance in a wallet")
+				return false
+			}
+
+			bc.transactionPool = append(bc.transactionPool, t)
+			return true
+		} else {
+
+			log.Println("ERROR: Verify Transaction")
 		}
-
-		if balance < value {
-			log.Println("ERROR: Not enough balance in a wallet")
-			return false
-		}
-
-		bc.transactionPool = append(bc.transactionPool, t)
-		return true
-	} else {
-
-		log.Println("ERROR: Verify Transaction")
-	}
-	return false
+	return false*/
 
 }
 
