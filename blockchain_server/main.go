@@ -209,18 +209,29 @@ func (bcs *BlockchainServer) StartMine(w http.ResponseWriter, req *http.Request)
 	}
 }
 
-// Get the total amount of the BlockchainServer
-func (bcs *BlockchainServer) Amount(w http.ResponseWriter, req *http.Request) {
+// Get the wallet balance by blockchain address in the Blockchain
+func (bcs *BlockchainServer) Balance(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
+
+		br := &block.BalanceResponse{}
+
 		blockchainAddress := req.URL.Query().Get("blockchain_address")
-		amount := bcs.GetBlockchain().CalculateTotalAmount(blockchainAddress)
+		balance, err := bcs.GetBlockchain().CalculateTotalBalance(blockchainAddress)
 
-		ar := &block.AmountResponse{Amount: amount}
-		m, _ := ar.MarshalJSON()
+		br.Balance = balance
+		br.Error = ""
 
-		w.Header().Add("Content-Type", "application/json")
-		io.WriteString(w, string(m[:]))
+		if err != nil {
+			log.Printf("ERROR: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			br.Error = err.Error()
+		}
+
+		m, _ := json.Marshal(br)
+
+		w.Header().Set("Content-Type", "application/json")
+		io.WriteString(w, string(m))
 
 	default:
 		log.Printf("ERROR: Invalid HTTP Method")
@@ -275,7 +286,7 @@ func (bcs *BlockchainServer) Run() {
 	router.HandleFunc("/transactions", bcs.Transactions)
 	router.HandleFunc("/mine", bcs.Mine)
 	router.HandleFunc("/mine/start", bcs.StartMine)
-	router.HandleFunc("/amount", bcs.Amount)
+	router.HandleFunc("/balance", bcs.Balance)
 	router.HandleFunc("/consensus", bcs.Consensus)
 
 	// Start the server

@@ -190,7 +190,14 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 	// TODO: Return error messages
 	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
 
-		if bc.CalculateTotalAmount(sender) < value {
+		balance, err := bc.CalculateTotalBalance(sender)
+
+		if err != nil {
+			log.Println("ERROR: CalculateTotalAmount") // TODO: Error handling
+			return false
+		}
+
+		if balance < value {
 			log.Println("ERROR: Not enough balance in a wallet")
 			return false
 		}
@@ -284,22 +291,32 @@ func (bc *Blockchain) StartMining() {
 	_ = time.AfterFunc(time.Second*MINING_TIMER_SEC, bc.StartMining)
 }
 
-// Calculate the total amount of coins in the Blockchain
-func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) float32 {
-	var totalAmount float32 = 0.0
+//* Calculate the total balance of crypto on the specific address in the Blockchain
+func (bc *Blockchain) CalculateTotalBalance(blockchainAddress string) (float32, error) {
+	var totalBalance float32 = 0.0
+	addressFound := false
+
 	for _, b := range bc.chain {
 		for _, t := range b.transactions {
 			value := t.value
+
 			if blockchainAddress == t.recipientBlockchainAddress {
-				totalAmount += value
+				totalBalance += value
+				addressFound = true
 			}
 
 			if blockchainAddress == t.senderBlockchainAddress {
-				totalAmount -= value
+				totalBalance -= value
+				addressFound = true
 			}
 		}
 	}
-	return totalAmount
+
+	if !addressFound {
+		return 0.0, fmt.Errorf("address not found in the blockchain")
+	}
+
+	return totalBalance, nil
 }
 
 // Validate the chain

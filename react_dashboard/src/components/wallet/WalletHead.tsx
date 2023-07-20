@@ -94,9 +94,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
             }))
         );
       })
-      .catch((error: LocalError) =>
-        setIsError({ message: "Failed to fetch user details" })
-      )
+      .catch((error: LocalError) => setIsError(error))
       .finally(() => setIsLoading(false));
   }
 

@@ -30,10 +30,16 @@ function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
 
 function fetchWalletBalance(blockchainAddress: string): Promise<string> {
   return axios
-    .get<AmountResponse>(
-      `http://localhost:5000/wallet/amount?blockchain_address=${blockchainAddress}`
+    .get<BalanceResponse>(
+      `http://localhost:5000/wallet/balance?blockchain_address=${blockchainAddress}`
     )
-    .then(({ data }) => data.amount);
+    .then(({ data }) => {
+      console.log(data);
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      return data.balance;
+    });
 }
 
 function transaction(transaction: Transaction): Promise<string> {
