@@ -4,6 +4,7 @@ function fetchUserWalletDetails(): Promise<WalletDetails> {
   return axios
     .post<WalletDetailsResponse>("http://localhost:5000/wallet") // TODO: Rename api endpoint
     .then(({ data }) => {
+      // console.log('User Details', data);
       const camelCaseResponseData: WalletDetails = {
         blockchainAddress: data.blockchain_address,
         privateKey: data.private_key,
@@ -30,10 +31,15 @@ function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
 
 function fetchWalletBalance(blockchainAddress: string): Promise<string> {
   return axios
-    .get<AmountResponse>(
-      `http://localhost:5000/wallet/amount?blockchain_address=${blockchainAddress}`
+    .get<BalanceResponse>(
+      `http://localhost:5000/wallet/balance?blockchain_address=${blockchainAddress}`
     )
-    .then(({ data }) => data.amount);
+    .then(({ data }) => {
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      return data.balance;
+    });
 }
 
 function transaction(transaction: Transaction): Promise<string> {

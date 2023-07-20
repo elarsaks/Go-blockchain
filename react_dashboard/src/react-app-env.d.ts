@@ -1,8 +1,8 @@
 /// <reference types="react-scripts" />
 
-type AmountResponse = {
-  message: string;
-  amount: string;
+type BalanceResponse = {
+  error: string;
+  balance: string;
 };
 
 type Block = {

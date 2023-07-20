@@ -36,18 +36,56 @@ func (ws *WalletServer) Gateway() string {
 	return ws.gateway
 }
 
-// Get the wallet of the WalletServer
+// Get User wallet
 func (ws *WalletServer) Wallet(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
-	case http.MethodPost:
-		w.Header().Add("Content-Type", "application/json")
-		myWallet := wallet.NewWallet()
-		m, _ := myWallet.MarshalJSON()
-		io.WriteString(w, string(m[:]))
-	default:
-		w.WriteHeader(http.StatusBadRequest)
-		log.Println("ERROR: Invalid HTTP Method")
+	if req.Method != http.MethodPost {
+		http.Error(w, "Invalid HTTP Method", http.StatusBadRequest)
+		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	userWallet := wallet.NewWallet()
+
+	// Create a payload containing the userWallet's blockchain address
+	payload := struct {
+		BlockchainAddress string `json:"blockchainAddress"`
+	}{
+		BlockchainAddress: userWallet.BlockchainAddress(),
+	}
+
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		log.Println("ERROR: Failed to marshal payload:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Register the userWallet on the blockchain
+	resp, err := http.Post(ws.Gateway()+"/wallet/register", "application/json", bytes.NewBuffer(payloadBytes))
+	if err != nil {
+		log.Printf("ERROR: Failed to register wallet: %v", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		log.Println("ERROR: Failed to register wallet")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Return the userWallet as part of the response
+	userWalletBytes, err := json.Marshal(userWallet)
+	if err != nil {
+		log.Println("ERROR: Failed to marshal userWallet:", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// TODO: return error messages
+	io.WriteString(w, string(userWalletBytes))
 }
 
 // Create a new transaction
@@ -114,51 +152,54 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 	}
 }
 
-// Get the amount of the wallet
-func (ws *WalletServer) WalletAmount(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
-	case http.MethodGet:
-		blockchainAddress := req.URL.Query().Get("blockchain_address")
-		endpoint := fmt.Sprintf("%s/amount", ws.Gateway())
+//* Get wallet balance
+func (ws *WalletServer) WalletBalance(w http.ResponseWriter, req *http.Request) {
+	// Check if the HTTP method is GET
+	if req.Method != http.MethodGet {
+		log.Println("ERROR: Invalid HTTP Method")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-		client := &http.Client{}
-		bcsReq, _ := http.NewRequest("GET", endpoint, nil)
-		q := bcsReq.URL.Query()
-		q.Add("blockchain_address", blockchainAddress)
-		bcsReq.URL.RawQuery = q.Encode()
+	// Extract the blockchain address from the URL query parameters
+	blockchainAddress := req.URL.Query().Get("blockchain_address")
 
-		bcsResp, err := client.Do(bcsReq)
+	// Construct the endpoint URL for the blockchain API
+	endpoint := fmt.Sprintf("%s/balance?blockchain_address=%s", ws.Gateway(), blockchainAddress)
+
+	// Send a GET request to the blockchain API
+	resp, err := http.Get(endpoint)
+	if err != nil {
+		log.Printf("ERROR: %v", err)
+		io.WriteString(w, string(utils.JsonStatus("fails")))
+		return
+	}
+	defer resp.Body.Close()
+
+	// Set the response header to indicate JSON content type
+	w.Header().Set("Content-Type", "application/json")
+
+	// Check the response status code
+	if resp.StatusCode == http.StatusOK {
+		// Decode the response JSON into the existing response struct
+		br := &block.BalanceResponse{}
+		err := json.NewDecoder(resp.Body).Decode(br)
 		if err != nil {
 			log.Printf("ERROR: %v", err)
 			io.WriteString(w, string(utils.JsonStatus("fail")))
 			return
 		}
 
-		w.Header().Add("Content-Type", "application/json")
-		if bcsResp.StatusCode == 200 {
-			decoder := json.NewDecoder(bcsResp.Body)
-			var bar block.AmountResponse
-			err := decoder.Decode(&bar)
-			if err != nil {
-				log.Printf("ERROR: %v", err)
-				io.WriteString(w, string(utils.JsonStatus("fail")))
-				return
-			}
-
-			m, _ := json.Marshal(struct {
-				Message string  `json:"message"`
-				Amount  float32 `json:"amount"`
-			}{
-				Message: "success",
-				Amount:  bar.Amount,
-			})
-			io.WriteString(w, string(m[:]))
-		} else {
-			io.WriteString(w, string(utils.JsonStatus("fail")))
+		// Marshal the response struct to JSON and write it as the response
+		m, _ := json.Marshal(br)
+		io.WriteString(w, string(m))
+	} else {
+		// Create a new response struct for the failure case
+		failureResponse := &block.BalanceResponse{
+			Error: "Failed to get wallet balance",
 		}
-	default:
-		log.Printf("ERROR: Invalid HTTP Method")
-		w.WriteHeader(http.StatusBadRequest)
+		m, _ := json.Marshal(failureResponse)
+		io.WriteString(w, string(m))
 	}
 }
 
@@ -170,7 +211,7 @@ func (ws *WalletServer) Run() {
 
 	// Define routes
 	router.HandleFunc("/wallet", ws.Wallet)
-	router.HandleFunc("/wallet/amount", ws.WalletAmount)
+	router.HandleFunc("/wallet/balance", ws.WalletBalance)
 	router.HandleFunc("/transaction", ws.CreateTransaction)
 
 	// Start server

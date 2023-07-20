@@ -187,21 +187,31 @@ func (bc *Blockchain) AddTransaction(sender string, recipient string, value floa
 		return true
 	}
 
-	// TODO: Return error messages
-	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
+	bc.transactionPool = append(bc.transactionPool, t)
+	return true
+	// TODO: Return Verify transactions
+	/*
+		if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
 
-		if bc.CalculateTotalAmount(sender) < value {
-			log.Println("ERROR: Not enough balance in a wallet")
-			return false
+			balance, err := bc.CalculateTotalBalance(sender)
+
+			if err != nil {
+				log.Println("ERROR: CalculateTotalAmount") // TODO: Error handling
+				return false
+			}
+
+			if balance < value {
+				log.Println("ERROR: Not enough balance in a wallet")
+				return false
+			}
+
+			bc.transactionPool = append(bc.transactionPool, t)
+			return true
+		} else {
+
+			log.Println("ERROR: Verify Transaction")
 		}
-
-		bc.transactionPool = append(bc.transactionPool, t)
-		return true
-	} else {
-
-		log.Println("ERROR: Verify Transaction")
-	}
-	return false
+	return false*/
 
 }
 
@@ -278,28 +288,45 @@ func (bc *Blockchain) Mining() bool {
 	return true
 }
 
+// Register new wallet address
+func (bc *Blockchain) RegisterNewWallet(blockchainAddress string) bool {
+	bc.AddTransaction(MINING_SENDER, blockchainAddress, 0, nil, nil)
+
+	return true
+}
+
 // Start mining
 func (bc *Blockchain) StartMining() {
 	bc.Mining()
 	_ = time.AfterFunc(time.Second*MINING_TIMER_SEC, bc.StartMining)
 }
 
-// Calculate the total amount of coins in the Blockchain
-func (bc *Blockchain) CalculateTotalAmount(blockchainAddress string) float32 {
-	var totalAmount float32 = 0.0
+//* Calculate the total balance of crypto on the specific address in the Blockchain
+func (bc *Blockchain) CalculateTotalBalance(blockchainAddress string) (float32, error) {
+	var totalBalance float32 = 0.0
+	addressFound := false
+
 	for _, b := range bc.chain {
 		for _, t := range b.transactions {
 			value := t.value
+
 			if blockchainAddress == t.recipientBlockchainAddress {
-				totalAmount += value
+				totalBalance += value
+				addressFound = true
 			}
 
 			if blockchainAddress == t.senderBlockchainAddress {
-				totalAmount -= value
+				totalBalance -= value
+				addressFound = true
 			}
 		}
 	}
-	return totalAmount
+
+	if !addressFound {
+		return 0.0, fmt.Errorf("Address not found in the Blockchain")
+	}
+
+	return totalBalance, nil
 }
 
 // Validate the chain
