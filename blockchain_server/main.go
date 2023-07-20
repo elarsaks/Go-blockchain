@@ -214,17 +214,14 @@ func (bcs *BlockchainServer) Balance(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
 
-		br := &block.BalanceResponse{}
+		br := &block.BalanceResponse{} // Use the BalanceResponse type
 
 		blockchainAddress := req.URL.Query().Get("blockchain_address")
 		balance, err := bcs.GetBlockchain().CalculateTotalBalance(blockchainAddress)
 
 		br.Balance = balance
-		br.Error = ""
-
 		if err != nil {
 			log.Printf("ERROR: %v", err)
-			w.WriteHeader(http.StatusInternalServerError)
 			br.Error = err.Error()
 		}
 

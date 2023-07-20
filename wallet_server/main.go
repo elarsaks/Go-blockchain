@@ -114,7 +114,7 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 	}
 }
 
-// Get wallet balance
+//* Get wallet balance
 func (ws *WalletServer) WalletBalance(w http.ResponseWriter, req *http.Request) {
 	// Check if the HTTP method is GET
 	if req.Method != http.MethodGet {
