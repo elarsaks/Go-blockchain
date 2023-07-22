@@ -1,24 +1,23 @@
 version: "3.8"
 
 services:
-  react_dashboard:
-    build:
-      context: ./react_dashboard
-    command: npm run start
-    container_name: react_dashboard
-    restart: unless-stopped
-    ports:
-      - "${DASHBOARD_PORT}:${DASHBOARD_PORT}"
-    environment:
-      - REACT_APP_MINER_1=${REACT_APP_MINER_1}
-      - REACT_APP_MINER_2=${REACT_APP_MINER_2}
-      - REACT_APP_MINER_3=${REACT_APP_MINER_3}
-    volumes:
-      - ./react_dashboard:/app
-      - /app/node_modules
+  # react_dashboard:
+  #   build:
+  #     context: ./react_dashboard
+  #   command: npm run start
+  #   container_name: react_dashboard
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${DASHBOARD_PORT}:${DASHBOARD_PORT}"
+  #   environment:
+  #     - REACT_APP_MINER_1=${REACT_APP_MINER_1}
+  #     - REACT_APP_MINER_2=${REACT_APP_MINER_2}
+  #     - REACT_APP_MINER_3=${REACT_APP_MINER_3}
+  #   volumes:
+  #     - ./react_dashboard:/app
+  #     - /app/node_modules
 
   wallet:
-    container_name: wallet
     build:
       context: ./wallet_server
     ports:
@@ -35,8 +34,7 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  miner-1:
-    container_name: miner-1
+  miner1:
     build:
       context: ./blockchain_server
     ports:
@@ -52,8 +50,7 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  miner-2:
-    container_name: miner-2
+  miner2:
     build:
       context: ./blockchain_server
     ports:
@@ -69,8 +66,7 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  miner-3:
-    container_name: miner-3
+  miner3:
     build:
       context: ./blockchain_server
     ports:

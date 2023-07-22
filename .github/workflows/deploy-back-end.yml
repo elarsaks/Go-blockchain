@@ -28,8 +28,8 @@ jobs:
           ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
           ACR_REPOSITORY_NAME: GoBlockchain
         run: |
-          docker-compose build wallet miner-1 miner-2 miner-3
-          docker-compose push wallet miner-1 miner-2 miner-3
+          docker-compose build wallet miner1 miner2 miner3
+          docker-compose push wallet miner1 miner2 miner3
 
       - name: Deploy to Azure Container Instances
         uses: "azure/aci-deploy@v1"
@@ -43,7 +43,7 @@ jobs:
             5001:5001
             5002:5002
             5003:5003
-          image: ${{ secrets.ACR_LOGIN_SERVER }}/GoBlockchain:wallet
+          image: ${{ secrets.ACR_LOGIN_SERVER }}/GoBlockchain
           registry-login-server: ${{ secrets.ACR_LOGIN_SERVER }}
           registry-username: ${{ secrets.ACR_USERNAME }}
           registry-password: ${{ secrets.ACR_PASSWORD }}
