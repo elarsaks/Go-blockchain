@@ -24,8 +24,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN=${WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN}
-      - WALLET_SERVER_PORT=${WALLET_SERVER_PORT}
+      - WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN='http://localhost:5001/'
+      - WALLET_SERVER_PORT=5000
       - COMMAND=air
     volumes:
       - ./wallet_server:/app
@@ -40,7 +40,7 @@ services:
     build:
       context: ./blockchain_server
     ports:
-      - "5001:$5001"
+      - "5001:5001"
     environment:
       - PORT=5001
       - COMMAND=air
