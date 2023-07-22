@@ -22,7 +22,7 @@ services:
     build:
       context: ./wallet_server
     ports:
-      - "${WALLET_SERVER_PORT}:${WALLET_SERVER_PORT}"
+      - "5000:5000"
     environment:
       - WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN=${WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN}
       - WALLET_SERVER_PORT=${WALLET_SERVER_PORT}
@@ -40,9 +40,9 @@ services:
     build:
       context: ./blockchain_server
     ports:
-      - "${MINER_1_PORT}:${MINER_1_PORT}"
+      - "5001:$5001"
     environment:
-      - PORT=${MINER_1_PORT}
+      - PORT=5001
       - COMMAND=air
     volumes:
       - ./blockchain_server:/app
@@ -57,9 +57,9 @@ services:
     build:
       context: ./blockchain_server
     ports:
-      - "${MINER_2_PORT}:${MINER_2_PORT}"
+      - "5002:5002"
     environment:
-      - BLOCKCHAIN_SERVER_PORT=${MINER_2_PORT}
+      - BLOCKCHAIN_SERVER_PORT=5002
       - COMMAND=air
     volumes:
       - ./blockchain_server:/app
@@ -74,9 +74,9 @@ services:
     build:
       context: ./blockchain_server
     ports:
-      - "${MINER_3_PORT}:${MINER_3_PORT}"
+      - "5003:$5003"
     environment:
-      - BLOCKCHAIN_SERVER_PORT=${MINER_3_PORT}
+      - BLOCKCHAIN_SERVER_PORT=5003
       - COMMAND=air
     volumes:
       - ./blockchain_server:/app
