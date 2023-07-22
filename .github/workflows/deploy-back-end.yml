@@ -6,9 +6,8 @@ on:
       - deploy-back-end
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -30,7 +29,14 @@ jobs:
         run: |
           docker-compose build wallet-server miner-1 miner-2 miner-3
           docker-compose push wallet-server miner-1 miner-2 miner-3
-        continue-on-error: true
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build # Ensure the build job runs before the deploy job
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
       - name: Deploy to Azure Container Instances
         uses: "azure/aci-deploy@v1"
