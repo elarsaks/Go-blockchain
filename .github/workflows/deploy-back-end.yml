@@ -30,6 +30,7 @@ jobs:
         run: |
           docker-compose build wallet-server miner1 miner2 miner3
           docker-compose push wallet-server miner1 miner2 miner3
+        continue-on-error: true
 
       - name: Deploy to Azure Container Instances
         uses: "azure/aci-deploy@v1"
@@ -53,3 +54,4 @@ jobs:
           os-type: Linux
           protocol: TCP
           restart-policy: Always
+        continue-on-error: true
