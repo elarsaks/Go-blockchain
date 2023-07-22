@@ -34,7 +34,7 @@ jobs:
         uses: "azure/aci-deploy@v1"
         with:
           name: GoBlockchain
-          resource-group: development
+          resource-group: Go_Blockchain
           location: Sweden Central
           dns-name-label: Go-Blockchain
           ports: |
