@@ -18,6 +18,7 @@ services:
   #     - /app/node_modules
 
   wallet-server:
+    image: goblockchain.azurecr.io/GoBlockchain/wallet-server:latest
     container_name: wallet-server
     build:
       context: ./wallet_server
@@ -36,6 +37,7 @@ services:
       - ./go.sum:/app/go.sum:ro
 
   miner-1:
+    image: goblockchain.azurecr.io/GoBlockchain/wallet-server:latest
     container_name: miner-1
     build:
       context: ./blockchain_server
@@ -53,6 +55,7 @@ services:
       - ./go.sum:/app/go.sum:ro
 
   miner-2:
+    image: goblockchain.azurecr.io/GoBlockchain/wallet-server:latest
     container_name: miner-2
     build:
       context: ./blockchain_server
@@ -70,6 +73,7 @@ services:
       - ./go.sum:/app/go.sum:ro
 
   miner-3:
+    image: goblockchain.azurecr.io/GoBlockchain/wallet-server:latest
     container_name: miner-3
     build:
       context: ./blockchain_server
