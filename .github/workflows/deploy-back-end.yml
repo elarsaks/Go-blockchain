@@ -26,18 +26,10 @@ jobs:
           docker-compose build wallet miner_1 miner_2 miner_3
           docker-compose push wallet miner_1 miner_2 miner_3
 
-      - name: Log out secrets
-        run: |
-          echo "ACR_LOGIN_SERVER: $ACR_LOGIN_SERVER"
-          echo "ACR_USERNAME: $ACR_USERNAME"
-          echo "ACR_PASSWORD: $ACR_PASSWORD"
-
-      - name: Log in to Azure Container Registry
-        uses: azure/docker-login@v1
+      - name: Log in to Azure
+        uses: azure/login@v1
         with:
-          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+          creds: ${{ secrets.AZURE_CLIENT_ID }}, ${{ secrets.AZURE_TENANT_ID }}, ${{ secrets.AZURE_CLIENT_SECRET }}
 
       - name: Deploy to Azure Container Instances
         uses: "azure/aci-deploy@v1"
@@ -55,3 +47,9 @@ jobs:
           registry-login-server: ${{ secrets.ACR_LOGIN_SERVER }}
           registry-username: ${{ secrets.ACR_USERNAME }}
           registry-password: ${{ secrets.ACR_PASSWORD }}
+          cpu: 1
+          ip-address: Public
+          memory: 1.5
+          os-type: Linux
+          protocol: TCP
+          restart-policy: Always
