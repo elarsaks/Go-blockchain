@@ -30,6 +30,7 @@ jobs:
         run: |
           docker-compose build wallet miner_1 miner_2 miner_3
           docker-compose push wallet miner_1 miner_2 miner_3
+
       - name: Deploy to Azure Container Instances
         uses: "azure/aci-deploy@v1"
         with:
@@ -38,10 +39,10 @@ jobs:
           location: Sweden Central
           dns-name-label: Go-Blockchain
           ports: |
-            wallet:5000:5000
-            miner_1:5001:5001
-            miner_2:5002:5002
-            miner_3:5003:5003
+            wallet: ${{ env.WALLET_SERVER_PORT }}:${{ env.WALLET_SERVER_PORT }}
+            miner_1: ${{ env.MINER_1_PORT }}:${{ env.MINER_1_PORT }}
+            miner_2: ${{ env.MINER_2_PORT }}:${{ env.MINER_2_PORT }}
+            miner_3: ${{ env.MINER_3_PORT }}:${{ env.MINER_3_PORT }}
           image: ${{ secrets.ACR_LOGIN_SERVER }}/GoBlockchain
           registry-login-server: ${{ secrets.ACR_LOGIN_SERVER }}
           registry-username: ${{ secrets.ACR_USERNAME }}
