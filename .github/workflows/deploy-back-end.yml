@@ -31,25 +31,25 @@ jobs:
           docker-compose build wallet miner_1 miner_2 miner_3
           docker-compose push wallet miner_1 miner_2 miner_3
 
-      - name: Deploy to Azure Container Instances
-        uses: "azure/aci-deploy@v1"
-        with:
-          name: GoBlockchain
-          resource-group: Go_Blockchain
-          location: Sweden Central
-          dns-name-label: Go-Blockchain
-          ports: |
-            wallet: 5000:5000
-            miner_1: 5001:5001
-            miner_2: 5002:5002
-            miner_3: 5003:5003
-          image: ${{ secrets.ACR_LOGIN_SERVER }}/GoBlockchain
-          registry-login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-          registry-username: ${{ secrets.ACR_USERNAME }}
-          registry-password: ${{ secrets.ACR_PASSWORD }}
-          cpu: 1
-          ip-address: Public
-          memory: 1.5
-          os-type: Linux
-          protocol: TCP
-          restart-policy: Always
+      # - name: Deploy to Azure Container Instances
+      #   uses: "azure/aci-deploy@v1"
+      #   with:
+      #     name: GoBlockchain
+      #     resource-group: Go_Blockchain
+      #     location: Sweden Central
+      #     dns-name-label: Go-Blockchain
+      #     ports: |
+      #       wallet: 5000:5000
+      #       miner_1: 5001:5001
+      #       miner_2: 5002:5002
+      #       miner_3: 5003:5003
+      #     image: ${{ secrets.ACR_LOGIN_SERVER }}/GoBlockchain
+      #     registry-login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+      #     registry-username: ${{ secrets.ACR_USERNAME }}
+      #     registry-password: ${{ secrets.ACR_PASSWORD }}
+      #     cpu: 1
+      #     ip-address: Public
+      #     memory: 1.5
+      #     os-type: Linux
+      #     protocol: TCP
+      #     restart-policy: Always
