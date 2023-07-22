@@ -29,7 +29,7 @@ jobs:
       - name: Log in to Azure
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CLIENT_ID }}, ${{ secrets.AZURE_TENANT_ID }}, ${{ secrets.AZURE_CLIENT_SECRET }}
 
       - name: Deploy to Azure Container Instances
         uses: "azure/aci-deploy@v1"
