@@ -18,6 +18,7 @@ services:
   #     - /app/node_modules
 
   wallet:
+    container_name: wallet-server
     build:
       context: ./wallet_server
     ports:
@@ -34,7 +35,8 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  miner1:
+  miner-1:
+    container_name: miner-1
     build:
       context: ./blockchain_server
     ports:
@@ -50,7 +52,8 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  miner2:
+  miner-2:
+    container_name: miner-2
     build:
       context: ./blockchain_server
     ports:
@@ -66,7 +69,8 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  miner3:
+  miner-3:
+    container_name: miner-3
     build:
       context: ./blockchain_server
     ports:
