@@ -18,6 +18,10 @@ jobs:
         with:
           version: "2.14.2"
 
+      - name: Install Azure CLI
+        run: |
+          curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
       - name: Build and Push Docker images
         env:
           ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
