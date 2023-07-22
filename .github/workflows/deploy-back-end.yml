@@ -31,17 +31,13 @@ jobs:
           docker-compose build wallet miner_1 miner_2 miner_3
           docker-compose push wallet miner_1 miner_2 miner_3
 
-      - name: Echo out environment variables
-        run: |
-          echo "ACR_LOGIN_SERVER=${ACR_LOGIN_SERVER}"
-          echo "ACR_REPOSITORY_NAME=${ACR_REPOSITORY_NAME}"
-          echo "WALLET_SERVER_PORT=${WALLET_SERVER_PORT}"
-          echo "MINER_1_PORT=${MINER_1_PORT}"
-          echo "MINER_2_PORT=${MINER_2_PORT}"
-          echo "MINER_3_PORT=${MINER_3_PORT}"
-
       - name: Deploy to Azure Container Instances
         uses: "azure/aci-deploy@v1"
+        env:
+          WALLET_SERVER_PORT: 5000
+          MINER_1_PORT: 5001
+          MINER_2_PORT: 5002
+          MINER_3_PORT: 5003
         with:
           name: GoBlockchain
           resource-group: Go_Blockchain
