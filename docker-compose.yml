@@ -17,7 +17,7 @@ services:
   #     - ./react_dashboard:/app
   #     - /app/node_modules
 
-  wallet:
+  wallet-server:
     container_name: wallet-server
     build:
       context: ./wallet_server
