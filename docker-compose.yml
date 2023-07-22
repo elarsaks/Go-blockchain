@@ -1,28 +1,26 @@
 version: "3.8"
 
 services:
-  react_dashboard:
-    build:
-      context: ./react_dashboard
-    command: 'sh -c "npm run start"'
-    container_name: react_dashboard
-    restart: unless-stopped
-    ports:
-      - "${DASHBOARD_PORT}:${DASHBOARD_PORT}"
-    environment:
-      - REACT_APP_MINER_1=${REACT_APP_MINER_1}
-      - REACT_APP_MINER_2=${REACT_APP_MINER_2}
-      - REACT_APP_MINER_3=${REACT_APP_MINER_3}
-    volumes:
-      - ./react_dashboard/src:/app/src
-      - ./react_dashboard/package.json:/app/package.json
-      - node_modules:/app/node_modules
+  # react_dashboard:
+  #   build:
+  #     context: ./react_dashboard
+  #   command: npm run start
+  #   container_name: react_dashboard
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${DASHBOARD_PORT}:${DASHBOARD_PORT}"
+  #   environment:
+  #     - REACT_APP_MINER_1=${REACT_APP_MINER_1}
+  #     - REACT_APP_MINER_2=${REACT_APP_MINER_2}
+  #     - REACT_APP_MINER_3=${REACT_APP_MINER_3}
+  #   volumes:
+  #     - ./react_dashboard:/app
+  #     - /app/node_modules
 
-  wallet:
-    container_name: wallet
+  wallet-server:
+    container_name: wallet-server
     build:
       context: ./wallet_server
-      dockerfile: Dockerfile
     ports:
       - "${WALLET_SERVER_PORT}:${WALLET_SERVER_PORT}"
     environment:
@@ -30,70 +28,60 @@ services:
       - WALLET_SERVER_PORT=${WALLET_SERVER_PORT}
       - COMMAND=air
     volumes:
-      - ./wallet_server:/app/wallet_server
+      - ./wallet_server:/app
       - ./block:/app/block
       - ./utils:/app/utils
       - ./wallet:/app/wallet
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
-    restart: unless-stopped
 
-  miner_1:
-    container_name: miner_1
+  miner-1:
+    container_name: miner-1
     build:
       context: ./blockchain_server
-      dockerfile: Dockerfile
     ports:
       - "${MINER_1_PORT}:${MINER_1_PORT}"
     environment:
       - PORT=${MINER_1_PORT}
       - COMMAND=air
     volumes:
-      - ./blockchain_server:/app/blockchain_server
+      - ./blockchain_server:/app
       - ./block:/app/block
       - ./utils:/app/utils
       - ./wallet:/app/wallet
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
-    restart: unless-stopped
 
-  miner_2:
-    container_name: miner_2
+  miner-2:
+    container_name: miner-2
     build:
       context: ./blockchain_server
-      dockerfile: Dockerfile
     ports:
       - "${MINER_2_PORT}:${MINER_2_PORT}"
     environment:
       - BLOCKCHAIN_SERVER_PORT=${MINER_2_PORT}
       - COMMAND=air
     volumes:
-      - ./blockchain_server:/app/blockchain_server
+      - ./blockchain_server:/app
       - ./block:/app/block
       - ./utils:/app/utils
       - ./wallet:/app/wallet
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
-    restart: unless-stopped
 
-  miner_3:
-    container_name: miner_3
+  miner-3:
+    container_name: miner-3
     build:
       context: ./blockchain_server
-      dockerfile: Dockerfile
     ports:
       - "${MINER_3_PORT}:${MINER_3_PORT}"
     environment:
       - BLOCKCHAIN_SERVER_PORT=${MINER_3_PORT}
       - COMMAND=air
     volumes:
-      - ./blockchain_server:/app/blockchain_server
+      - ./blockchain_server:/app
       - ./block:/app/block
       - ./utils:/app/utils
       - ./wallet:/app/wallet
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
-    restart: unless-stopped
-
-volumes:
-  node_modules:
