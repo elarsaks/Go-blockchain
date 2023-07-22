@@ -35,8 +35,8 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  miner_1:
-    container_name: miner_1
+  miner-1:
+    container_name: miner-1
     build:
       context: ./blockchain_server
     ports:
@@ -52,8 +52,8 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  miner_2:
-    container_name: miner_2
+  miner-2:
+    container_name: miner-2
     build:
       context: ./blockchain_server
     ports:
@@ -69,8 +69,8 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  miner_3:
-    container_name: miner_3
+  miner-3:
+    container_name: miner-3
     build:
       context: ./blockchain_server
     ports:
