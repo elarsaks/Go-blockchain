@@ -74,7 +74,7 @@ services:
     build:
       context: ./blockchain_server
     ports:
-      - "5003:$5003"
+      - "5003:5003"
     environment:
       - BLOCKCHAIN_SERVER_PORT=5003
       - COMMAND=air
