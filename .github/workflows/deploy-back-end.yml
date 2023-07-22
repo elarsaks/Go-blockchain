@@ -6,11 +6,14 @@ on:
       - deploy-back-end
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        with:
+          node-version: "16.x"
 
       - name: Set up Docker
         uses: KengoTODA/actions-setup-docker-compose@v1
@@ -29,14 +32,6 @@ jobs:
         run: |
           docker-compose build wallet-server miner-1 miner-2 miner-3
           docker-compose push wallet-server miner-1 miner-2 miner-3
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build # Ensure the build job runs before the deploy job
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
       - name: Deploy to Azure Container Instances
         uses: "azure/aci-deploy@v1"
@@ -60,4 +55,3 @@ jobs:
           os-type: Linux
           protocol: TCP
           restart-policy: Always
-        continue-on-error: true
