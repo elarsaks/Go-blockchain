@@ -42,7 +42,7 @@ jobs:
             wallet: 5000:5000
             miner_1: 5001:5001
             miner_2: 5002:5002
-            miner_3: $5003:5003
+            miner_3: 5003:5003
           image: ${{ secrets.ACR_LOGIN_SERVER }}/GoBlockchain
           registry-login-server: ${{ secrets.ACR_LOGIN_SERVER }}
           registry-username: ${{ secrets.ACR_USERNAME }}
