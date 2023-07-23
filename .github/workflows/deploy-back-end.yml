@@ -35,23 +35,15 @@ jobs:
           docker-compose build wallet-server miner-1
           docker-compose push wallet-server miner-1
 
-      - name: Deploy to Azure Container Instances
+      - name: Deploy wallet-server to Azure Container Instances
         uses: "azure/aci-deploy@v1"
         with:
-          name: GoBlockchain
+          name: wallet-server
           resource-group: Go_Blockchain
           location: northeurope
-          dns-name-label: Go-Blockchain
-          ports: |
-            5000:5000
-            5001:5001
-            5002:5002
-            5003:5003
-          image: |
-            wallet-server
-            miner-1
-            miner-1
-            miner-1
+          dns-name-label: wallet-server
+          ports: 5000
+          image: wallet-server:latest
           cpu: 1
           ip-address: Public
           memory: 1.5
