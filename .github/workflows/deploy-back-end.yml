@@ -33,8 +33,13 @@ jobs:
       - name: Build and Push Docker images
         run: |
           docker-compose build ${{ secrets.ACR_LOGIN_SERVER }}/wallet-server
-          docker-compose push 
-            ${{ secrets.ACR_LOGIN_SERVER }}/wallet-server
+          echo "Built containers:"
+          docker images
+          docker-compose push ${{ secrets.ACR_LOGIN_SERVER }}/wallet-server
+          echo "Services:"
+          docker-compose config --services
+          echo "Running containers:"
+          docker-compose ps
 
       # - name: Deploy to Azure Container Instances
       #   uses: "azure/aci-deploy@v1"
