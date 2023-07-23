@@ -31,15 +31,9 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build and Push Docker images
-        env:
-          ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
         run: |
           docker-compose build wallet-server miner-1 miner-2 miner-3
-          docker-compose push 
-            ${{ env.ACR_LOGIN_SERVER }}/wallet-server:latest 
-            ${{ env.ACR_LOGIN_SERVER }}/miner-1:latest 
-            ${{ env.ACR_LOGIN_SERVER }}/miner-2:latest 
-            ${{ env.ACR_LOGIN_SERVER }}/miner-3:latest
+          docker-compose push ${{ secrets.ACR_LOGIN_SERVER }}/wallet-server:latest ${{ secrets.ACR_LOGIN_SERVER }}/miner-1:latest ${{ secrets.ACR_LOGIN_SERVER }}/miner-2:latest ${{ secrets.ACR_LOGIN_SERVER }}/miner-3:latest
 
       # - name: Deploy to Azure Container Instances
       #   uses: "azure/aci-deploy@v1"
