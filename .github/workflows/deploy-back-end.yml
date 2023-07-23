@@ -31,8 +31,9 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
 
       - name: Build and Push Docker images
+        # TODO: Use ${{ github.sha }} for tags
         run: |
-          docker-compose build wallet-server miner-1 miner-2 miner-3
+          docker-compose build -t wallet-server:latest miner-1:latest miner-2:latest miner-3:latest
           docker-compose push ${{ secrets.ACR_LOGIN_SERVER }}/wallet-server:latest ${{ secrets.ACR_LOGIN_SERVER }}/miner-1:latest ${{ secrets.ACR_LOGIN_SERVER }}/miner-2:latest ${{ secrets.ACR_LOGIN_SERVER }}/miner-3:latest
 
       # - name: Deploy to Azure Container Instances
