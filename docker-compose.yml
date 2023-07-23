@@ -33,7 +33,7 @@ services:
       - .:/app
     restart: unless-stopped
 
-  common_miner:
+  common-miner:
     image: goblockchain.azurecr.io/miner:latest
     build:
       context: ./blockchain_server
