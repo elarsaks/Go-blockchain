@@ -48,10 +48,10 @@ jobs:
             5002:5002
             5003:5003
           image: |
-            wallet-server:latest
-            miner-1:latest
-            miner-1:latest
-            miner-1:latest
+            wallet-server
+            miner-1
+            miner-1
+            miner-1
           cpu: 1
           ip-address: Public
           memory: 1.5
