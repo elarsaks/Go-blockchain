@@ -37,7 +37,7 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
     restart: unless-stopped
-
+  # TODO: use only one miner image
   miner_1:
     container_name: miner_1
     build:
