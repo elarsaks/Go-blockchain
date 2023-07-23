@@ -33,7 +33,7 @@ services:
       - .:/app
     restart: unless-stopped
 
-  common-miner:
+  miner-1:
     image: goblockchain.azurecr.io/miner:latest
     build:
       context: ./blockchain_server
@@ -44,16 +44,8 @@ services:
       - .:/app
     restart: unless-stopped
 
-  miner-1:
-    extends: common-miner
-    container_name: miner-1
-    ports:
-      - "${MINER_1_PORT}:${MINER_1_PORT}"
-    environment:
-      - BLOCKCHAIN_SERVER_PORT=${MINER_1_PORT}
-
   miner-2:
-    extends: common-miner
+    extends: miner-1
     container_name: miner-2
     ports:
       - "${MINER_2_PORT}:${MINER_2_PORT}"
@@ -61,7 +53,7 @@ services:
       - BLOCKCHAIN_SERVER_PORT=${MINER_2_PORT}
 
   miner-3:
-    extends: common-miner
+    extends: miner-1
     container_name: miner-3
     ports:
       - "${MINER_3_PORT}:${MINER_3_PORT}"

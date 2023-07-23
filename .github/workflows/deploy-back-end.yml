@@ -32,13 +32,8 @@ jobs:
 
       - name: Build and Push Docker images
         run: |
-          docker-compose build 
-            ${{ secrets.ACR_LOGIN_SERVER }}/wallet-server 
-            ${{ secrets.ACR_LOGIN_SERVER }}/common-miner
-            
-          docker-compose push 
-            ${{ secrets.ACR_LOGIN_SERVER }}/wallet-server 
-            ${{ secrets.ACR_LOGIN_SERVER }}/common-miner
+          docker-compose build wallet-server miner-1
+          docker-compose push wallet-server miner-1
 
       # - name: Deploy to Azure Container Instances
       #   uses: "azure/aci-deploy@v1"
