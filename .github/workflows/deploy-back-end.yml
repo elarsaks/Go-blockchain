@@ -34,17 +34,12 @@ jobs:
         env:
           ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
         run: |
-          docker-compose build 
-            wallet-server:${{ github.sha }} 
-            miner-1:${{ github.sha }}
-            miner-2:${{ github.sha }} 
-            miner-3:${{ github.sha }} 
-            
+          docker-compose build wallet-server miner-1 miner-2 miner-3
           docker-compose push 
-            ${{ env.ACR_LOGIN_SERVER }}/wallet-server:${{ github.sha }} 
-            ${{ env.ACR_LOGIN_SERVER }}/miner-1:${{ github.sha }}  
-            ${{ env.ACR_LOGIN_SERVER }}/miner-2:${{ github.sha }}  
-            ${{ env.ACR_LOGIN_SERVER }}/miner-3:${{ github.sha }}
+            ${{ env.ACR_LOGIN_SERVER }}/dev/wallet-server:latest 
+            ${{ env.ACR_LOGIN_SERVER }}/dev/miner-1:latest 
+            ${{ env.ACR_LOGIN_SERVER }}/dev/miner-2:latest 
+            ${{ env.ACR_LOGIN_SERVER }}/dev/miner-3:latest
 
       # - name: Deploy to Azure Container Instances
       #   uses: "azure/aci-deploy@v1"
