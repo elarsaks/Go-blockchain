@@ -30,31 +30,40 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Build and Push Docker images
+      - name: Build Docker images
         run: |
-          docker-compose build wallet-server miner-1 miner-2 miner-3
-          docker-compose push wallet-server miner-1 miner-2 miner-3
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/dev/wallet-server:latest
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-1:latest
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-2:latest
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-3:latest
 
-      - name: Deploy to Azure Container Instances
-        uses: "azure/aci-deploy@v1"
-        with:
-          name: GoBlockchain
-          resource-group: Go_Blockchain
-          location: northeurope
-          dns-name-label: Go-Blockchain
-          ports: |
-            5000:5000
-            5001:5001
-            5002:5002
-            5003:5003
-          image: |
-            ${{ secrets.ACR_LOGIN_SERVER }}/dev/wallet-server:latest
-            ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-1:latest
-            ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-2:latest
-            ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-3:latest
-          cpu: 1
-          ip-address: Public
-          memory: 1.5
-          os-type: Linux
-          protocol: TCP
-          restart-policy: Always
+      - name: Push Docker images
+        run: |
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/dev/wallet-server:latest
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-1:latest
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-2:latest
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-3:latest
+
+      # - name: Deploy to Azure Container Instances
+      #   uses: "azure/aci-deploy@v1"
+      #   with:
+      #     name: GoBlockchain
+      #     resource-group: Go_Blockchain
+      #     location: northeurope
+      #     dns-name-label: Go-Blockchain
+      #     ports: |
+      #       5000:5000
+      #       5001:5001
+      #       5002:5002
+      #       5003:5003
+      #     image: |
+      #       ${{ secrets.ACR_LOGIN_SERVER }}/dev/wallet-server:latest
+      #       ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-1:latest
+      #       ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-2:latest
+      #       ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-3:latest
+      #     cpu: 1
+      #     ip-address: Public
+      #     memory: 1.5
+      #     os-type: Linux
+      #     protocol: TCP
+      #     restart-policy: Always
