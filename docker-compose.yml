@@ -18,7 +18,7 @@ services:
       - /app/node_modules
 
   wallet-server:
-    image: goblockchain.azurecr.io/wallet-server:latest
+    # image: goblockchain.azurecr.io/wallet-server:latest
     container_name: wallet-server
     build:
       context: ./wallet_server
@@ -38,11 +38,15 @@ services:
     restart: unless-stopped
 
   miner-1: # TODO: use only one miner image
-    image: goblockchain.azurecr.io/miner-1:latest
+    # image: goblockchain.azurecr.io/miner-1:latest
     container_name: miner-1
     build:
       context: ./blockchain_server
+      dockerfile: Dockerfile
+    ports:
+      - "${MINER_1_PORT}:${MINER_1_PORT}"
     environment:
+      - BLOCKCHAIN_SERVER_PORT=${MINER_1_PORT}
       - COMMAND=air
     volumes:
       - ./blockchain_server:/app
@@ -53,7 +57,7 @@ services:
       - ./go.sum:/app/go.sum:ro
 
   miner-2:
-    image: goblockchain.azurecr.io/miner-2
+    # image: goblockchain.azurecr.io/miner-2
     container_name: miner-2
     build:
       context: ./blockchain_server
@@ -73,7 +77,7 @@ services:
     restart: unless-stopped
 
   miner-3:
-    image: goblockchain.azurecr.io/miner-3:latest
+    # mage: goblockchain.azurecr.io/miner-3:latest
     container_name: miner-3
     build:
       context: ./blockchain_server
