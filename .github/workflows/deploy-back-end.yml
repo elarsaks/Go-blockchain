@@ -43,7 +43,7 @@ jobs:
           location: northeurope
           dns-name-label: wallet-server
           ports: 5000
-          image: wallet-server:latest
+          image: wallet-server
           cpu: 1
           ip-address: Public
           memory: 1.5
