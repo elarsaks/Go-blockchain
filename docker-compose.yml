@@ -37,9 +37,9 @@ services:
       - ./go.sum:/app/go.sum:ro
     restart: unless-stopped
 
-  miner_1: # TODO: use only one miner image
-    image: goblockchain.azurecr.io/miner_1
-    container_name: miner_1
+  miner-1: # TODO: use only one miner image
+    image: goblockchain.azurecr.io/miner-1
+    container_name: miner-1
     build:
       context: ./blockchain_server
     environment:
@@ -52,9 +52,9 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  miner_2:
-    image: goblockchain.azurecr.io/miner_2
-    container_name: miner_2
+  miner-2:
+    image: goblockchain.azurecr.io/miner-2
+    container_name: miner-2
     build:
       context: ./blockchain_server
       dockerfile: Dockerfile
@@ -72,9 +72,9 @@ services:
       - ./go.sum:/app/go.sum:ro
     restart: unless-stopped
 
-  miner_3:
-    image: goblockchain.azurecr.io/miner_3
-    container_name: miner_3
+  miner-3:
+    image: goblockchain.azurecr.io/miner-3
+    container_name: miner-3
     build:
       context: ./blockchain_server
       dockerfile: Dockerfile
