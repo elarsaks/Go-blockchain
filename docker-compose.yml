@@ -55,7 +55,7 @@ services:
       - ./go.sum:/app/go.sum:ro
 
   miner-2:
-    image: goblockchain.azurecr.io/goblockchain/miner-2:latest
+    image: goblockchain.azurecr.io/GoBlockchain/miner-2:latest
     container_name: miner-2
     build:
       context: ./blockchain_server

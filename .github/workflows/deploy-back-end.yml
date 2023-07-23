@@ -44,10 +44,6 @@ jobs:
             5002:5002
             5003:5003
           image: ${{ secrets.ACR_LOGIN_SERVER }}/GoBlockchain
-          registry-login-server: ${{ secrets.ACR_LOGIN_SERVER }}
-          registry-username: ${{ secrets.ACR_USERNAME }}
-          registry-password: ${{ secrets.ACR_PASSWORD }}
-          cpu: 1
           ip-address: Public
           memory: 1.5
           os-type: Linux
