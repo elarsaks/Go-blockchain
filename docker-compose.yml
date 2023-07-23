@@ -35,9 +35,10 @@ services:
       - ./wallet:/app/wallet
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
-
-  # Default miners template
-  miners_template: &miners_template #image: goblockchain.azurecr.io/miner-1
+    restart: unless-stopped
+  # TODO: use only one miner image
+  miner_1:
+    container_name: miner_1
     build:
       context: ./blockchain_server
     environment:
@@ -50,22 +51,43 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
 
-  # Configuration for each miner (using the defined template with different ports)
-  miner-1:
-    <<: *miners_template
-    container_name: miner-1
-    ports:
-      - "${MINER_1_PORT}:${MINER_1_PORT}"
-    environment:
-      - PORT=${MINER_1_PORT}
-
-  miner-2:
-    <<: *miners_template
-    container_name: miner-2
+  miner_2:
+    container_name: miner_2
+    build:
+      context: ./blockchain_server
+      dockerfile: Dockerfile
     ports:
       - "${MINER_2_PORT}:${MINER_2_PORT}"
     environment:
-      - PORT=${MINER_2_PORT}
+      - BLOCKCHAIN_SERVER_PORT=${MINER_2_PORT}
+      - COMMAND=air
+    volumes:
+      - ./blockchain_server:/app/blockchain_server
+      - ./block:/app/block
+      - ./utils:/app/utils
+      - ./wallet:/app/wallet
+      - ./go.mod:/app/go.mod:ro
+      - ./go.sum:/app/go.sum:ro
+    restart: unless-stopped
+
+  miner_3:
+    container_name: miner_3
+    build:
+      context: ./blockchain_server
+      dockerfile: Dockerfile
+    ports:
+      - "${MINER_3_PORT}:${MINER_3_PORT}"
+    environment:
+      - BLOCKCHAIN_SERVER_PORT=${MINER_3_PORT}
+      - COMMAND=air
+    volumes:
+      - ./blockchain_server:/app/blockchain_server
+      - ./block:/app/block
+      - ./utils:/app/utils
+      - ./wallet:/app/wallet
+      - ./go.mod:/app/go.mod:ro
+      - ./go.sum:/app/go.sum:ro
+    restart: unless-stopped
 
   miner-3:
     <<: *miners_template
