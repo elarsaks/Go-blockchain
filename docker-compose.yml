@@ -18,7 +18,7 @@ services:
       - /app/node_modules
 
   wallet-server:
-    #image: goblockchain.azurecr.io/wallet-server
+    image: goblockchain.azurecr.io/wallet-server
     container_name: wallet-server
     build:
       context: ./wallet_server
@@ -36,8 +36,9 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
     restart: unless-stopped
-  # TODO: use only one miner image
-  miner_1:
+
+  miner_1: # TODO: use only one miner image
+    image: goblockchain.azurecr.io/miner_1
     container_name: miner_1
     build:
       context: ./blockchain_server
@@ -52,6 +53,7 @@ services:
       - ./go.sum:/app/go.sum:ro
 
   miner_2:
+    image: goblockchain.azurecr.io/miner_2
     container_name: miner_2
     build:
       context: ./blockchain_server
@@ -71,6 +73,7 @@ services:
     restart: unless-stopped
 
   miner_3:
+    image: goblockchain.azurecr.io/miner_3
     container_name: miner_3
     build:
       context: ./blockchain_server
@@ -88,11 +91,3 @@ services:
       - ./go.mod:/app/go.mod:ro
       - ./go.sum:/app/go.sum:ro
     restart: unless-stopped
-
-  miner-3:
-    <<: *miners_template
-    container_name: miner-3
-    ports:
-      - "${MINER_3_PORT}:${MINER_3_PORT}"
-    environment:
-      - PORT=${MINER_3_PORT}
