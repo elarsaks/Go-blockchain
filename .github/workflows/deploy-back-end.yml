@@ -23,34 +23,35 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Build and Push Docker images
-        env:
-          ACR_LOGIN_SERVER: ${{ secrets.ACR_LOGIN_SERVER }}
-          ACR_REPOSITORY_NAME: GoBlockchain
-        run: |
-          docker-compose build wallet-server miner-1 miner-2 miner-3
-          docker-compose push wallet-server miner-1 miner-2 miner-3
-
-      - name: "Docker Login"
+      - name: "ACR Login"
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.ACR_LOGIN_SERVER }}
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
+      - name: Build and Push Docker images
+        run: |
+          docker-compose build wallet-server miner-1 miner-2 miner-3
+          docker-compose push wallet-server miner-1 miner-2 miner-3
+
       - name: Deploy to Azure Container Instances
         uses: "azure/aci-deploy@v1"
         with:
           name: GoBlockchain
           resource-group: Go_Blockchain
-          location: Sweden Central
+          location: northeurope
           dns-name-label: Go-Blockchain
           ports: |
             5000:5000
             5001:5001
             5002:5002
             5003:5003
-          image: ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-1:latest
+          image: |
+            ${{ secrets.ACR_LOGIN_SERVER }}/dev/wallet-server:latest
+            ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-1:latest
+            ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-2:latest
+            ${{ secrets.ACR_LOGIN_SERVER }}/dev/miner-3:latest
           cpu: 1
           ip-address: Public
           memory: 1.5
