@@ -1,21 +1,21 @@
 version: "3.8"
 
 services:
-  # react_dashboard:
-  #   build:
-  #     context: ./react_dashboard
-  #   command: npm run start
-  #   container_name: react_dashboard
-  #   restart: unless-stopped
-  #   ports:
-  #     - "${DASHBOARD_PORT}:${DASHBOARD_PORT}"
-  #   environment:
-  #     - REACT_APP_MINER_1=${REACT_APP_MINER_1}
-  #     - REACT_APP_MINER_2=${REACT_APP_MINER_2}
-  #     - REACT_APP_MINER_3=${REACT_APP_MINER_3}
-  #   volumes:
-  #     - ./react_dashboard:/app
-  #     - /app/node_modules
+  react_dashboard:
+    build:
+      context: ./react_dashboard
+    command: npm run start
+    container_name: react_dashboard
+    restart: unless-stopped
+    ports:
+      - "${DASHBOARD_PORT}:${DASHBOARD_PORT}"
+    environment:
+      - REACT_APP_MINER_1=${REACT_APP_MINER_1}
+      - REACT_APP_MINER_2=${REACT_APP_MINER_2}
+      - REACT_APP_MINER_3=${REACT_APP_MINER_3}
+    volumes:
+      - ./react_dashboard:/app
+      - /app/node_modules
 
   wallet-server:
     image: goblockchain.azurecr.io/wallet-server:latest
