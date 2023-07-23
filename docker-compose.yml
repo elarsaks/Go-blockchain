@@ -45,7 +45,7 @@ services:
     restart: unless-stopped
 
   miner-1:
-    extends: common_miner
+    extends: common-miner
     container_name: miner-1
     ports:
       - "${MINER_1_PORT}:${MINER_1_PORT}"
@@ -53,7 +53,7 @@ services:
       - BLOCKCHAIN_SERVER_PORT=${MINER_1_PORT}
 
   miner-2:
-    extends: common_miner
+    extends: common-miner
     container_name: miner-2
     ports:
       - "${MINER_2_PORT}:${MINER_2_PORT}"
@@ -61,7 +61,7 @@ services:
       - BLOCKCHAIN_SERVER_PORT=${MINER_2_PORT}
 
   miner-3:
-    extends: common_miner
+    extends: common-miner
     container_name: miner-3
     ports:
       - "${MINER_3_PORT}:${MINER_3_PORT}"
