@@ -1,10 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  fetchMinerWalletDetails,
-  fetchUserWalletDetails,
-  fetchWalletBalance,
-} from "../../api/wallet";
+import { fetchMinerWalletDetails } from "../../api/miner";
+import { fetchUserWalletDetails, fetchWalletBalance } from "../../api/wallet";
 
 const TitleRow = styled.div`
   display: flex;
