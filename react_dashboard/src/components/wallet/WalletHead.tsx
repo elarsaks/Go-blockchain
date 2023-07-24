@@ -51,6 +51,8 @@ const WALLET_SERVER_URL = REACT_APP_GATEWAY_API_URL
   ? REACT_APP_GATEWAY_API_URL
   : "goblockchain.azurecr.io";
 
+console.log("WALLET_SERVER_URL", WALLET_SERVER_URL);
+
 const selectedMinerUrls = {
   miner1: WALLET_SERVER_URL || "http://localhost:5001",
   miner2: WALLET_SERVER_URL || "http://localhost:5002",

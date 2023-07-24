@@ -246,7 +246,22 @@ func (ws *WalletServer) Run() {
 	router := mux.NewRouter()
 	router.Use(utils.CorsMiddleware())
 
-	// Define routes
+	// Map to store route descriptions
+	routeDescriptions := map[string]string{
+		"/":               "index",
+		"/wallet":         "Wallet description...",
+		"/wallet/balance": "Wallet balance description...",
+		"/transaction":    "Transaction description...",
+		"/miner/blocks":   "Miner blocks description...",
+	}
+
+	// Return API route descriptions
+	router.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(routeDescriptions)
+	})
+
+	// Register routes
 	router.HandleFunc("/wallet", ws.Wallet)
 	router.HandleFunc("/wallet/balance", ws.WalletBalance)
 	router.HandleFunc("/transaction", ws.CreateTransaction)
@@ -272,7 +287,7 @@ func main() {
 	portStr := os.Getenv("PORT")
 	port, err := strconv.Atoi(portStr)
 	if err != nil || port <= 0 {
-		port = 5000 // Default value
+		port = 8080 // Default value
 	}
 
 	// Create and run the WalletServer with the configured ports and gateway
