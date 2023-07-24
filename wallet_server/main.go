@@ -227,20 +227,19 @@ func main() {
 	gateway := os.Getenv("WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN")
 
 	if gateway == "" {
-		gateway = "http://127.0.0.1:5001" // Default value
+		gateway = "http://127.0.0.1:5002" // Default value
 	}
 
-	// Retrieve port from environment variable
-	portStr := os.Getenv("PORT")
-	port, err := strconv.Atoi(portStr)
-	if err != nil || port <= 0 {
-		port = 5000 // Default value
-	}
+	// Set the default ports for HTTP (port 8080) and HTTPS (port 443)
+	portHTTP := 8080
+	// portHTTPS := 443
 
-	// Print gateway and port
+	// Print gateway and ports
 	log.Printf("Gateway to blockchain: %s\n", gateway)
-	log.Printf("Port: %d\n", port)
+	log.Printf("HTTP Port: %d\n", portHTTP)
+	// log.Printf("HTTPS Port: %d\n", portHTTPS)
 
-	app := NewWalletServer(uint16(port), gateway)
+	// Create and run the WalletServer with the configured ports and gateway
+	app := NewWalletServer(uint16(portHTTP) /* uint16(portHTTPS), */, gateway)
 	app.Run()
 }

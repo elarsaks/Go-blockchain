@@ -46,7 +46,7 @@ Users can access the client UI to interact with the blockchain. The API gateway 
 - Docker & Docker Compose  
 
 **Running:**  
-- To run full-stack application  docker, at the root of this project folder run:
+- To run full-stack application in docker, at the root of this project folder run:
 ```bash
 docker-compose up --build
 ```
