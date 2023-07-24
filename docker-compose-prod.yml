@@ -1,5 +1,6 @@
 version: "3.8"
 
+#This file gets fed to the Azure app service to deploy the application
 services:
   wallet-server:
     image: goblockchain.azurecr.io/wallet-server:latest

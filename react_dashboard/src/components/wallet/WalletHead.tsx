@@ -46,10 +46,15 @@ interface WalletHeadProps {
   setIsError: Dispatch<SetStateAction<LocalError>>;
 }
 
+const { REACT_APP_GATEWAY_API_URL } = process.env;
+const WALLET_SERVER_URL = REACT_APP_GATEWAY_API_URL
+  ? REACT_APP_GATEWAY_API_URL
+  : "goblockchain.azurecr.io";
+
 const selectedMinerUrls = {
-  miner1: process.env.REACT_APP_MINER_1 || "http://localhost:5001",
-  miner2: process.env.REACT_APP_MINER_2 || "http://localhost:5001",
-  miner3: process.env.REACT_APP_MINER_3 || "http://localhost:5001",
+  miner1: WALLET_SERVER_URL || "http://:5001",
+  miner2: WALLET_SERVER_URL || "http://localhost:5002",
+  miner3: WALLET_SERVER_URL || "http://localhost:5003",
 };
 
 const miners = [

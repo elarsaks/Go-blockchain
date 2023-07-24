@@ -10,3 +10,6 @@ build
 
 # Ignore env file
 .env
+
+# Ignore keys folder
+keys/*
