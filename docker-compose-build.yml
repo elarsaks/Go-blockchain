@@ -4,13 +4,13 @@ services:
   react-dashboard:
     build:
       context: ./react_dashboard
-    command: npm run start
+    command: npm run start-react
     container_name: react-dashboard
     restart: unless-stopped
     ports:
       - 3000:3000
     environment:
-      - REACT_APP_API_URL='http://go-blockchain.azurewebsites.net/'
+      - REACT_APP_GATEWAY_API_URL='https://go-blockchain.azurewebsites.net/'
     volumes:
       - ./react_dashboard:/app
       - /app/node_modules
