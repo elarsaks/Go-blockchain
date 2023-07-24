@@ -123,10 +123,10 @@ func (bc *Blockchain) LastBlock() *Block {
 }
 
 // Get last 10 blocks of the Blockchain
-func (bc *Blockchain) GetLast10Blocks() []*Block {
+func (bc *Blockchain) GetBlocks(amount int) []*Block {
 	n := len(bc.chain)
 	var last10Blocks []*Block
-	if n > 10 {
+	if n > amount {
 		last10Blocks = append([]*Block(nil), bc.chain[n-10:n]...)
 	} else {
 		last10Blocks = append([]*Block(nil), bc.chain...)

@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -72,12 +73,14 @@ func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) 
 }
 
 // Get the last 10 blocks of the BlockchainServer
-func (bcs *BlockchainServer) GetLast10Blocks(w http.ResponseWriter, req *http.Request) {
+func (bcs *BlockchainServer) GetBlocks(w http.ResponseWriter, req *http.Request) {
+
+	fmt.Println("GetBlocks from Miner")
 	switch req.Method {
 	case http.MethodGet:
 		w.Header().Add("Content-Type", "application/json")
 		bc := bcs.GetBlockchain()
-		m, _ := json.Marshal(bc.GetLast10Blocks())
+		m, _ := json.Marshal(bc.GetBlocks(10))
 		io.WriteString(w, string(m[:]))
 	default:
 		log.Printf("ERROR: Invalid HTTP Method")
@@ -336,7 +339,7 @@ func (bcs *BlockchainServer) Run() {
 	router.HandleFunc("/miner/wallet", bcs.MinerWallet)
 	router.HandleFunc("/wallet/register", bcs.RegisterWallet)
 	router.HandleFunc("/", bcs.GetChain)
-	router.HandleFunc("/last10", bcs.GetLast10Blocks)
+	router.HandleFunc("/miner/blocks", bcs.GetBlocks)
 	router.HandleFunc("/transactions", bcs.Transactions)
 	router.HandleFunc("/mine", bcs.Mine)
 	router.HandleFunc("/mine/start", bcs.StartMine)

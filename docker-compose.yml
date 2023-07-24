@@ -1,24 +1,20 @@
 version: "3.8"
 
 services:
-  react_dashboard:
+  react-dashboard:
     build:
       context: ./react_dashboard
     command: npm run start
-    container_name: react_dashboard
+    container_name: react-dashboard
     restart: unless-stopped
     ports:
       - 3000:3000
-    environment:
-      - REACT_APP_MINER_1=http://localhost:5001
-      - REACT_APP_MINER_2=http://localhost:5002
-      - REACT_APP_MINER_3=http://localhost:5003
     volumes:
       - ./react_dashboard:/app
       - /app/node_modules
 
   wallet-server:
-    image: goblockchain.azurecr.io/wallet-server:latest
+    #image: goblockchain.azurecr.io/wallet-server:latest
     container_name: wallet-server
     build:
       context: .
@@ -27,14 +23,13 @@ services:
       - 5000:5000
     environment:
       - WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN=http://miner-2:5002
-      - WALLET_SERVER_PORT=5000
       - COMMAND=air
     volumes:
       - .:/app
     restart: unless-stopped
 
   miner-1:
-    image: goblockchain.azurecr.io/miner:latest
+    #image: goblockchain.azurecr.io/miner:latest
     build:
       context: .
       dockerfile: ./blockchain_server/Dockerfile
@@ -42,7 +37,7 @@ services:
       - 5001:5001
     environment:
       - COMMAND=air
-      - BLOCKCHAIN_SERVER_PORT=5001
+      - PORT=5001
     volumes:
       - .:/app
     restart: unless-stopped

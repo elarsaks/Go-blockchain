@@ -13,7 +13,7 @@ RUN go install github.com/cosmtrek/air@latest
 WORKDIR /app/wallet_server
 
 # Set the port number to expose for HTTP (port 8080)
-EXPOSE 8080
+EXPOSE ${WALLET_SERVER_PORT}
 
 # Set the port number to expose for HTTPS (port 443)
 EXPOSE 443
