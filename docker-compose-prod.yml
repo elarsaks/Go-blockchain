@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  wallet-server:
+    image: goblockchain.azurecr.io/wallet-server:latest
+    container_name: wallet-server
+    ports:
+      - 8080:8080
+      - 443:443
+    environment:
+      - WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN=http://miner-2:5002
+      - COMMAND=air
+      - DOCKER_REGISTRY_SERVER_USERNAME=${DOCKER_REGISTRY_SERVER_USERNAME}
+      - DOCKER_REGISTRY_SERVER_URL=${DOCKER_REGISTRY_SERVER_URL}
+      - DOCKER_REGISTRY_SERVER_PASSWORD=${DOCKER_REGISTRY_SERVER_PASSWORD}
+    restart: unless-stopped
+
+  miner-1:
+    image: goblockchain.azurecr.io/miner:latest
+    ports:
+      - 5001:5001
+    environment:
+      - COMMAND=air
+      - BLOCKCHAIN_SERVER_PORT=5001
+      - DOCKER_REGISTRY_SERVER_USERNAME=${DOCKER_REGISTRY_SERVER_USERNAME}
+      - DOCKER_REGISTRY_SERVER_URL=${DOCKER_REGISTRY_SERVER_URL}
+      - DOCKER_REGISTRY_SERVER_PASSWORD=${DOCKER_REGISTRY_SERVER_PASSWORD}
+    restart: unless-stopped
+
+  miner-2:
+    image: goblockchain.azurecr.io/miner:latest
+    container_name: miner-2
+    ports:
+      - 5002:5002
+    environment:
+      - COMMAND=air
+      - PORT=5002
+      - DOCKER_REGISTRY_SERVER_USERNAME=${DOCKER_REGISTRY_SERVER_USERNAME}
+      - DOCKER_REGISTRY_SERVER_URL=${DOCKER_REGISTRY_SERVER_URL}
+      - DOCKER_REGISTRY_SERVER_PASSWORD=${DOCKER_REGISTRY_SERVER_PASSWORD}
+    restart: unless-stopped
+
+  miner-3:
+    image: goblockchain.azurecr.io/miner:latest
+    container_name: miner-3
+    ports:
+      - 5003:5003
+    environment:
+      - COMMAND=air
+      - PORT=5003
+      - DOCKER_REGISTRY_SERVER_USERNAME=${DOCKER_REGISTRY_SERVER_USERNAME}
+      - DOCKER_REGISTRY_SERVER_URL=${DOCKER_REGISTRY_SERVER_URL}
+      - DOCKER_REGISTRY_SERVER_PASSWORD=${DOCKER_REGISTRY_SERVER_PASSWORD}
+    restart: unless-stopped
