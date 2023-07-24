@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
 
   miner-1:
-    image: goblockchain.azurecr.io/miner-1:latest
+    image: goblockchain.azurecr.io/miner:latest
     build:
       context: ./blockchain_server
       dockerfile: Dockerfile
@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
 
   miner-2:
-    image: goblockchain.azurecr.io/miner-1:latest
+    image: goblockchain.azurecr.io/miner:latest
     container_name: miner-2
     ports:
       - 5002:5002
@@ -60,7 +60,7 @@ services:
     restart: unless-stopped
 
   miner-3:
-    image: goblockchain.azurecr.io/miner-1:latest
+    image: goblockchain.azurecr.io/miner:latest
     container_name: miner-3
     ports:
       - 5003:5003
