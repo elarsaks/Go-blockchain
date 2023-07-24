@@ -36,8 +36,8 @@ services:
   miner-1:
     image: goblockchain.azurecr.io/miner:latest
     build:
-      context: ./blockchain_server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./blockchain_server/Dockerfile
     ports:
       - 5001:5001
     environment:

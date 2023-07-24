@@ -8,8 +8,5 @@ tmp
 #Ignore React build
 build
 
-# Ignore docker-compose deployment file
-docker-compose-deploy.yml
-
 # Ignore env file
 .env
