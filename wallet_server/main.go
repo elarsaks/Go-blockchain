@@ -203,6 +203,43 @@ func (ws *WalletServer) WalletBalance(w http.ResponseWriter, req *http.Request) 
 	}
 }
 
+// Handler function to get requested blocks
+func (ws *WalletServer) GetBlocks(w http.ResponseWriter, req *http.Request) {
+	// Get the 'amount' query parameter from the URL
+	amountStr := req.URL.Query().Get("amount")
+	amount, err := strconv.Atoi(amountStr)
+	if err != nil || amount <= 0 {
+		http.Error(w, "Invalid amount parameter", http.StatusBadRequest)
+		return
+	}
+
+	// Make a GET request to miner-2's API to fetch blocks
+	resp, err := http.Get(fmt.Sprintf(ws.Gateway()+"/miner/blocks?amount=%d", amount))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Check the response status code
+	if resp.StatusCode != http.StatusOK {
+		http.Error(w, "Error fetching blocks from miner-2", resp.StatusCode)
+		return
+	}
+
+	// Decode the JSON response into a slice of Block
+	var blocks []block.Block
+	if err := json.NewDecoder(resp.Body).Decode(&blocks); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Respond with JSON-encoded blocks
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // Example CORS header, customize as needed
+	json.NewEncoder(w).Encode(blocks)
+}
+
 // Run the WalletServer
 func (ws *WalletServer) Run() {
 	// Create router
@@ -213,6 +250,7 @@ func (ws *WalletServer) Run() {
 	router.HandleFunc("/wallet", ws.Wallet)
 	router.HandleFunc("/wallet/balance", ws.WalletBalance)
 	router.HandleFunc("/transaction", ws.CreateTransaction)
+	router.HandleFunc("/miner/blocks", ws.GetBlocks)
 
 	// Start server
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.Port())), router))
@@ -227,19 +265,17 @@ func main() {
 	gateway := os.Getenv("WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN")
 
 	if gateway == "" {
-		gateway = "http://127.0.0.1:5002" // Default value
+		gateway = "http://miner-2:5001" // Default value
 	}
 
-	// Set the default ports for HTTP (port 8080) and HTTPS (port 443)
-	portHTTP := 8080
-	// portHTTPS := 443
-
-	// Print gateway and ports
-	log.Printf("Gateway to blockchain: %s\n", gateway)
-	log.Printf("HTTP Port: %d\n", portHTTP)
-	// log.Printf("HTTPS Port: %d\n", portHTTPS)
+	// Retrieve port from environment variable
+	portStr := os.Getenv("PORT")
+	port, err := strconv.Atoi(portStr)
+	if err != nil || port <= 0 {
+		port = 5000 // Default value
+	}
 
 	// Create and run the WalletServer with the configured ports and gateway
-	app := NewWalletServer(uint16(portHTTP) /* uint16(portHTTPS), */, gateway)
+	app := NewWalletServer(uint16(port), gateway)
 	app.Run()
 }

@@ -1,8 +1,13 @@
 import axios from "axios";
 
+const { REACT_APP_API_URL } = process.env;
+const WALLET_SERVER_URL = REACT_APP_API_URL
+  ? REACT_APP_API_URL
+  : "goblockchain.azurecr.io"; // During build there is no env variables
+
 function fetchBlockchainData(): Promise<[Block]> {
   return axios
-    .get<[Block]>("http://localhost:5001/last10") // TODO: this should be docker container name
+    .get<[Block]>(WALLET_SERVER_URL + "/miner/blocks?amount=10")
     .then((response) => response.data);
 }
 

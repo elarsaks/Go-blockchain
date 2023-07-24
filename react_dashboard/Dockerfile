@@ -6,4 +6,4 @@ RUN chown node:node /app
 USER node
 RUN npm install 
 COPY --chown=node . /app
-EXPOSE ${DASHBOARD_PORT}
+EXPOSE 3000
