@@ -13,10 +13,10 @@ RUN go install github.com/cosmtrek/air@latest
 WORKDIR /app/wallet_server
 
 # Set the port number to expose for HTTP (port 8080)
-EXPOSE ${WALLET_SERVER_PORT}
+EXPOSE ${PORT}
 
 # Set the port number to expose for HTTPS (port 443)
-EXPOSE 443
+# EXPOSE 443 Azure App Service automatically handles the redirection of HTTPS traffic from port 443 to port 8080
 
 # Set the default command to run the application
 CMD ["sh", "-c", "${COMMAND}"]
