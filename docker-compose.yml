@@ -8,11 +8,11 @@ services:
     container_name: react_dashboard
     restart: unless-stopped
     ports:
-      - "${DASHBOARD_PORT}:${DASHBOARD_PORT}"
+      - 3000:3000
     environment:
-      - REACT_APP_MINER_1=${REACT_APP_MINER_1}
-      - REACT_APP_MINER_2=${REACT_APP_MINER_2}
-      - REACT_APP_MINER_3=${REACT_APP_MINER_3}
+      - REACT_APP_MINER_1=http://localhost:5001
+      - REACT_APP_MINER_2=http://localhost:5002
+      - REACT_APP_MINER_3=http://localhost:5003
     volumes:
       - ./react_dashboard:/app
       - /app/node_modules
