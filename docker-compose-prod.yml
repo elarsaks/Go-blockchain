@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   wallet-server:
-    image: ${DOCKER_REGISTRY_SERVER_URL}/wallet-server:latest
+    image: goblockchain.azurecr.io/wallet-server:latest
     container_name: wallet-server
     ports:
       - 5000:5000
@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
 
   miner-1:
-    image: ${DOCKER_REGISTRY_SERVER_URL}/miner:latest
+    image: goblockchain.azurecr.io/miner:latest
     ports:
       - 5001:5001
     environment:
@@ -28,7 +28,7 @@ services:
     restart: unless-stopped
 
   miner-2:
-    image: ${DOCKER_REGISTRY_SERVER_URL}/miner:latest
+    image: goblockchain.azurecr.io/miner:latest
     container_name: miner-2
     ports:
       - 5002:5002
@@ -41,7 +41,7 @@ services:
     restart: unless-stopped
 
   miner-3:
-    image: ${DOCKER_REGISTRY_SERVER_URL}/miner:latest
+    image: goblockchain.azurecr.io/miner:latest
     container_name: miner-3
     ports:
       - 5003:5003
