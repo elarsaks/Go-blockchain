@@ -5,13 +5,14 @@ const WALLET_SERVER_URL = REACT_APP_GATEWAY_API_URL
   ? REACT_APP_GATEWAY_API_URL
   : "goblockchain.azurecr.io"; // During build there is no env variables
 
+// Fetch latest blocks
 function fetchBlockchainData(): Promise<[Block]> {
   return axios
     .get<[Block]>(WALLET_SERVER_URL + "/miner/blocks?amount=10")
     .then((response) => response.data);
 }
 
-// TODO: Take into blockchain api file
+// Fetch miner wallet details
 function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
   return axios
     .post<WalletDetailsResponse>(minerAdress + "/miner/wallet")

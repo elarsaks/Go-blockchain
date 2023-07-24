@@ -240,6 +240,46 @@ func (ws *WalletServer) GetBlocks(w http.ResponseWriter, req *http.Request) {
 	json.NewEncoder(w).Encode(blocks)
 }
 
+// Handler function to get requested blocks
+func (ws *WalletServer) GetMinerWallet(w http.ResponseWriter, req *http.Request) {
+	// Get the 'miner' query parameter from the URL
+	minerId := req.URL.Query().Get("miner")
+
+	// Make a GET request to miner's API to fetch the wallet
+	resp, err := http.Get(fmt.Sprintf("http://%s/miner/wallet", minerId))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
+
+	// Check the response status code
+	if resp.StatusCode != http.StatusOK {
+		http.Error(w, fmt.Sprintf("Error fetching wallet from %s", minerId), resp.StatusCode)
+		return
+	}
+
+	// Decode the JSON response into a struct or a map
+	var walletData map[string]interface{}
+	err = json.NewDecoder(resp.Body).Decode(&walletData)
+	if err != nil {
+		http.Error(w, "Error decoding wallet response", http.StatusInternalServerError)
+		return
+	}
+
+	// Set the CORS headers
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*") // Example CORS header, customize as needed
+
+	// Encode the wallet data to JSON and write it to the response
+	jsonData, err := json.Marshal(walletData)
+	if err != nil {
+		http.Error(w, "Error encoding wallet data", http.StatusInternalServerError)
+		return
+	}
+	w.Write(jsonData)
+}
+
 // Run the WalletServer
 func (ws *WalletServer) Run() {
 	// Create router
@@ -266,6 +306,7 @@ func (ws *WalletServer) Run() {
 	router.HandleFunc("/wallet/balance", ws.WalletBalance)
 	router.HandleFunc("/transaction", ws.CreateTransaction)
 	router.HandleFunc("/miner/blocks", ws.GetBlocks)
+	router.HandleFunc("/miner/wallet", ws.GetMinerWallet)
 
 	// Start server
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.Port())), router))

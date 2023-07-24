@@ -48,8 +48,6 @@ const WALLET_SERVER_URL = REACT_APP_GATEWAY_API_URL
   ? REACT_APP_GATEWAY_API_URL
   : "goblockchain.azurecr.io";
 
-console.log("WALLET_SERVER_URL", WALLET_SERVER_URL);
-
 const selectedMinerUrls = {
   miner1: WALLET_SERVER_URL || "http://localhost:5001",
   miner2: WALLET_SERVER_URL || "http://localhost:5002",
@@ -57,9 +55,9 @@ const selectedMinerUrls = {
 };
 
 const miners = [
-  { value: "miner1", text: "Miner 1", url: selectedMinerUrls.miner1 },
-  { value: "miner2", text: "Miner 2", url: selectedMinerUrls.miner2 },
-  { value: "miner3", text: "Miner 3", url: selectedMinerUrls.miner3 },
+  { value: "miner-1_1", text: "Miner 1", url: selectedMinerUrls.miner1 },
+  { value: "miner-2", text: "Miner 2", url: selectedMinerUrls.miner2 },
+  { value: "miner-3", text: "Miner 3", url: selectedMinerUrls.miner3 },
 ];
 
 const WalletHead: React.FC<WalletHeadProps> = ({
