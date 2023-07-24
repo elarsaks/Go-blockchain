@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -74,8 +73,6 @@ func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) 
 
 // Get the last 10 blocks of the BlockchainServer
 func (bcs *BlockchainServer) GetBlocks(w http.ResponseWriter, req *http.Request) {
-
-	fmt.Println("GetBlocks from Miner")
 	switch req.Method {
 	case http.MethodGet:
 		w.Header().Add("Content-Type", "application/json")

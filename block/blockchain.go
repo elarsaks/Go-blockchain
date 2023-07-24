@@ -122,12 +122,12 @@ func (bc *Blockchain) LastBlock() *Block {
 	return bc.chain[len(bc.chain)-1]
 }
 
-// Get last 10 blocks of the Blockchain
+// Get latest blocks of the Blockchain
 func (bc *Blockchain) GetBlocks(amount int) []*Block {
 	n := len(bc.chain)
 	var last10Blocks []*Block
 	if n > amount {
-		last10Blocks = append([]*Block(nil), bc.chain[n-10:n]...)
+		last10Blocks = append([]*Block(nil), bc.chain[n-amount:n]...)
 	} else {
 		last10Blocks = append([]*Block(nil), bc.chain...)
 	}

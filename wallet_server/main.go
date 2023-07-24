@@ -215,23 +215,20 @@ func (ws *WalletServer) GetBlocks(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	/*
-		// Make a GET request to miner-2's API to fetch blocks
-		resp, err := http.Get(fmt.Sprintf(ws.Gateway()+"/miner/blocks?amount=%d", amount))
-		if err != nil {
-			http.Error(w, "Error fetching blocks from miner-2", http.StatusInternalServerError)
-			return
-		}
-		defer resp.Body.Close()
+	// Make a GET request to miner-2's API to fetch blocks
+	resp, err := http.Get(fmt.Sprintf(ws.Gateway()+"/miner/blocks?amount=%d", amount))
+	if err != nil {
+		http.Error(w, "Error fetching blocks from miner-2", http.StatusInternalServerError)
+		return
+	}
+	defer resp.Body.Close()
 
-		// Decode the JSON response into a slice of Block
-		var blocks []block.Block
-		if err := json.NewDecoder(resp.Body).Decode(&blocks); err != nil {
-			http.Error(w, "Error decoding blocks response", http.StatusInternalServerError)
-			return
-		}*/
-
+	// Decode the JSON response into a slice of Block
 	var blocks []block.Block
+	if err := json.NewDecoder(resp.Body).Decode(&blocks); err != nil {
+		http.Error(w, "Error decoding blocks response", http.StatusInternalServerError)
+		return
+	}
 
 	// Respond with JSON-encoded blocks
 	w.Header().Set("Content-Type", "application/json")
