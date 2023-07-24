@@ -1,4 +1,4 @@
-import { fetchBlockchainData } from "api/blockchain";
+import { fetchBlockchainData } from "api/miner";
 import AppFooter from "components/layout/AppFooter";
 import AppHeader from "components/layout/AppHeader";
 import AppInfo from "components/layout/AppInfo";
@@ -47,6 +47,7 @@ function App() {
         setIsLoading(false);
       })
       .catch((error) => {
+        console.error(error);
         setIsError({ message: "Failed to fetch blockchain data" });
         setIsLoading(false);
       });
