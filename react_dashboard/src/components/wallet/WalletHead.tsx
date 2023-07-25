@@ -121,7 +121,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
 
   useEffect(() => {
     if (type === "Miner") fetchMinerDetails("miner-1_1");
-  }, [type]);
+  }, [type, fetchMinerDetails]);
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
