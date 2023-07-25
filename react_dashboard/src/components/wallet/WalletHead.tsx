@@ -1,10 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  fetchMinerWalletDetails,
-  fetchUserWalletDetails,
-  fetchWalletBalance,
-} from "../../api/wallet";
+import { fetchMinerWalletDetails } from "../../api/miner";
+import { fetchUserWalletDetails, fetchWalletBalance } from "../../api/wallet";
 
 const TitleRow = styled.div`
   display: flex;
@@ -46,16 +43,21 @@ interface WalletHeadProps {
   setIsError: Dispatch<SetStateAction<LocalError>>;
 }
 
+const { REACT_APP_GATEWAY_API_URL } = process.env;
+const WALLET_SERVER_URL = REACT_APP_GATEWAY_API_URL
+  ? REACT_APP_GATEWAY_API_URL
+  : "https://go-blockchain.azurewebsites.net";
+
 const selectedMinerUrls = {
-  miner1: process.env.REACT_APP_MINER_1 || "http://localhost:5001",
-  miner2: process.env.REACT_APP_MINER_2 || "http://localhost:5001",
-  miner3: process.env.REACT_APP_MINER_3 || "http://localhost:5001",
+  miner1: WALLET_SERVER_URL || "http://localhost:5001",
+  miner2: WALLET_SERVER_URL || "http://localhost:5002",
+  miner3: WALLET_SERVER_URL || "http://localhost:5003",
 };
 
 const miners = [
-  { value: "miner1", text: "Miner 1", url: selectedMinerUrls.miner1 },
-  { value: "miner2", text: "Miner 2", url: selectedMinerUrls.miner2 },
-  { value: "miner3", text: "Miner 3", url: selectedMinerUrls.miner3 },
+  { value: "miner-1_1", text: "Miner 1", url: selectedMinerUrls.miner1 },
+  { value: "miner-2", text: "Miner 2", url: selectedMinerUrls.miner2 },
+  { value: "miner-3", text: "Miner 3", url: selectedMinerUrls.miner3 },
 ];
 
 const WalletHead: React.FC<WalletHeadProps> = ({

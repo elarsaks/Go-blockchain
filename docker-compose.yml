@@ -4,34 +4,33 @@ services:
   react-dashboard:
     build:
       context: ./react_dashboard
-    command: npm run start
+    command: npm run start-react
     container_name: react-dashboard
     restart: unless-stopped
     ports:
       - 3000:3000
     environment:
-      - REACT_APP_API_URL=${REACT_APP_API_URL}
+      - REACT_APP_GATEWAY_API_URL=http://localhost:${WALLET_SERVER_PORT}
     volumes:
       - ./react_dashboard:/app
       - /app/node_modules
 
   wallet-server:
-    #image: goblockchain.azurecr.io/wallet-server:latest
     container_name: wallet-server
     build:
       context: .
       dockerfile: ./wallet_server/Dockerfile
     ports:
-      - 5000:5000
+      - ${WALLET_SERVER_PORT}:${WALLET_SERVER_PORT}
     environment:
       - WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN=http://miner-2:5002
       - COMMAND=air
+      - PORT=${WALLET_SERVER_PORT}
     volumes:
       - .:/app
     restart: unless-stopped
 
   miner-1:
-    #image: goblockchain.azurecr.io/miner:latest
     build:
       context: .
       dockerfile: ./blockchain_server/Dockerfile
@@ -45,7 +44,9 @@ services:
     restart: unless-stopped
 
   miner-2:
-    image: goblockchain.azurecr.io/miner:latest
+    build:
+      context: .
+      dockerfile: ./blockchain_server/Dockerfile
     container_name: miner-2
     ports:
       - 5002:5002
@@ -57,7 +58,9 @@ services:
     restart: unless-stopped
 
   miner-3:
-    image: goblockchain.azurecr.io/miner:latest
+    build:
+      context: .
+      dockerfile: ./blockchain_server/Dockerfile
     container_name: miner-3
     ports:
       - 5003:5003
