@@ -10,9 +10,11 @@ function fetchBlockchainData(): Promise<[Block]> {
 }
 
 // Fetch miner wallet details
-function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
+function fetchMinerWalletDetails(minerId: string): Promise<WalletDetails> {
   return axios
-    .post<WalletDetailsResponse>(minerAdress + "/miner/wallet")
+    .post<WalletDetailsResponse>(
+      REACT_APP_GATEWAY_API_URL + "/miner/wallet?miner_id=" + minerId
+    )
     .then(({ data }) => {
       const camelCaseResponseData: WalletDetails = {
         blockchainAddress: data.blockchain_address,
