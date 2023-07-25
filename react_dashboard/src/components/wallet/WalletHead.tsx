@@ -119,9 +119,13 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
-  useEffect(() => {
-    if (type === "Miner") fetchMinerDetails("miner-1_1");
-  }, [type, fetchMinerDetails]);
+  useEffect(
+    () => {
+      if (type === "Miner") fetchMinerDetails("miner-1_1");
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [type]
+  );
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
