@@ -46,7 +46,7 @@ interface WalletHeadProps {
 const { REACT_APP_GATEWAY_API_URL } = process.env;
 const WALLET_SERVER_URL = REACT_APP_GATEWAY_API_URL
   ? REACT_APP_GATEWAY_API_URL
-  : "goblockchain.azurecr.io";
+  : "https://go-blockchain.azurewebsites.net";
 
 const selectedMinerUrls = {
   miner1: WALLET_SERVER_URL || "http://localhost:5001",
