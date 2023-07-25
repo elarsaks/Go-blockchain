@@ -6,9 +6,10 @@ on:
       - full-stack-deployment
 
 jobs:
-# Build and Deploy React to GitHub Pages
   deploy-react-to-gh-pages:
     runs-on: ubuntu-latest
+    env:
+      REACT_APP_GATEWAY_API_URL: https://go-blockchain.azurewebsites.net
 
     steps:
       - name: Checkout
@@ -42,8 +43,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./react_dashboard/build
-          
-# Build and Push Docker images to Azure Container Registry
+
   build-and-push-docker-images:
     runs-on: ubuntu-latest
 

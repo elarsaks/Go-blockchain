@@ -44,14 +44,11 @@ interface WalletHeadProps {
 }
 
 const { REACT_APP_GATEWAY_API_URL } = process.env;
-const WALLET_SERVER_URL = REACT_APP_GATEWAY_API_URL
-  ? REACT_APP_GATEWAY_API_URL
-  : "goblockchain.azurecr.io";
 
 const selectedMinerUrls = {
-  miner1: WALLET_SERVER_URL || "http://localhost:5001",
-  miner2: WALLET_SERVER_URL || "http://localhost:5002",
-  miner3: WALLET_SERVER_URL || "http://localhost:5003",
+  miner1: REACT_APP_GATEWAY_API_URL || "http://localhost:5001",
+  miner2: REACT_APP_GATEWAY_API_URL || "http://localhost:5002",
+  miner3: REACT_APP_GATEWAY_API_URL || "http://localhost:5003",
 };
 
 const miners = [
