@@ -1,13 +1,10 @@
 import axios from "axios";
 
 const { REACT_APP_GATEWAY_API_URL } = process.env;
-const WALLET_SERVER_URL = REACT_APP_GATEWAY_API_URL
-  ? REACT_APP_GATEWAY_API_URL
-  : "https://go-blockchain.azurewebsites.net"; // During build there is no env variables
 
 function fetchUserWalletDetails(): Promise<WalletDetails> {
   return axios
-    .post<WalletDetailsResponse>(WALLET_SERVER_URL + "/wallet")
+    .post<WalletDetailsResponse>(REACT_APP_GATEWAY_API_URL + "/wallet")
     .then(({ data }) => {
       // console.log('User Details', data);
       const camelCaseResponseData: WalletDetails = {
@@ -23,7 +20,7 @@ function fetchUserWalletDetails(): Promise<WalletDetails> {
 function fetchWalletBalance(blockchainAddress: string): Promise<string> {
   return axios
     .get<BalanceResponse>(
-      `${WALLET_SERVER_URL}/wallet/balance?blockchain_address=${blockchainAddress}`
+      `${REACT_APP_GATEWAY_API_URL}/wallet/balance?blockchain_address=${blockchainAddress}`
     )
     .then(({ data }) => {
       if (data.error) {
@@ -34,10 +31,9 @@ function fetchWalletBalance(blockchainAddress: string): Promise<string> {
 }
 
 function transaction(transaction: Transaction): Promise<string> {
-  console.log(transaction);
   // Why this string ends up in golang as a number is beyond me
   return axios
-    .post<string>(`${WALLET_SERVER_URL}/transaction`, transaction)
+    .post<string>(`${REACT_APP_GATEWAY_API_URL}/transaction`, transaction)
     .then(({ data }) => data);
 }
 

@@ -1,14 +1,11 @@
 import axios from "axios";
 
 const { REACT_APP_GATEWAY_API_URL } = process.env;
-const WALLET_SERVER_URL = REACT_APP_GATEWAY_API_URL
-  ? REACT_APP_GATEWAY_API_URL
-  : "https://go-blockchain.azurewebsites.net"; // During build there is no env variables
 
 // Fetch latest blocks
 function fetchBlockchainData(): Promise<[Block]> {
   return axios
-    .get<[Block]>(WALLET_SERVER_URL + "/miner/blocks?amount=10")
+    .get<[Block]>(REACT_APP_GATEWAY_API_URL + "/miner/blocks?amount=10")
     .then((response) => response.data);
 }
 
