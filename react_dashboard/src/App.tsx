@@ -47,7 +47,6 @@ function App() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error);
         setIsError({ message: "Failed to fetch blockchain data" });
         setIsLoading(false);
       });
