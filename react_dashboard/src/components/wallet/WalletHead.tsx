@@ -43,21 +43,10 @@ interface WalletHeadProps {
   setIsError: Dispatch<SetStateAction<LocalError>>;
 }
 
-const { REACT_APP_GATEWAY_API_URL } = process.env;
-const WALLET_SERVER_URL = REACT_APP_GATEWAY_API_URL
-  ? REACT_APP_GATEWAY_API_URL
-  : "goblockchain.azurecr.io";
-
-const selectedMinerUrls = {
-  miner1: WALLET_SERVER_URL || "http://localhost:5001",
-  miner2: WALLET_SERVER_URL || "http://localhost:5002",
-  miner3: WALLET_SERVER_URL || "http://localhost:5003",
-};
-
 const miners = [
-  { value: "miner-1_1", text: "Miner 1", url: selectedMinerUrls.miner1 },
-  { value: "miner-2", text: "Miner 2", url: selectedMinerUrls.miner2 },
-  { value: "miner-3", text: "Miner 3", url: selectedMinerUrls.miner3 },
+  { value: "miner-1_1", text: "Miner 1" },
+  { value: "miner-2", text: "Miner 2" },
+  { value: "miner-3", text: "Miner 3" },
 ];
 
 const WalletHead: React.FC<WalletHeadProps> = ({
@@ -70,7 +59,6 @@ const WalletHead: React.FC<WalletHeadProps> = ({
   const [selectedMiner, setSelectedMiner] = useState<{
     value: string;
     text: string;
-    url: string;
   }>(miners[0]);
 
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -79,7 +67,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
 
     if (selectedMiner) {
       setSelectedMiner(selectedMiner);
-      fetchMinerDetails(selectedMiner.url);
+      fetchMinerDetails(selectedMiner.value);
     }
   };
 
@@ -96,22 +84,31 @@ const WalletHead: React.FC<WalletHeadProps> = ({
       .finally(() => setIsLoading(false));
   }
 
-  function fetchMinerDetails(selectedMinerUrl: string) {
+  function fetchMinerDetails(selectedMinerId: string) {
     setIsLoading(true);
-    fetchMinerWalletDetails(selectedMinerUrl)
+    fetchMinerWalletDetails(selectedMinerId)
       .then((minerWalletDetails: WalletDetails) => {
         return fetchWalletBalance(minerWalletDetails.blockchainAddress).then(
-          (balance) =>
+          (balance) => {
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
               ...minerWalletDetails,
               balance: balance === "0" ? "0.00" : balance,
-            }))
+            }));
+            setIsError(null);
+          }
         );
       })
-      .catch((error: LocalError) =>
-        setIsError({ message: "Failed to fetch miner details" })
-      )
+      .catch((error: LocalError) => {
+        setWalletDetails((prevDetails) => ({
+          ...prevDetails,
+          blockchainAddress: "",
+          privateKey: "",
+          publicKey: "",
+          balance: "0.00",
+        }));
+        setIsError({ message: "Failed to fetch miner details" });
+      })
       .finally(() => setIsLoading(false));
   }
 
@@ -123,11 +120,8 @@ const WalletHead: React.FC<WalletHeadProps> = ({
   }, [type]);
 
   useEffect(() => {
-    if (type === "Miner") {
-      fetchMinerDetails(selectedMiner.url);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, selectedMiner]);
+    if (type === "Miner") fetchMinerDetails("miner-1_1");
+  }, [type]);
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;

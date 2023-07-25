@@ -47,7 +47,6 @@ function App() {
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error(error);
         setIsError({ message: "Failed to fetch blockchain data" });
         setIsLoading(false);
       });
@@ -86,7 +85,7 @@ function App() {
           />
         )}
 
-        {isError.message && (
+        {isError.message && !isLoading && (
           <Notification
             type="error"
             message="Sorry, there was an error loading blockchain data."
