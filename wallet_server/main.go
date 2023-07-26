@@ -1,18 +1,13 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
 
-	"github.com/elarsaks/Go-blockchain/pkg/block"
 	"github.com/elarsaks/Go-blockchain/pkg/utils"
-	"github.com/elarsaks/Go-blockchain/pkg/wallet"
 	"github.com/elarsaks/Go-blockchain/wallet_server/handlers"
 	"github.com/gorilla/mux"
 )
@@ -37,118 +32,13 @@ func (ws *WalletServer) Gateway() string {
 	return ws.gateway
 }
 
-// Create a new transaction
-func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
-	case http.MethodPost:
-
-		decoder := json.NewDecoder(req.Body)
-		var t wallet.TransactionRequest
-		err := decoder.Decode(&t)
-
-		if err != nil {
-			log.Printf("ERROR: %v", err)
-			io.WriteString(w, string(utils.JsonStatus("fail")))
-			return
-		}
-
-		if !t.Validate() {
-			log.Println("ERROR: missing field(s)")
-			io.WriteString(w, string(utils.JsonStatus("fail")))
-			return
-		}
-
-		publicKey := utils.PublicKeyFromString(*t.SenderPublicKey)
-		privateKey := utils.PrivateKeyFromString(*t.SenderPrivateKey, publicKey)
-		value, err := strconv.ParseFloat(*t.Value, 32)
-		if err != nil {
-			log.Println("ERROR: parse error")
-			io.WriteString(w, string(utils.JsonStatus("fail")))
-			return
-		}
-		value32 := float32(value)
-
-		w.Header().Add("Content-Type", "application/json")
-
-		transaction := wallet.NewTransaction(privateKey, publicKey,
-			*t.SenderBlockchainAddress, *t.RecipientBlockchainAddress, value32)
-		signature := transaction.GenerateSignature()
-		signatureStr := signature.String()
-
-		bt := &block.TransactionRequest{
-			SenderBlockchainAddress:    t.SenderBlockchainAddress,
-			RecipientBlockchainAddress: t.RecipientBlockchainAddress,
-			SenderPublicKey:            t.SenderPublicKey,
-			Value:                      &value32, Signature: &signatureStr,
-		}
-		m, _ := json.Marshal(bt)
-		buf := bytes.NewBuffer(m)
-
-		resp, _ := http.Post(ws.Gateway()+"/transactions", "application/json", buf)
-
-		// Print response
-		fmt.Println("response Status:", resp.Status)
-
-		if resp.StatusCode == 201 {
-			io.WriteString(w, string(utils.JsonStatus("success")))
-			return
-		}
-
-		io.WriteString(w, string(utils.JsonStatus("fail")))
-	default:
-		w.WriteHeader(http.StatusBadRequest)
-		log.Println("ERROR: Invalid HTTP Method")
-	}
-}
-
-//* Get wallet balance
-func (ws *WalletServer) WalletBalance(w http.ResponseWriter, req *http.Request) {
-	// Check if the HTTP method is GET
-	if req.Method != http.MethodGet {
-		log.Println("ERROR: Invalid HTTP Method")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	// Extract the blockchain address from the URL query parameters
-	blockchainAddress := req.URL.Query().Get("blockchain_address")
-
-	// Construct the endpoint URL for the blockchain API
-	endpoint := fmt.Sprintf("%s/balance?blockchain_address=%s", ws.Gateway(), blockchainAddress)
-
-	// Send a GET request to the blockchain API
-	resp, err := http.Get(endpoint)
-	if err != nil {
-		log.Printf("ERROR: %v", err)
-		io.WriteString(w, string(utils.JsonStatus("fails")))
-		return
-	}
-	defer resp.Body.Close()
-
-	// Set the response header to indicate JSON content type
-	w.Header().Set("Content-Type", "application/json")
-
-	// Check the response status code
-	if resp.StatusCode == http.StatusOK {
-		// Decode the response JSON into the existing response struct
-		br := &block.BalanceResponse{}
-		err := json.NewDecoder(resp.Body).Decode(br)
-		if err != nil {
-			log.Printf("ERROR: %v", err)
-			io.WriteString(w, string(utils.JsonStatus("fail")))
-			return
-		}
-
-		// Marshal the response struct to JSON and write it as the response
-		m, _ := json.Marshal(br)
-		io.WriteString(w, string(m))
-	} else {
-		// Create a new response struct for the failure case
-		failureResponse := &block.BalanceResponse{
-			Error: "Failed to get wallet balance",
-		}
-		m, _ := json.Marshal(failureResponse)
-		io.WriteString(w, string(m))
+func apiDescription() map[string]string {
+	return map[string]string{
+		"/":               "index",
+		"/wallet":         "Wallet description...",
+		"/wallet/balance": "Wallet balance description...",
+		"/transaction":    "Transaction description...",
+		"/miner/blocks":   "Miner blocks description...",
 	}
 }
 
@@ -160,26 +50,21 @@ func (ws *WalletServer) Run() {
 
 	// Return API route descriptions
 	router.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
-
-		// Map to store route descriptions
-		routeDescriptions := map[string]string{
-			"/":               "index",
-			"/wallet":         "Wallet description...",
-			"/wallet/balance": "Wallet balance description...",
-			"/transaction":    "Transaction description...",
-			"/miner/blocks":   "Miner blocks description...",
-		}
-
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(routeDescriptions)
+		json.NewEncoder(w).Encode(apiDescription())
 	})
 
 	router.HandleFunc("/wallet", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetUserWallet(w, r, ws.gateway)
 	})
 
-	router.HandleFunc("/wallet/balance", ws.WalletBalance)
-	router.HandleFunc("/transaction", ws.CreateTransaction)
+	router.HandleFunc("/wallet/balance", func(w http.ResponseWriter, r *http.Request) {
+		handlers.GetWalletBalance(w, r, ws.gateway)
+	})
+
+	router.HandleFunc("/transaction", func(w http.ResponseWriter, r *http.Request) {
+		handlers.CreateTransaction(w, r, ws.gateway)
+	})
 
 	router.HandleFunc("/miner/blocks", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetBlocks(w, r, ws.gateway)
