@@ -123,7 +123,6 @@ const WalletHead: React.FC<WalletHeadProps> = ({
 
   useEffect(
     () => {
-      console.log("selectedMiner.value", selectedMiner.value);
       if (type === "Miner") fetchMinerDetails(selectedMiner.value);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -98,6 +98,7 @@ const BlockComponent: React.FC<BlockProps> = ({ block }) => (
         <tr>
           <NestedTableHeader>Sender</NestedTableHeader>
           <NestedTableHeader>Recipient</NestedTableHeader>
+          <NestedTableHeader>Message</NestedTableHeader>
           <NestedTableHeader>Value</NestedTableHeader>
         </tr>
       </thead>
@@ -106,10 +107,15 @@ const BlockComponent: React.FC<BlockProps> = ({ block }) => (
           block.transactions.map((transaction, idx) => (
             <NestedTableRow key={idx}>
               <NestedTableCell>
-                {transaction.senderBlockchainAddress}
+                {transaction.senderBlockchainAddress.length > 15
+                  ? "..." + transaction.senderBlockchainAddress.slice(-15)
+                  : transaction.senderBlockchainAddress}
               </NestedTableCell>
               <NestedTableCell>
-                {transaction.recipientBlockchainAddress}
+                ...{transaction.recipientBlockchainAddress.slice(-15)}
+              </NestedTableCell>
+              <NestedTableCell>
+                {transaction.message ? transaction.message : "_"}
               </NestedTableCell>
               <NestedTableCell>{transaction.value}</NestedTableCell>
             </NestedTableRow>
