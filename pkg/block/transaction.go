@@ -11,6 +11,7 @@ import (
 type Transaction struct {
 	senderBlockchainAddress    string
 	recipientBlockchainAddress string
+	message                    string
 	value                      float32
 }
 
@@ -19,6 +20,7 @@ type TransactionRequest struct {
 	SenderBlockchainAddress    *string  `json:"senderBlockchainAddress"`
 	RecipientBlockchainAddress *string  `json:"recipientBlockchainAddress"`
 	SenderPublicKey            *string  `json:"senderPublicKey"`
+	Message                    *string  `json:"message"`
 	Value                      *float32 `json:"value"`
 	Signature                  *string  `json:"signature"`
 }
@@ -31,8 +33,8 @@ type BalanceResponse struct {
 
 // --- Functions ---
 // NewTransaction creates a new transaction.
-func NewTransaction(sender string, recipient string, value float32) *Transaction {
-	return &Transaction{sender, recipient, value}
+func NewTransaction(sender string, recipient string, message string, value float32) *Transaction {
+	return &Transaction{sender, recipient, message, value}
 }
 
 // --- Methods ---
@@ -41,6 +43,7 @@ func (t *Transaction) Print() {
 	fmt.Printf("%s\n", strings.Repeat("-", 40))
 	fmt.Printf(" senderBlockchainAddress      %s\n", t.senderBlockchainAddress)
 	fmt.Printf(" recipientBlockchainAddress   %s\n", t.recipientBlockchainAddress)
+	fmt.Printf(" message                      %s\n", t.message)
 	fmt.Printf(" value                          %.1f\n", t.value)
 }
 
@@ -49,6 +52,7 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Sender    string  `json:"senderBlockchainAddress"`
 		Recipient string  `json:"recipientBlockchainAddress"`
+		Message   string  `json:"message"`
 		Value     float32 `json:"value"`
 	}{
 		Sender:    t.senderBlockchainAddress,
@@ -62,6 +66,7 @@ func (t *Transaction) UnmarshalJSON(data []byte) error {
 	v := &struct {
 		Sender    *string  `json:"senderBlockchainAddress"`
 		Recipient *string  `json:"recipientBlockchainAddress"`
+		Message   *string  `json:"message"`
 		Value     *float32 `json:"value"`
 	}{
 		Sender:    &t.senderBlockchainAddress,
@@ -79,6 +84,7 @@ func (tr *TransactionRequest) Validate() bool {
 	if tr.SenderBlockchainAddress == nil ||
 		tr.RecipientBlockchainAddress == nil ||
 		tr.SenderPublicKey == nil ||
+		tr.Message == nil ||
 		tr.Value == nil ||
 		tr.Signature == nil {
 		return false
