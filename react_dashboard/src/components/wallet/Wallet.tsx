@@ -118,10 +118,18 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       value: walletDetails.amount,
     })
       .then((response) => {
-        console.log(response);
+        console.log("response", response);
+        if (response.message === "fail") {
+          setIsError({
+            message: "Transaction failed.",
+          });
+        } else {
+          // TODO: Show success message
+          setIsError(null);
+        }
       })
       .catch((error) => {
-        console.log(error);
+        console.log("error", error);
       });
   };
 
@@ -184,11 +192,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         </Field>
 
         <Field>
-          <Label>Amount</Label>
+          <Label>Amount:</Label>
           <Input
             type="text"
             name="amount"
-            placeholder="0"
+            placeholder="0.00₿"
             value={walletDetails.amount.toString()}
             onChange={handleInputChange}
           />

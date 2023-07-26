@@ -32,10 +32,10 @@ function fetchWalletBalance(blockchainAddress: string): Promise<string> {
     });
 }
 
-function transaction(transaction: Transaction): Promise<string> {
+function transaction(transaction: Transaction): Promise<any> {
   // Why this string ends up in golang as a number is beyond me
   return axios
-    .post<string>(`${REACT_APP_GATEWAY_API_URL}/transaction`, transaction)
+    .post<any>(`${REACT_APP_GATEWAY_API_URL}/transaction`, transaction)
     .then(({ data }) => data);
 }
 
