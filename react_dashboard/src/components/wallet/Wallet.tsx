@@ -118,10 +118,17 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       value: walletDetails.amount,
     })
       .then((response) => {
-        console.log(response);
+        if (response === "fail") {
+          setIsError({
+            message: "Transaction failed.",
+          });
+        } else {
+          // TODO: Show success message
+          setIsError(null);
+        }
       })
       .catch((error) => {
-        console.log(error);
+        console.log("error", error);
       });
   };
 

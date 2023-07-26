@@ -83,6 +83,15 @@ func (t *Transaction) UnmarshalJSON(data []byte) error {
 
 // Validate checks if the transaction request is valid.
 func (tr *TransactionRequest) Validate() bool {
+	fmt.Println("Validating transaction request...",
+		tr.Message,
+		tr.RecipientBlockchainAddress,
+		tr.SenderBlockchainAddress,
+		tr.SenderPublicKey,
+		tr.Value,
+		tr.Signature,
+	)
+
 	if tr.SenderBlockchainAddress == nil ||
 		tr.RecipientBlockchainAddress == nil ||
 		tr.SenderPublicKey == nil ||
