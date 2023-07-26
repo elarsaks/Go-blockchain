@@ -21,6 +21,7 @@ type LocalError = {
 } | null;
 
 type Transaction = {
+  message: string;
   recipientBlockchainAddress: string;
   senderBlockchainAddress: string;
   senderPrivateKey: string;
