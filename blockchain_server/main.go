@@ -10,9 +10,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/elarsaks/Go-blockchain/block"
-	"github.com/elarsaks/Go-blockchain/utils"
-	"github.com/elarsaks/Go-blockchain/wallet"
+	"github.com/elarsaks/Go-blockchain/pkg/block"
+	"github.com/elarsaks/Go-blockchain/pkg/utils"
+	"github.com/elarsaks/Go-blockchain/pkg/wallet"
 	"github.com/gorilla/mux"
 )
 
