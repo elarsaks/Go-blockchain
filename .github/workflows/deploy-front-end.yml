@@ -3,7 +3,7 @@ name: Full Stack Deployment
 on:
   push:
     branches:
-      - deploy-front-end
+      - DEPLOY-front-end
 
 jobs:
   deploy-react-to-gh-pages:
