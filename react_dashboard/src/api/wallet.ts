@@ -7,7 +7,7 @@ if (!REACT_APP_GATEWAY_API_URL) {
 
 function fetchUserWalletDetails(): Promise<WalletDetails> {
   return axios
-    .post<WalletDetailsResponse>(REACT_APP_GATEWAY_API_URL + "/wallet")
+    .post<WalletDetailsResponse>(REACT_APP_GATEWAY_API_URL + "/user/wallet")
     .then(({ data }) => {
       // console.log('User Details', data);
       const camelCaseResponseData: WalletDetails = {

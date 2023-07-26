@@ -20,15 +20,13 @@ func GetMinerWallet(w http.ResponseWriter, req *http.Request, miner string) {
 
 	// TODO: this could be recived from the blockchain (nodes should know each other)
 	minerUrl := map[string]string{
-		"1": "go-blockchain-miner-1_1:5001",
+		"1": "miner-1:5001",
 		"2": "miner-2:5002",
 		"3": "miner-3:5003",
 	}
 
 	// Make a POST request to the miner's API to fetch the wallet
 	requestBody := []byte("optional_request_data")
-
-	fmt.Println("http://" + minerUrl[minerID] + "/miner/wallet")
 
 	resp, err := http.Post(fmt.Sprintf("http://"+minerUrl[minerID]+"/miner/wallet"),
 		"application/json", bytes.NewBuffer(requestBody))
@@ -39,9 +37,6 @@ func GetMinerWallet(w http.ResponseWriter, req *http.Request, miner string) {
 		return
 	}
 	defer resp.Body.Close()
-
-	// TODO: log response
-	fmt.Println(resp)
 
 	// Check the response status code
 	if resp.StatusCode != http.StatusOK {
@@ -62,8 +57,6 @@ func GetMinerWallet(w http.ResponseWriter, req *http.Request, miner string) {
 	// Encode the wallet data to JSON and write it to the response
 	jsonData, err := json.Marshal(walletData)
 
-	// TODO: log JSON data
-	fmt.Println(string(jsonData))
 	if err != nil {
 		fmt.Printf("Error encoding wallet data")
 		http.Error(w, "Error encoding wallet data", http.StatusInternalServerError)
