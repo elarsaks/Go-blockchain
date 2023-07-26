@@ -50,6 +50,14 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 		// Setting the wallet in the BlockchainServer object
 		bcs.Wallet = minersWallet
 
+		// Call RegisterNewWallet to register the provided wallet address
+		success := bc.RegisterNewWallet(minersWallet.BlockchainAddress())
+		if !success {
+			log.Println("ERROR: Failed to register wallet")
+			// TODO: Handle error
+			return nil
+		}
+
 		log.Printf("private_key %v", minersWallet.PrivateKeyStr())
 		log.Printf("public_key %v", minersWallet.PublicKeyStr())
 		log.Printf("blockchain_address %v", minersWallet.BlockchainAddress())
