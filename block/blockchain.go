@@ -275,7 +275,8 @@ func (bc *Blockchain) Mining() bool {
 	nonce := bc.ProofOfWork()
 	previousHash := bc.LastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)
-	log.Println("action=mining, status=success")
+	//TODO: Remove debug
+	// log.Println("action=mining, status=success")
 
 	for _, n := range bc.neighbors {
 		endpoint := fmt.Sprintf("http://%s/consensus", n)

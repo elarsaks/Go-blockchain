@@ -19,6 +19,8 @@ function fetchMinerWalletDetails(minerId: string): Promise<WalletDetails> {
       REACT_APP_GATEWAY_API_URL + "/miner/wallet?miner_id=" + minerId
     )
     .then(({ data }) => {
+      console.log(data);
+
       const camelCaseResponseData: WalletDetails = {
         blockchainAddress: data.blockchain_address,
         privateKey: data.private_key,

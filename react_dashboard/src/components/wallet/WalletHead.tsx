@@ -138,7 +138,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
               ...prevDetails,
               balance: balance,
             }));
-            setIsError(null);
+            //  setIsError(null);
           })
           .catch((error: LocalError) => setIsError(error));
       }, 10000);
