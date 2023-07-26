@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/elarsaks/Go-blockchain/utils"
+	"github.com/elarsaks/Go-blockchain/pkg/utils"
 )
 
 // Constants related to blockchain configuration

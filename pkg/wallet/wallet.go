@@ -9,7 +9,7 @@ import (
 	"fmt"
 
 	"github.com/btcsuite/btcutil/base58"
-	"github.com/elarsaks/Go-blockchain/utils"
+	"github.com/elarsaks/Go-blockchain/pkg/utils"
 	"golang.org/x/crypto/ripemd160"
 )
 

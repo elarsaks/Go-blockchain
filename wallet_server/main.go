@@ -10,9 +10,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/elarsaks/Go-blockchain/block"
-	"github.com/elarsaks/Go-blockchain/utils"
-	"github.com/elarsaks/Go-blockchain/wallet"
+	"github.com/elarsaks/Go-blockchain/pkg/block"
+	"github.com/elarsaks/Go-blockchain/pkg/utils"
+	"github.com/elarsaks/Go-blockchain/pkg/wallet"
 	"github.com/gorilla/mux"
 )
 
@@ -248,7 +248,7 @@ func (ws *WalletServer) GetMinerWallet(w http.ResponseWriter, req *http.Request)
 
 	// TODO: this could be recived from the blockchain (nodes should know each other)
 	minerUrl := map[string]string{
-		"1": "go-blockchain-miner-1-1:5001",
+		"1": "go-blockchain-miner-1_1:5001",
 		"2": "miner-2:5002",
 		"3": "miner-3:5003",
 	}
