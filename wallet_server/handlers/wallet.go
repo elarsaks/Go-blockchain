@@ -73,7 +73,7 @@ func GetMinerWallet(w http.ResponseWriter, req *http.Request, miner string) {
 
 // Get User wallet
 // TODO: Refactor this function (It creates a wallet and registers it on the blockchain)
-func GetUsetWallet(w http.ResponseWriter, req *http.Request, miner string) {
+func GetUserWallet(w http.ResponseWriter, req *http.Request, miner string) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Invalid HTTP Method", http.StatusBadRequest)
 		return
