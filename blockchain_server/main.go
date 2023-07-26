@@ -227,6 +227,7 @@ func (bcs *BlockchainServer) Balance(w http.ResponseWriter, req *http.Request) {
 		br := &block.BalanceResponse{} // Use the BalanceResponse type
 
 		blockchainAddress := req.URL.Query().Get("blockchain_address")
+
 		balance, err := bcs.GetBlockchain().CalculateTotalBalance(blockchainAddress)
 
 		br.Balance = balance

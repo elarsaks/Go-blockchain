@@ -95,19 +95,18 @@ const WalletHead: React.FC<WalletHeadProps> = ({
             ...minerWalletDetails,
           }));
           setIsError(null);
+          return minerWalletDetails.blockchainAddress;
         })
 
         // Fetch miner wallet balance
-        .then(() =>
-          fetchWalletBalance(walletDetails.blockchainAddress).then(
-            (balance) => {
-              setWalletDetails((prevDetails) => ({
-                ...prevDetails,
-                balance: balance === "0" ? "0.00" : balance,
-              }));
-              setIsError(null);
-            }
-          )
+        .then((blockchainAddress) =>
+          fetchWalletBalance(blockchainAddress).then((balance) => {
+            setWalletDetails((prevDetails) => ({
+              ...prevDetails,
+              balance: balance === "0" ? "0.00" : balance,
+            }));
+            setIsError(null);
+          })
         )
         .catch((error: LocalError) => setIsError(error))
         .finally(() => setIsLoading(false))
@@ -123,6 +122,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
 
   useEffect(
     () => {
+      console.log("selectedMiner.value", selectedMiner.value);
       if (type === "Miner") fetchMinerDetails(selectedMiner.value);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -132,7 +132,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
-    if (walletDetails.blockchainAddress) {
+    if (walletDetails.blockchainAddress !== "") {
       walletUpdate = setInterval(() => {
         fetchWalletBalance(walletDetails.blockchainAddress)
           .then((balance) => {
@@ -140,7 +140,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
               ...prevDetails,
               balance: balance,
             }));
-            //  setIsError(null);
+            setIsError(null);
           })
           .catch((error: LocalError) => setIsError(error));
       }, 10000);

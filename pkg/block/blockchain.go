@@ -313,6 +313,8 @@ func (bc *Blockchain) CalculateTotalBalance(blockchainAddress string) (float32, 
 	var totalBalance float32 = 0.0
 	addressFound := false
 
+	fmt.Println("Blockchain Address: ", blockchainAddress)
+
 	for _, b := range bc.chain {
 		for _, t := range b.transactions {
 			value := t.value
