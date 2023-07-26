@@ -98,16 +98,17 @@ const WalletHead: React.FC<WalletHeadProps> = ({
         })
 
         // Fetch miner wallet balance
-        .then(() => {
+        .then(() =>
           fetchWalletBalance(walletDetails.blockchainAddress).then(
             (balance) => {
               setWalletDetails((prevDetails) => ({
                 ...prevDetails,
                 balance: balance === "0" ? "0.00" : balance,
               }));
+              setIsError(null);
             }
-          );
-        })
+          )
+        )
         .catch((error: LocalError) => setIsError(error))
         .finally(() => setIsLoading(false))
     );
