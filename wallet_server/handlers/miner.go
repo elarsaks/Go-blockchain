@@ -88,11 +88,6 @@ func GetBlocks(w http.ResponseWriter, req *http.Request, miner string) {
 		return
 	}
 
-	//target, _ := url.Parse(ws.gateway)
-
-	// Create a reverse proxy that forwards requests to the target URL
-	// proxy := httputil.NewSingleHostReverseProxy(target)
-
 	// Make a GET request to miner-2's API to fetch blocks
 	resp, err := http.Get(fmt.Sprintf(miner+"/miner/blocks?amount=%d", amount))
 	if err != nil {

@@ -42,7 +42,10 @@ func apiDescription() map[string]string {
 	}
 }
 
-// Run the WalletServer
+func init() {
+	log.SetPrefix("Wallet Server: ")
+}
+
 func (ws *WalletServer) Run() {
 	// Create router
 	router := mux.NewRouter()
@@ -78,23 +81,13 @@ func (ws *WalletServer) Run() {
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.Port())), router))
 }
 
-func init() {
-	log.SetPrefix("Wallet Server: ")
-}
-
 func main() {
-	// Retrieve gateway from environment variable
-	gateway := os.Getenv("WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN")
-
-	if gateway == "" {
-		gateway = "http://miner-2:5001" // Default value
-	}
-
-	// Retrieve port from environment variable
-	portStr := os.Getenv("PORT")
+	gateway := "http://miner-2:5002"
+	portStr := os.Getenv("PORT") // Retrieve port from environment variable
 	port, err := strconv.Atoi(portStr)
+
 	if err != nil || port <= 0 {
-		port = 8080 // Default value
+		port = 8080 // It defaults to 8080 in production
 	}
 
 	// Create and run the WalletServer with the configured ports and gateway
