@@ -3,7 +3,7 @@ name: Deploy Docker Compose
 on:
   push:
     branches:
-      - deploy-back-end
+      - DEPLOY-back-end
 
 jobs:
   deploy:
