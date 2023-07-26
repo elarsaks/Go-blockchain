@@ -129,6 +129,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     [type, selectedMiner.value]
   );
 
+  // TODO: balance should only update when there is a new block
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
