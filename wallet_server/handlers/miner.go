@@ -56,6 +56,7 @@ func CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
 			SenderBlockchainAddress:    t.SenderBlockchainAddress,
 			RecipientBlockchainAddress: t.RecipientBlockchainAddress,
 			SenderPublicKey:            t.SenderPublicKey,
+			Message:                    t.Message,
 			Value:                      &value32, Signature: &signatureStr,
 		}
 		m, _ := json.Marshal(bt)
