@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const { REACT_APP_GATEWAY_API_URL } = process.env;
+let { REACT_APP_GATEWAY_API_URL } = process.env;
+if (!REACT_APP_GATEWAY_API_URL) {
+  REACT_APP_GATEWAY_API_URL = "http://localhost:5000";
+}
 
 // Fetch latest blocks
 function fetchBlockchainData(): Promise<[Block]> {

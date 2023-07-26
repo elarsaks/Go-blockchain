@@ -33,6 +33,7 @@ services:
 
   miner-1:
     image: goblockchain.azurecr.io/miner:latest
+    container_name: miner-1
     build:
       context: .
       dockerfile: ./blockchain_server/Dockerfile

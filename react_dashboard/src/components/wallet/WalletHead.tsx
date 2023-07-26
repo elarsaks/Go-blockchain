@@ -44,9 +44,9 @@ interface WalletHeadProps {
 }
 
 const miners = [
-  { value: "miner-1_1", text: "Miner 1" },
-  { value: "miner-2", text: "Miner 2" },
-  { value: "miner-3", text: "Miner 3" },
+  { value: "1", text: "Miner 1" },
+  { value: "2", text: "Miner 2" },
+  { value: "3", text: "Miner 3" },
 ];
 
 const WalletHead: React.FC<WalletHeadProps> = ({
@@ -121,10 +121,10 @@ const WalletHead: React.FC<WalletHeadProps> = ({
 
   useEffect(
     () => {
-      if (type === "Miner") fetchMinerDetails("miner-1_1");
+      if (type === "Miner") fetchMinerDetails(selectedMiner.value);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [type]
+    [type, selectedMiner.value]
   );
 
   useEffect(() => {

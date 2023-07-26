@@ -242,15 +242,20 @@ func (ws *WalletServer) GetBlocks(w http.ResponseWriter, req *http.Request) {
 
 // Handler function to get requested blocks
 func (ws *WalletServer) GetMinerWallet(w http.ResponseWriter, req *http.Request) {
-
 	// Get the 'miner' query parameter from the URL
-	minerId := req.URL.Query().Get("miner_id")
+	minerID := req.URL.Query().Get("miner_id")
 
-	// Make a GET request to miner's API to fetch the wallet
+	// TODO: this could be recived from the blockchain (nodes should know each other)
+	minerUrl := map[string]string{
+		"1": "miner-1_1:5001",
+		"2": "miner-2:5002",
+		"3": "miner-3:5003",
+	}
+
+	// Make a POST request to the miner's API to fetch the wallet
 	requestBody := []byte("optional_request_data")
 
-	// Make a POST request to miner's API to fetch the wallet
-	resp, err := http.Post(fmt.Sprintf("http://%s:5002/miner/wallet", minerId),
+	resp, err := http.Post(fmt.Sprintf("http://"+minerUrl[minerID]+"/miner/wallet"),
 		"application/json", bytes.NewBuffer(requestBody))
 
 	if err != nil {
@@ -262,7 +267,7 @@ func (ws *WalletServer) GetMinerWallet(w http.ResponseWriter, req *http.Request)
 
 	// Check the response status code
 	if resp.StatusCode != http.StatusOK {
-		http.Error(w, fmt.Sprintf("Error fetching wallet from %s", minerId), resp.StatusCode)
+		http.Error(w, fmt.Sprintf("Error fetching wallet from %s", minerID), resp.StatusCode)
 		return
 	}
 
@@ -280,6 +285,7 @@ func (ws *WalletServer) GetMinerWallet(w http.ResponseWriter, req *http.Request)
 		http.Error(w, "Error encoding wallet data", http.StatusInternalServerError)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
 }
 
