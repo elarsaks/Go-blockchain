@@ -1,10 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  fetchMinerWalletDetails,
-  fetchUserWalletDetails,
-  fetchWalletBalance,
-} from "../../api/wallet";
+import { fetchMinerWalletDetails } from "../../api/miner";
+import { fetchUserWalletDetails, fetchWalletBalance } from "../../api/wallet";
 
 const TitleRow = styled.div`
   display: flex;
@@ -46,16 +43,10 @@ interface WalletHeadProps {
   setIsError: Dispatch<SetStateAction<LocalError>>;
 }
 
-const selectedMinerUrls = {
-  miner1: process.env.REACT_APP_MINER_1 || "http://localhost:5001",
-  miner2: process.env.REACT_APP_MINER_2 || "http://localhost:5001",
-  miner3: process.env.REACT_APP_MINER_3 || "http://localhost:5001",
-};
-
 const miners = [
-  { value: "miner1", text: "Miner 1", url: selectedMinerUrls.miner1 },
-  { value: "miner2", text: "Miner 2", url: selectedMinerUrls.miner2 },
-  { value: "miner3", text: "Miner 3", url: selectedMinerUrls.miner3 },
+  { value: "1", text: "Miner 1" },
+  { value: "2", text: "Miner 2" },
+  { value: "3", text: "Miner 3" },
 ];
 
 const WalletHead: React.FC<WalletHeadProps> = ({
@@ -68,7 +59,6 @@ const WalletHead: React.FC<WalletHeadProps> = ({
   const [selectedMiner, setSelectedMiner] = useState<{
     value: string;
     text: string;
-    url: string;
   }>(miners[0]);
 
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -77,7 +67,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
 
     if (selectedMiner) {
       setSelectedMiner(selectedMiner);
-      fetchMinerDetails(selectedMiner.url);
+      fetchMinerDetails(selectedMiner.value);
     }
   };
 
@@ -94,22 +84,28 @@ const WalletHead: React.FC<WalletHeadProps> = ({
       .finally(() => setIsLoading(false));
   }
 
-  function fetchMinerDetails(selectedMinerUrl: string) {
+  function fetchMinerDetails(selectedMinerId: string) {
     setIsLoading(true);
-    fetchMinerWalletDetails(selectedMinerUrl)
+    // Fetch miner wallet details
+    fetchMinerWalletDetails(selectedMinerId)
       .then((minerWalletDetails: WalletDetails) => {
-        return fetchWalletBalance(minerWalletDetails.blockchainAddress).then(
-          (balance) =>
+        setWalletDetails((prevDetails) => ({
+          ...prevDetails,
+          ...minerWalletDetails,
+        }));
+        setIsError(null);
+      })
+      // Fetch miner wallet balance
+      .then(() => {
+        fetchWalletBalance(walletDetails.blockchainAddress)
+          .then((balance) => {
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
-              ...minerWalletDetails,
               balance: balance === "0" ? "0.00" : balance,
-            }))
-        );
+            }));
+          })
+          .catch((error: LocalError) => setIsError(error));
       })
-      .catch((error: LocalError) =>
-        setIsError({ message: "Failed to fetch miner details" })
-      )
       .finally(() => setIsLoading(false));
   }
 
@@ -120,12 +116,13 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
-  useEffect(() => {
-    if (type === "Miner") {
-      fetchMinerDetails(selectedMiner.url);
-    }
+  useEffect(
+    () => {
+      if (type === "Miner") fetchMinerDetails(selectedMiner.value);
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, selectedMiner]);
+    [type, selectedMiner.value]
+  );
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
@@ -138,7 +135,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
               ...prevDetails,
               balance: balance,
             }));
-            setIsError(null);
+            //  setIsError(null);
           })
           .catch((error: LocalError) => setIsError(error));
       }, 10000);

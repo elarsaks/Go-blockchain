@@ -7,3 +7,9 @@ tmp
 
 #Ignore React build
 build
+
+# Ignore env file
+# .env
+
+# Ignore keys folder
+keys/*

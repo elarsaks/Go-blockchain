@@ -1,24 +1,15 @@
 import axios from "axios";
 
-function fetchUserWalletDetails(): Promise<WalletDetails> {
-  return axios
-    .post<WalletDetailsResponse>("http://localhost:5000/wallet") // TODO: Rename api endpoint
-    .then(({ data }) => {
-      // console.log('User Details', data);
-      const camelCaseResponseData: WalletDetails = {
-        blockchainAddress: data.blockchain_address,
-        privateKey: data.private_key,
-        publicKey: data.public_key,
-      };
-
-      return camelCaseResponseData;
-    });
+let { REACT_APP_GATEWAY_API_URL } = process.env;
+if (!REACT_APP_GATEWAY_API_URL) {
+  REACT_APP_GATEWAY_API_URL = "http://localhost:5000";
 }
 
-function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
+function fetchUserWalletDetails(): Promise<WalletDetails> {
   return axios
-    .post<WalletDetailsResponse>(minerAdress + "/miner/wallet")
+    .post<WalletDetailsResponse>(REACT_APP_GATEWAY_API_URL + "/wallet")
     .then(({ data }) => {
+      // console.log('User Details', data);
       const camelCaseResponseData: WalletDetails = {
         blockchainAddress: data.blockchain_address,
         privateKey: data.private_key,
@@ -32,7 +23,7 @@ function fetchMinerWalletDetails(minerAdress: string): Promise<WalletDetails> {
 function fetchWalletBalance(blockchainAddress: string): Promise<string> {
   return axios
     .get<BalanceResponse>(
-      `http://localhost:5000/wallet/balance?blockchain_address=${blockchainAddress}`
+      `${REACT_APP_GATEWAY_API_URL}/wallet/balance?blockchain_address=${blockchainAddress}`
     )
     .then(({ data }) => {
       if (data.error) {
@@ -43,16 +34,10 @@ function fetchWalletBalance(blockchainAddress: string): Promise<string> {
 }
 
 function transaction(transaction: Transaction): Promise<string> {
-  console.log(transaction);
   // Why this string ends up in golang as a number is beyond me
   return axios
-    .post<string>(`http://localhost:5000/transaction`, transaction)
+    .post<string>(`${REACT_APP_GATEWAY_API_URL}/transaction`, transaction)
     .then(({ data }) => data);
 }
 
-export {
-  fetchMinerWalletDetails,
-  fetchUserWalletDetails,
-  fetchWalletBalance,
-  transaction,
-};
+export { fetchUserWalletDetails, fetchWalletBalance, transaction };

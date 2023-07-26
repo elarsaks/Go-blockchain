@@ -1,0 +1,74 @@
+name: Full Stack Deployment
+
+on:
+  push:
+    branches:
+      - DEPLOY-full-stack
+
+jobs:
+  deploy-react-to-gh-pages:
+    runs-on: ubuntu-latest
+    env:
+      REACT_APP_GATEWAY_API_URL: https://go-blockchain.azurewebsites.net
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: "18.16.1"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: |
+          cd react_dashboard
+          npm ci
+
+      - name: Build
+        run: |
+          cd react_dashboard
+          npm run build
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./react_dashboard/build
+
+  build-and-push-docker-images:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: KengoTODA/actions-setup-docker-compose@v1
+        with:
+          version: "2.14.2"
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: "ACR Login"
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and Push Docker images
+        run: |
+          docker-compose build wallet-server miner-1
+          docker-compose push wallet-server miner-1

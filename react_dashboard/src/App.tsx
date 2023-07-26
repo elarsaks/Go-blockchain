@@ -1,4 +1,4 @@
-import { fetchBlockchainData } from "api/blockchain";
+import { fetchBlockchainData } from "api/miner";
 import AppFooter from "components/layout/AppFooter";
 import AppHeader from "components/layout/AppHeader";
 import AppInfo from "components/layout/AppInfo";
@@ -85,7 +85,7 @@ function App() {
           />
         )}
 
-        {isError.message && (
+        {isError.message && !isLoading && (
           <Notification
             type="error"
             message="Sorry, there was an error loading blockchain data."

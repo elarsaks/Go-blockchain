@@ -1,0 +1,36 @@
+name: Deploy Docker Compose
+
+on:
+  push:
+    branches:
+      - DEPLOY-back-end
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        uses: KengoTODA/actions-setup-docker-compose@v1
+        with:
+          version: "2.14.2"
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: "ACR Login"
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and Push Docker images
+        run: |
+          docker-compose -f docker-compose-build.yml build wallet-server miner-1
+          docker-compose -f docker-compose-build.yml push wallet-server miner-1
