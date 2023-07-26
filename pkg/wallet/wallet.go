@@ -24,6 +24,7 @@ type Transaction struct {
 	senderPublicKey            *ecdsa.PublicKey
 	senderBlockchainAddress    string
 	recipientBlockchainAddress string
+	message                    string
 	value                      float32
 }
 
@@ -32,6 +33,7 @@ type TransactionRequest struct {
 	SenderBlockchainAddress    *string `json:"senderBlockchainAddress"`
 	SenderPrivateKey           *string `json:"senderPrivateKey"`
 	SenderPublicKey            *string `json:"senderPublicKey"`
+	Message                    *string `json:"message"`
 	Value                      *string `json:"value"`
 }
 
@@ -115,8 +117,8 @@ func (w *Wallet) MarshalJSON() ([]byte, error) {
 
 // NewTransaction creates a new transaction with the given details.
 func NewTransaction(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey,
-	sender string, recipient string, value float32) *Transaction {
-	return &Transaction{privateKey, publicKey, sender, recipient, value}
+	sender string, recipient string, message string, value float32) *Transaction {
+	return &Transaction{privateKey, publicKey, sender, recipient, message, value}
 }
 
 // GenerateSignature generates the signature for the transaction.
@@ -124,7 +126,7 @@ func (t *Transaction) GenerateSignature() *utils.Signature {
 	m, _ := json.Marshal(t)
 	h := sha256.Sum256([]byte(m))
 	r, s, _ := ecdsa.Sign(rand.Reader, t.senderPrivateKey, h[:])
-	return &utils.Signature{r, s}
+	return &utils.Signature{R: r, S: s}
 }
 
 // MarshalJSON returns the JSON representation of the transaction.
@@ -146,6 +148,7 @@ func (tr *TransactionRequest) Validate() bool {
 		tr.SenderBlockchainAddress == nil ||
 		tr.RecipientBlockchainAddress == nil ||
 		tr.SenderPublicKey == nil ||
+		tr.Message == nil ||
 		tr.Value == nil {
 		return false
 	}

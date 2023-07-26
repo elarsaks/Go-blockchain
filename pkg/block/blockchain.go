@@ -152,10 +152,10 @@ func (bc *Blockchain) Print() {
 }
 
 // Create a new transaction
-func (bc *Blockchain) CreateTransaction(sender string, recipient string, value float32,
+func (bc *Blockchain) CreateTransaction(sender string, recipient string, message string, value float32,
 	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
 
-	isTransacted := bc.AddTransaction(sender, recipient, value, senderPublicKey, s)
+	isTransacted := bc.AddTransaction(sender, recipient, message, value, senderPublicKey, s)
 
 	if isTransacted {
 		for _, n := range bc.neighbors {
@@ -163,7 +163,7 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, value f
 				senderPublicKey.Y.Bytes())
 			signatureStr := s.String()
 			bt := &TransactionRequest{
-				&sender, &recipient, &publicKeyStr, &value, &signatureStr}
+				&sender, &recipient, &publicKeyStr, &message, &value, &signatureStr}
 			m, _ := json.Marshal(bt)
 			buf := bytes.NewBuffer(m)
 			endpoint := fmt.Sprintf("http://%s/transactions", n)
@@ -178,9 +178,13 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, value f
 }
 
 // Add a new transaction to the transaction pool
-func (bc *Blockchain) AddTransaction(sender string, recipient string, value float32,
-	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
-	t := NewTransaction(sender, recipient, value)
+func (bc *Blockchain) AddTransaction(sender string,
+	recipient string,
+	message string,
+	value float32,
+	senderPublicKey *ecdsa.PublicKey,
+	s *utils.Signature) bool {
+	t := NewTransaction(sender, recipient, message, value)
 
 	if sender == MINING_SENDER {
 		bc.transactionPool = append(bc.transactionPool, t)
@@ -231,8 +235,10 @@ func (bc *Blockchain) CopyTransactionPool() []*Transaction {
 	transactions := make([]*Transaction, 0)
 	for _, t := range bc.transactionPool {
 		transactions = append(transactions,
-			NewTransaction(t.senderBlockchainAddress,
+			NewTransaction(
+				t.senderBlockchainAddress,
 				t.recipientBlockchainAddress,
+				t.message,
 				t.value))
 	}
 	return transactions
@@ -271,7 +277,7 @@ func (bc *Blockchain) Mining() bool {
 		return false
 	}
 
-	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, MINING_REWARD, nil, nil)
+	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, "MINING REWARD", MINING_REWARD, nil, nil)
 	nonce := bc.ProofOfWork()
 	previousHash := bc.LastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)
@@ -290,8 +296,8 @@ func (bc *Blockchain) Mining() bool {
 }
 
 // Register new wallet address
-func (bc *Blockchain) RegisterNewWallet(blockchainAddress string) bool {
-	bc.AddTransaction(MINING_SENDER, blockchainAddress, 0, nil, nil)
+func (bc *Blockchain) RegisterNewWallet(blockchainAddress string, message string) bool {
+	bc.AddTransaction(MINING_SENDER, blockchainAddress, message, 0, nil, nil)
 
 	return true
 }

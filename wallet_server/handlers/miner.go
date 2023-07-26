@@ -48,7 +48,7 @@ func CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
 		w.Header().Add("Content-Type", "application/json")
 
 		transaction := wallet.NewTransaction(privateKey, publicKey,
-			*t.SenderBlockchainAddress, *t.RecipientBlockchainAddress, value32)
+			*t.SenderBlockchainAddress, *t.RecipientBlockchainAddress, *t.Message, value32)
 		signature := transaction.GenerateSignature()
 		signatureStr := signature.String()
 

@@ -47,16 +47,16 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 		bc = block.NewBlockchain(minersWallet.BlockchainAddress(), bcs.Port())
 		cache["blockchain"] = bc
 
-		// Setting the wallet in the BlockchainServer object
-		bcs.Wallet = minersWallet
-
 		// Call RegisterNewWallet to register the provided wallet address
-		success := bc.RegisterNewWallet(minersWallet.BlockchainAddress())
+		success := bc.RegisterNewWallet(minersWallet.BlockchainAddress(), "Register Miner Wallet")
 		if !success {
 			log.Println("ERROR: Failed to register wallet")
 			// TODO: Handle error
 			return nil
 		}
+
+		// Setting the wallet in the BlockchainServer object
+		bcs.Wallet = minersWallet
 
 		log.Printf("private_key %v", minersWallet.PrivateKeyStr())
 		log.Printf("public_key %v", minersWallet.PublicKeyStr())
@@ -127,7 +127,7 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 		signature := utils.SignatureFromString(*t.Signature)
 		bc := bcs.GetBlockchain()
 		isCreated := bc.CreateTransaction(*t.SenderBlockchainAddress,
-			*t.RecipientBlockchainAddress, *t.Value, publicKey, signature)
+			*t.RecipientBlockchainAddress, "", *t.Value, publicKey, signature)
 
 		w.Header().Add("Content-Type", "application/json")
 		var m []byte
@@ -158,7 +158,7 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 		signature := utils.SignatureFromString(*t.Signature)
 		bc := bcs.GetBlockchain()
 		isUpdated := bc.AddTransaction(*t.SenderBlockchainAddress,
-			*t.RecipientBlockchainAddress, *t.Value, publicKey, signature)
+			*t.RecipientBlockchainAddress, *t.Message, *t.Value, publicKey, signature)
 
 		w.Header().Add("Content-Type", "application/json")
 		var m []byte
@@ -310,7 +310,7 @@ func (bcs *BlockchainServer) RegisterWallet(w http.ResponseWriter, req *http.Req
 		}
 
 		// Call RegisterNewWallet to register the provided wallet address
-		success := bcs.GetBlockchain().RegisterNewWallet(requestBody.BlockchainAddress)
+		success := bcs.GetBlockchain().RegisterNewWallet(requestBody.BlockchainAddress, "Register User Wallet")
 		if !success {
 			log.Println("ERROR: Failed to register wallet")
 			w.WriteHeader(http.StatusInternalServerError)
