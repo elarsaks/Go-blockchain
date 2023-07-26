@@ -20,7 +20,7 @@ func GetMinerWallet(w http.ResponseWriter, req *http.Request, miner string) {
 
 	// TODO: this could be recived from the blockchain (nodes should know each other)
 	minerUrl := map[string]string{
-		"1": "go-blockchain-miner-1_1:5001",
+		"1": "miner-1:5001",
 		"2": "miner-2:5002",
 		"3": "miner-3:5003",
 	}
