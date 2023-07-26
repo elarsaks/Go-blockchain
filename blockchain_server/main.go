@@ -158,7 +158,7 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 		signature := utils.SignatureFromString(*t.Signature)
 		bc := bcs.GetBlockchain()
 		isUpdated := bc.AddTransaction(*t.SenderBlockchainAddress,
-			*t.RecipientBlockchainAddress, "", *t.Value, publicKey, signature)
+			*t.RecipientBlockchainAddress, *t.Message, *t.Value, publicKey, signature)
 
 		w.Header().Add("Content-Type", "application/json")
 		var m []byte

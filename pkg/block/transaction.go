@@ -50,13 +50,14 @@ func (t *Transaction) Print() {
 // MarshalJSON implements the Marshaler interface for the Transaction type.
 func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Sender    string  `json:"senderBlockchainAddress"`
-		Recipient string  `json:"recipientBlockchainAddress"`
 		Message   string  `json:"message"`
+		Recipient string  `json:"recipientBlockchainAddress"`
+		Sender    string  `json:"senderBlockchainAddress"`
 		Value     float32 `json:"value"`
 	}{
-		Sender:    t.senderBlockchainAddress,
+		Message:   t.message,
 		Recipient: t.recipientBlockchainAddress,
+		Sender:    t.senderBlockchainAddress,
 		Value:     t.value,
 	})
 }
@@ -64,13 +65,14 @@ func (t *Transaction) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements the Unmarshaler interface for the Transaction type.
 func (t *Transaction) UnmarshalJSON(data []byte) error {
 	v := &struct {
-		Sender    *string  `json:"senderBlockchainAddress"`
-		Recipient *string  `json:"recipientBlockchainAddress"`
 		Message   *string  `json:"message"`
+		Recipient *string  `json:"recipientBlockchainAddress"`
+		Sender    *string  `json:"senderBlockchainAddress"`
 		Value     *float32 `json:"value"`
 	}{
-		Sender:    &t.senderBlockchainAddress,
+		Message:   &t.message,
 		Recipient: &t.recipientBlockchainAddress,
+		Sender:    &t.senderBlockchainAddress,
 		Value:     &t.value,
 	}
 	if err := json.Unmarshal(data, &v); err != nil {
