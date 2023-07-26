@@ -1,19 +1,19 @@
 version: "3.8"
 
 services:
-  # react-dashboard:
-  #   build:
-  #     context: ./react_dashboard
-  #   command: npm run start-react
-  #   container_name: react-dashboard
-  #   restart: unless-stopped
-  #   ports:
-  #     - 3000:3000
-  #   environment:
-  #     - REACT_APP_GATEWAY_API_URL=http://localhost:${WALLET_SERVER_PORT}
-  #   volumes:
-  #     - ./react_dashboard:/app
-  #     - /app/node_modules
+  react-dashboard:
+    build:
+      context: ./react_dashboard
+    command: npm run start-react
+    container_name: react-dashboard
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    environment:
+      - REACT_APP_GATEWAY_API_URL=http://localhost:${WALLET_SERVER_PORT}
+    volumes:
+      - ./react_dashboard:/app
+      - /app/node_modules
 
   wallet-server:
     container_name: wallet-server
@@ -23,7 +23,6 @@ services:
     ports:
       - ${WALLET_SERVER_PORT}:${WALLET_SERVER_PORT}
     environment:
-      - WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN=http://miner-2:5002
       - COMMAND=air
       - PORT=${WALLET_SERVER_PORT}
     volumes:
