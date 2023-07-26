@@ -90,6 +90,6 @@ func main() {
 	}
 
 	// Create and run the WalletServer with the configured ports and gateway
-	app := NewWalletServer(uint16(port), "http://miner-2:5002")
+	app := NewWalletServer(uint16(port), "http://miner-1:5001")
 	app.Run()
 }
