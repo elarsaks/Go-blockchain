@@ -95,6 +95,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
             ...minerWalletDetails,
           }));
           setIsError(null);
+
           return minerWalletDetails.blockchainAddress;
         })
 
@@ -122,7 +123,6 @@ const WalletHead: React.FC<WalletHeadProps> = ({
 
   useEffect(
     () => {
-      console.log("selectedMiner.value", selectedMiner.value);
       if (type === "Miner") fetchMinerDetails(selectedMiner.value);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -132,13 +132,13 @@ const WalletHead: React.FC<WalletHeadProps> = ({
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
-    if (walletDetails.blockchainAddress !== "") {
+    if (walletDetails.blockchainAddress) {
       walletUpdate = setInterval(() => {
         fetchWalletBalance(walletDetails.blockchainAddress)
           .then((balance) => {
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
-              balance: balance,
+              balance: balance === "0" ? "0.00" : balance,
             }));
             setIsError(null);
           })

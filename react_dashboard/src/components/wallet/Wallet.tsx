@@ -184,11 +184,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         </Field>
 
         <Field>
-          <Label>Amount</Label>
+          <Label>Amount:</Label>
           <Input
             type="text"
             name="amount"
-            placeholder="0"
+            placeholder="0.00₿"
             value={walletDetails.amount.toString()}
             onChange={handleInputChange}
           />
