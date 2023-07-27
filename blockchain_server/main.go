@@ -247,14 +247,23 @@ func (bcs *BlockchainServer) StartMine(w http.ResponseWriter, req *http.Request)
 	}
 }
 
-// Get the transactions of the BlockchainServer
+// Transactions is a handler function that allows for getting, creating, updating and deleting transactions
 func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Request) {
+	// Switching on the HTTP method
 	switch req.Method {
 
+	// In case of a GET request, return the current transaction pool
 	case http.MethodGet:
+		// Setting the Content-Type of the response to application/json
 		w.Header().Add("Content-Type", "application/json")
+
+		// Getting the blockchain from the server
 		bc := bcs.GetBlockchain()
+
+		// Getting the transaction pool
 		transactions := bc.TransactionPool()
+
+		// Serializing the transaction pool and its length into a JSON object
 		m, _ := json.Marshal(struct {
 			Transactions []*block.Transaction `json:"transactions"`
 			Length       int                  `json:"length"`
@@ -262,74 +271,117 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 			Transactions: transactions,
 			Length:       len(transactions),
 		})
+
+		// Writing the serialized JSON object to the response
 		io.WriteString(w, string(m[:]))
 
+	// In case of a POST request, create a new transaction
 	case http.MethodPost:
+		// Decoding the body of the request into a TransactionRequest object
 		decoder := json.NewDecoder(req.Body)
 		var t block.TransactionRequest
 		err := decoder.Decode(&t)
+
+		// If there was an error decoding the request, log the error and send a fail response
 		if err != nil {
 			log.Printf("ERROR: %v", err)
 			io.WriteString(w, string(utils.JsonStatus("fail")))
 			return
 		}
+
+		// Validate the transaction request, send a fail response if validation fails
 		if !t.Validate() {
 			log.Println("ERROR: missing field(s)")
 			io.WriteString(w, string(utils.JsonStatus("fail")))
 			return
 		}
+
+		// Convert the sender's public key and signature from strings to their appropriate types
 		publicKey := utils.PublicKeyFromString(*t.SenderPublicKey)
 		signature := utils.SignatureFromString(*t.Signature)
+
+		// Getting the blockchain from the server
 		bc := bcs.GetBlockchain()
+
+		// Creating a new transaction and getting whether the transaction was created successfully
 		isCreated := bc.CreateTransaction(*t.SenderBlockchainAddress,
 			*t.RecipientBlockchainAddress, "", *t.Value, publicKey, signature)
 
+		// Setting the Content-Type of the response to application/json
 		w.Header().Add("Content-Type", "application/json")
+
+		// If the transaction was not created successfully, send a 400 response and a fail status message
 		var m []byte
 		if !isCreated {
 			w.WriteHeader(http.StatusBadRequest)
 			m = utils.JsonStatus("fail")
-		} else {
+		} else { // If the transaction was created successfully, send a 201 response and a success status message
 			w.WriteHeader(http.StatusCreated)
 			m = utils.JsonStatus("success")
 		}
+
+		// Write the status message to the response
 		io.WriteString(w, string(m))
 
+	// In case of a PUT request, update a transaction
 	case http.MethodPut:
+		// Decoding the body of the request into a TransactionRequest object
 		decoder := json.NewDecoder(req.Body)
 		var t block.TransactionRequest
 		err := decoder.Decode(&t)
+
+		// If there was an error decoding the request, log the error and send a fail response
 		if err != nil {
 			log.Printf("ERROR: %v", err)
 			io.WriteString(w, string(utils.JsonStatus("fail")))
 			return
 		}
+
+		// Validate the transaction request, send a fail response if validation fails
 		if !t.Validate() {
 			log.Println("ERROR: missing field(s)")
 			io.WriteString(w, string(utils.JsonStatus("fail")))
 			return
 		}
+
+		// Convert the sender's public key and signature from strings to their appropriate types
 		publicKey := utils.PublicKeyFromString(*t.SenderPublicKey)
 		signature := utils.SignatureFromString(*t.Signature)
+
+		// Getting the blockchain from the server
 		bc := bcs.GetBlockchain()
+
+		// Updating a transaction and getting whether the transaction was updated successfully
 		isUpdated := bc.AddTransaction(*t.SenderBlockchainAddress,
 			*t.RecipientBlockchainAddress, *t.Message, *t.Value, publicKey, signature)
 
+		// Setting the Content-Type of the response to application/json
 		w.Header().Add("Content-Type", "application/json")
+
+		// If the transaction was not updated successfully, send a fail status message
 		var m []byte
 		if !isUpdated {
 			w.WriteHeader(http.StatusBadRequest)
 			m = utils.JsonStatus("fail")
-		} else {
+		} else { // If the transaction was updated successfully, send a success status message
 			m = utils.JsonStatus("success")
 		}
+
+		// Write the status message to the response
 		io.WriteString(w, string(m))
 
+	// In case of a DELETE request, clear the transaction pool
 	case http.MethodDelete:
+		// Getting the blockchain from the server
 		bc := bcs.GetBlockchain()
+
+		// Clearing the transaction pool
 		bc.ClearTransactionPool()
+
+		// Send a success status message
 		io.WriteString(w, string(utils.JsonStatus("success")))
 
+	// In case of an unsupported HTTP method, log an error and send a 400 response
 	default:
 		log.Println("ERROR: Invalid HTTP Method")
 		w.WriteHeader(http.StatusBadRequest)
