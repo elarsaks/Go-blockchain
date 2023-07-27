@@ -352,8 +352,20 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 		bc := bcs.GetBlockchain()
 
 		// Updating a transaction and getting whether the transaction was updated successfully
-		isUpdated := bc.AddTransaction(*t.SenderBlockchainAddress,
-			*t.RecipientBlockchainAddress, *t.Message, *t.Value, publicKey, signature)
+
+		isUpdated, err := bc.AddTransaction(*t.SenderBlockchainAddress,
+			*t.RecipientBlockchainAddress,
+			*t.Message,
+			*t.Value,
+			publicKey,
+			signature)
+
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"status": "fail", "error": err.Error()})
+		} else {
+			json.NewEncoder(w).Encode(map[string]string{"status": "success"})
+		}
 
 		// Setting the Content-Type of the response to application/json
 		w.Header().Add("Content-Type", "application/json")
