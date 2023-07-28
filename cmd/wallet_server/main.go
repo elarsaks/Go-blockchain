@@ -15,7 +15,6 @@ func init() {
 func main() {
 	// Retrieve gateway from environment variable
 	gateway := os.Getenv("WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN")
-
 	if gateway == "" {
 		gateway = "http://127.0.0.1:5001" // Default value
 	}

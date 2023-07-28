@@ -36,9 +36,12 @@ func (ws *WalletServer) Run() {
 	router.Use(utils.CorsMiddleware())
 
 	// Define routes
-	router.HandleFunc("/wallet", ws.GetUserWallet)
-	router.HandleFunc("/wallet/balance", ws.WalletBalance)
+	router.HandleFunc("/", ws.GetApiDescription)
+	router.HandleFunc("/user/wallet", ws.GetUserWallet)
+	router.HandleFunc("/wallet/balance", ws.GetWalletBalance)
 	router.HandleFunc("/transaction", ws.CreateTransaction)
+	router.HandleFunc("/miner/blocks", ws.GetBlocks)
+	//router.HandleFunc("/miner/wallet", ws.GetMinerWallet) // TODO
 
 	// Start server
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.Port())), router))

@@ -3,6 +3,7 @@ package wallet_server
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -12,6 +13,9 @@ import (
 
 // Get User wallet
 func (ws *WalletServer) GetUserWallet(w http.ResponseWriter, req *http.Request) {
+
+	fmt.Println("GetUserWallet")
+
 	if req.Method != http.MethodPost {
 		http.Error(w, "Invalid HTTP Method", http.StatusBadRequest)
 		return

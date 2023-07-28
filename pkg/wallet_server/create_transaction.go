@@ -85,7 +85,7 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 		buf := bytes.NewBuffer(m)
 
 		// Make a POST request to the miner's API to create a new transaction
-		resp, err := http.Post(ws.gateway+"/transactions", "application/json", buf)
+		resp, err := http.Post(ws.Gateway()+"/transactions", "application/json", buf)
 
 		// Check if there was an error while making the POST request
 		if err != nil {

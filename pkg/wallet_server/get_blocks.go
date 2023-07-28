@@ -10,7 +10,8 @@ import (
 )
 
 // Handler function to get requested blocks
-func GetBlocks(w http.ResponseWriter, req *http.Request, miner string) {
+func (ws *WalletServer) GetBlocks(w http.ResponseWriter, req *http.Request) {
+
 	// Get the 'amount' query parameter from the URL
 	amountStr := req.URL.Query().Get("amount")
 	amount, err := strconv.Atoi(amountStr)
@@ -20,7 +21,7 @@ func GetBlocks(w http.ResponseWriter, req *http.Request, miner string) {
 	}
 
 	// Make a GET request to miner-2's API to fetch blocks
-	resp, err := http.Get(fmt.Sprintf(miner+"/miner/blocks?amount=%d", amount))
+	resp, err := http.Get(fmt.Sprintf(ws.Gateway()+"/miner/blocks?amount=%d", amount))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
