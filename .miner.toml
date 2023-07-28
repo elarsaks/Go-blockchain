@@ -1,0 +1,37 @@
+#Command:  air -c ./miner.toml
+root = "."
+tmp_dir = "tmp"
+
+# ./cmd/wallet_server/air.toml
+[build]
+cmd = "go build -o ./cmd/wallet_server/tmp/main ."
+bin = "./cmd/wallet_server/tmp/main"
+
+[watch]
+include_ext = ["./cmd/wallet_server/", "./pkg/"]
+exclude_dir = [".git/*", "tmp/*", "vendor/*", "cmd/react_dashboard/*"]
+
+
+# Stop builds from triggering too fast
+delay = 1000 # ms
+
+[log]
+# Show log time
+time = false
+# Only show main log (silences watcher, build, runner)
+main_only = false
+
+[color]
+# Customize each part's color. If no color found, use the raw app log.
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+
+[misc]
+# Delete tmp directory on exit
+clean_on_exit = true
+
+[screen]
+clear_on_rebuild = true
+keep_scroll = true

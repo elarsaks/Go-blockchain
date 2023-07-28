@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -18,6 +19,8 @@ func main() {
 	if gateway == "" {
 		gateway = "http://127.0.0.1:5001" // Default value
 	}
+
+	fmt.Println("gateway: ", gateway)
 
 	// Retrieve port from environment variable
 	portStr := os.Getenv("PORT")

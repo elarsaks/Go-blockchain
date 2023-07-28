@@ -14,7 +14,7 @@ import (
 // Get User wallet
 func (ws *WalletServer) GetUserWallet(w http.ResponseWriter, req *http.Request) {
 
-	fmt.Println("GetUserWallet")
+	fmt.Println("TESTING!")
 
 	if req.Method != http.MethodPost {
 		http.Error(w, "Invalid HTTP Method", http.StatusBadRequest)
