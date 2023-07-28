@@ -15,7 +15,7 @@ import (
 )
 
 // Create a new transaction
-func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
+func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Request) {
 	//* NOTE: We are not just passing request to miner, because we need to sign the transaction
 
 	// Switching on the HTTP method
@@ -85,7 +85,7 @@ func (ws *WalletServer) CreateTransaction(w http.ResponseWriter, req *http.Reque
 		buf := bytes.NewBuffer(m)
 
 		// Make a POST request to the miner's API to create a new transaction
-		resp, err := http.Post(miner+"/transactions", "application/json", buf)
+		resp, err := http.Post(ws.gateway+"/transactions", "application/json", buf)
 
 		// Check if there was an error while making the POST request
 		if err != nil {
