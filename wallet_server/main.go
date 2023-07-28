@@ -57,22 +57,27 @@ func (ws *WalletServer) Run() {
 		json.NewEncoder(w).Encode(apiDescription())
 	})
 
+	// Return User Wallet
 	router.HandleFunc("/user/wallet", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetUserWallet(w, r, ws.gateway)
 	})
 
+	// Return wallet balance
 	router.HandleFunc("/wallet/balance", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetWalletBalance(w, r, ws.gateway)
 	})
 
+	// Create transaction
 	router.HandleFunc("/transaction", func(w http.ResponseWriter, r *http.Request) {
 		handlers.CreateTransaction(w, r, ws.gateway)
 	})
 
+	// Return miner blocks
 	router.HandleFunc("/miner/blocks", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetBlocks(w, r, ws.gateway)
 	})
 
+	// Return miner wallet
 	router.HandleFunc("/miner/wallet", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetMinerWallet(w, r, ws.gateway)
 	})
@@ -90,6 +95,6 @@ func main() {
 	}
 
 	// Create and run the WalletServer with the configured ports and gateway
-	app := NewWalletServer(uint16(port), "http://miner-2:5002")
+	app := NewWalletServer(uint16(port), "http://miner-1:5001")
 	app.Run()
 }

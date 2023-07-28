@@ -7,6 +7,7 @@ import (
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/btcsuite/btcutil/base58"
 	"github.com/elarsaks/Go-blockchain/pkg/utils"
@@ -20,14 +21,16 @@ type Wallet struct {
 }
 
 type Transaction struct {
+	message                    string
+	recipientBlockchainAddress string
+	senderBlockchainAddress    string
 	senderPrivateKey           *ecdsa.PrivateKey
 	senderPublicKey            *ecdsa.PublicKey
-	senderBlockchainAddress    string
-	recipientBlockchainAddress string
 	value                      float32
 }
 
 type TransactionRequest struct {
+	Message                    *string `json:"message"`
 	RecipientBlockchainAddress *string `json:"recipientBlockchainAddress"`
 	SenderBlockchainAddress    *string `json:"senderBlockchainAddress"`
 	SenderPrivateKey           *string `json:"senderPrivateKey"`
@@ -103,9 +106,9 @@ func (w *Wallet) BlockchainAddress() string {
 // MarshalJSON returns the JSON representation of the wallet.
 func (w *Wallet) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		PrivateKey        string `json:"private_key"`
-		PublicKey         string `json:"public_key"`
-		BlockchainAddress string `json:"blockchain_address"`
+		PrivateKey        string `json:"privateKey"`
+		PublicKey         string `json:"publicKey"`
+		BlockchainAddress string `json:"blockchainAddress"`
 	}{
 		PrivateKey:        w.PrivateKeyStr(),
 		PublicKey:         w.PublicKeyStr(),
@@ -114,26 +117,40 @@ func (w *Wallet) MarshalJSON() ([]byte, error) {
 }
 
 // NewTransaction creates a new transaction with the given details.
-func NewTransaction(privateKey *ecdsa.PrivateKey, publicKey *ecdsa.PublicKey,
-	sender string, recipient string, value float32) *Transaction {
-	return &Transaction{privateKey, publicKey, sender, recipient, value}
+func NewTransaction(
+	message string,
+	recipient string,
+	sender string,
+	privateKey *ecdsa.PrivateKey,
+	publicKey *ecdsa.PublicKey,
+	value float32) *Transaction {
+	return &Transaction{message, sender, recipient, privateKey, publicKey, value}
 }
 
 // GenerateSignature generates the signature for the transaction.
 func (t *Transaction) GenerateSignature() *utils.Signature {
 	m, _ := json.Marshal(t)
+
+	log.Println("Generate signature", string(m))
+
 	h := sha256.Sum256([]byte(m))
-	r, s, _ := ecdsa.Sign(rand.Reader, t.senderPrivateKey, h[:])
-	return &utils.Signature{r, s}
+	r, s, err := ecdsa.Sign(rand.Reader, t.senderPrivateKey, h[:])
+	if err != nil {
+		fmt.Println("Signing signature failed: ", err)
+		return nil // TODO: Handle error
+	}
+	return &utils.Signature{R: r, S: s}
 }
 
 // MarshalJSON returns the JSON representation of the transaction.
 func (t *Transaction) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
+		Message   string  `json:"message"`
 		Sender    string  `json:"recipientBlockchainAddress"`
 		Recipient string  `json:"senderBlockchainAddress"`
 		Value     float32 `json:"value"`
 	}{
+		Message:   t.message,
 		Sender:    t.senderBlockchainAddress,
 		Recipient: t.recipientBlockchainAddress,
 		Value:     t.value,
@@ -146,6 +163,7 @@ func (tr *TransactionRequest) Validate() bool {
 		tr.SenderBlockchainAddress == nil ||
 		tr.RecipientBlockchainAddress == nil ||
 		tr.SenderPublicKey == nil ||
+		tr.Message == nil ||
 		tr.Value == nil {
 		return false
 	}
