@@ -9,7 +9,6 @@ services:
       - 8080:8080
       - 443:443
     environment:
-      - WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN=http://miner-2:5002
       - PORT=8080
       - COMMAND=air
       - DOCKER_REGISTRY_SERVER_USERNAME=${DOCKER_REGISTRY_SERVER_USERNAME}
