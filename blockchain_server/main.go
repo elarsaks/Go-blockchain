@@ -248,6 +248,7 @@ func (bcs *BlockchainServer) StartMine(w http.ResponseWriter, req *http.Request)
 	}
 }
 
+// TODO: Divide this function into 4 different functions
 // Transactions is a handler function that allows for getting, creating, updating and deleting transactions
 func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Request) {
 	// Switching on the HTTP method
