@@ -87,26 +87,31 @@ const WalletHead: React.FC<WalletHeadProps> = ({
   function fetchMinerDetails(selectedMinerId: string) {
     setIsLoading(true);
     // Fetch miner wallet details
-    fetchMinerWalletDetails(selectedMinerId)
-      .then((minerWalletDetails: WalletDetails) => {
-        setWalletDetails((prevDetails) => ({
-          ...prevDetails,
-          ...minerWalletDetails,
-        }));
-        setIsError(null);
-      })
-      // Fetch miner wallet balance
-      .then(() => {
-        fetchWalletBalance(walletDetails.blockchainAddress)
-          .then((balance) => {
+    return (
+      fetchMinerWalletDetails(selectedMinerId)
+        .then((minerWalletDetails: WalletDetails) => {
+          setWalletDetails((prevDetails) => ({
+            ...prevDetails,
+            ...minerWalletDetails,
+          }));
+          setIsError(null);
+
+          return minerWalletDetails.blockchainAddress;
+        })
+
+        // Fetch miner wallet balance
+        .then((blockchainAddress) =>
+          fetchWalletBalance(blockchainAddress).then((balance) => {
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
               balance: balance === "0" ? "0.00" : balance,
             }));
+            setIsError(null);
           })
-          .catch((error: LocalError) => setIsError(error));
-      })
-      .finally(() => setIsLoading(false));
+        )
+        .catch((error: LocalError) => setIsError(error))
+        .finally(() => setIsLoading(false))
+    );
   }
 
   useEffect(() => {
@@ -124,6 +129,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     [type, selectedMiner.value]
   );
 
+  // TODO: balance should only update when there is a new block
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
@@ -133,9 +139,9 @@ const WalletHead: React.FC<WalletHeadProps> = ({
           .then((balance) => {
             setWalletDetails((prevDetails) => ({
               ...prevDetails,
-              balance: balance,
+              balance: balance === "0" ? "0.00" : balance,
             }));
-            //  setIsError(null);
+            setIsError(null);
           })
           .catch((error: LocalError) => setIsError(error));
       }, 10000);
