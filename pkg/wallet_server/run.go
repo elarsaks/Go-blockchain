@@ -36,7 +36,7 @@ func (ws *WalletServer) Run() {
 	router.Use(utils.CorsMiddleware())
 
 	// Define routes
-	router.HandleFunc("/wallet", ws.Wallet)
+	router.HandleFunc("/wallet", ws.GetUserWallet)
 	router.HandleFunc("/wallet/balance", ws.WalletBalance)
 	router.HandleFunc("/transaction", ws.CreateTransaction)
 

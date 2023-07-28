@@ -7,8 +7,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/elarsaks/Go-blockchain/block"
-	"github.com/elarsaks/Go-blockchain/utils"
+	"github.com/elarsaks/Go-blockchain/pkg/block"
+	"github.com/elarsaks/Go-blockchain/pkg/utils"
 )
 
 func (ws *WalletServer) WalletBalance(w http.ResponseWriter, req *http.Request) {

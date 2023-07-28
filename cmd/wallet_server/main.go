@@ -4,6 +4,8 @@ import (
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/elarsaks/Go-blockchain/pkg/wallet_server"
 )
 
 func init() {
@@ -29,6 +31,6 @@ func main() {
 	log.Printf("Gateway to blockchain: %s\n", gateway)
 	log.Printf("Port: %d\n", port)
 
-	app := NewWalletServer(uint16(port), gateway)
+	app := wallet_server.NewWalletServer(uint16(port), gateway)
 	app.Run()
 }
