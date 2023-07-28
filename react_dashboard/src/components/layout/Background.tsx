@@ -39,7 +39,7 @@ const BackgroundComponent: React.FC = () => {
           context.fillStyle = "#FFFFFF"; // Square color
           context.fillRect(posX, posY, squareSize, squareSize);
 
-          context.strokeStyle = "rgba(173, 216, 230, 0.2)"; // Border color with transparency
+          context.strokeStyle = "rgba(173, 216, 230, 0.4)"; // Border color with transparency
           context.lineWidth = 1;
           context.strokeRect(posX, posY, squareSize, squareSize);
         }
