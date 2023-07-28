@@ -20,9 +20,9 @@ function fetchMinerWalletDetails(minerId: string): Promise<WalletDetails> {
     )
     .then(({ data }) => {
       const camelCaseResponseData: WalletDetails = {
-        blockchainAddress: data.blockchain_address,
-        privateKey: data.private_key,
-        publicKey: data.public_key,
+        blockchainAddress: data.blockchainAddress,
+        privateKey: data.privateKey,
+        publicKey: data.publicKey,
       };
 
       return camelCaseResponseData;

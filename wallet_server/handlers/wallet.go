@@ -129,10 +129,10 @@ func GetWalletBalance(w http.ResponseWriter, req *http.Request, miner string) {
 	}
 
 	// Extract the blockchain address from the URL query parameters
-	blockchainAddress := req.URL.Query().Get("blockchain_address")
+	blockchainAddress := req.URL.Query().Get("blockchainAddress")
 
 	// Construct the endpoint URL for the blockchain API
-	endpoint := fmt.Sprintf("%s/balance?blockchain_address=%s", miner, blockchainAddress)
+	endpoint := fmt.Sprintf("%s/balance?blockchainAddress=%s", miner, blockchainAddress)
 
 	// Send a GET request to the blockchain API
 	resp, err := http.Get(endpoint)

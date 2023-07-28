@@ -159,6 +159,7 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, message
 
 	// If there was an error while adding the transaction, log the error and return it
 	if err != nil {
+
 		log.Printf("ERROR: %v", err)
 		return false, err
 	}
@@ -171,7 +172,7 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, message
 				senderPublicKey.Y.Bytes())
 			signatureStr := s.String()
 			bt := &TransactionRequest{
-				&sender, &recipient, &publicKeyStr, &message, &value, &signatureStr}
+				&message, &publicKeyStr, &recipient, &sender, &signatureStr, &value}
 			m, _ := json.Marshal(bt)
 			buf := bytes.NewBuffer(m)
 			endpoint := fmt.Sprintf("http://%s/transactions", n)
@@ -239,11 +240,18 @@ func (bc *Blockchain) AddTransaction(sender string,
 
 // Verify the signature of the transaction
 func (bc *Blockchain) VerifyTransactionSignature(
-	senderPublicKey *ecdsa.PublicKey, s *utils.Signature, t *Transaction) bool {
+	senderPublicKey *ecdsa.PublicKey,
+	s *utils.Signature,
+	t *Transaction) bool {
+
 	m, _ := json.Marshal(t)
-	fmt.Println("Verify TransactionSignature")
+
+	log.Println("Validate signature", string(m))
+
 	// Print out the transaction
-	fmt.Printf("%v\n", string(m[:]))
+	// fmt.Println("Verify TransactionSignature")
+	// fmt.Printf("%v\n", string(m[:]))
+
 	h := sha256.Sum256([]byte(m))
 	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
 }
