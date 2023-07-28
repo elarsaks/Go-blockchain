@@ -10,9 +10,9 @@ function fetchUserWalletDetails(): Promise<WalletDetails> {
     .post<WalletDetailsResponse>(REACT_APP_GATEWAY_API_URL + "/user/wallet")
     .then(({ data }) => {
       const camelCaseResponseData: WalletDetails = {
-        blockchainAddress: data.blockchain_address,
-        privateKey: data.private_key,
-        publicKey: data.public_key,
+        blockchainAddress: data.blockchainAddress,
+        privateKey: data.privateKey,
+        publicKey: data.publicKey,
       };
 
       return camelCaseResponseData;
@@ -22,7 +22,7 @@ function fetchUserWalletDetails(): Promise<WalletDetails> {
 function fetchWalletBalance(blockchainAddress: string): Promise<string> {
   return axios
     .get<BalanceResponse>(
-      `${REACT_APP_GATEWAY_API_URL}/wallet/balance?blockchain_address=${blockchainAddress}`
+      `${REACT_APP_GATEWAY_API_URL}/wallet/balance?blockchainAddress=${blockchainAddress}`
     )
     .then(({ data }) => {
       if (data.error) {

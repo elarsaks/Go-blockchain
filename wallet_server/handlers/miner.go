@@ -17,6 +17,8 @@ import (
 
 // CreateTransaction is responsible for creating a new transaction
 func CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
+	//* NOTE: We are not just passing request to miner, because we need to sign the transaction
+
 	// Switching on the HTTP method
 	switch req.Method {
 	case http.MethodPost:
@@ -57,11 +59,12 @@ func CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
 		w.Header().Add("Content-Type", "application/json")
 
 		// Create a new Transaction object
-		transaction := wallet.NewTransaction(privateKey,
-			publicKey,
-			*t.SenderBlockchainAddress,
-			*t.RecipientBlockchainAddress,
+		transaction := wallet.NewTransaction(
 			*t.Message,
+			*t.RecipientBlockchainAddress,
+			*t.SenderBlockchainAddress,
+			privateKey,
+			publicKey,
 			value32)
 
 		// Generate a signature for the transaction
@@ -70,12 +73,12 @@ func CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
 
 		// Create a new TransactionRequest object that will be sent to the miner
 		bt := &block.TransactionRequest{
-			SenderBlockchainAddress:    t.SenderBlockchainAddress,
-			RecipientBlockchainAddress: t.RecipientBlockchainAddress,
-			SenderPublicKey:            t.SenderPublicKey,
 			Message:                    t.Message,
-			Value:                      &value32,
+			RecipientBlockchainAddress: t.RecipientBlockchainAddress,
+			SenderBlockchainAddress:    t.SenderBlockchainAddress,
+			SenderPublicKey:            t.SenderPublicKey,
 			Signature:                  &signatureStr,
+			Value:                      &value32,
 		}
 
 		// Serialize the TransactionRequest object into JSON

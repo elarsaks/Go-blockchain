@@ -36,7 +36,7 @@ func (bcs *BlockchainServer) Balance(w http.ResponseWriter, req *http.Request) {
 
 		br := &block.BalanceResponse{} // Use the BalanceResponse type
 
-		blockchainAddress := req.URL.Query().Get("blockchain_address")
+		blockchainAddress := req.URL.Query().Get("blockchainAddress")
 
 		balance, err := bcs.GetBlockchain().CalculateTotalBalance(blockchainAddress)
 
@@ -122,9 +122,9 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 		// Setting the wallet in the BlockchainServer object
 		bcs.Wallet = minersWallet
 
-		log.Printf("private_key %v", minersWallet.PrivateKeyStr())
-		log.Printf("public_key %v", minersWallet.PublicKeyStr())
-		log.Printf("blockchain_address %v", minersWallet.BlockchainAddress())
+		log.Printf("privateKey %v", minersWallet.PrivateKeyStr())
+		log.Printf("publicKey %v", minersWallet.PublicKeyStr())
+		log.Printf("blockchainAddress %v", minersWallet.BlockchainAddress())
 	}
 	return bc
 }
@@ -248,6 +248,7 @@ func (bcs *BlockchainServer) StartMine(w http.ResponseWriter, req *http.Request)
 	}
 }
 
+// TODO: Divide this function into 4 different functions
 // Transactions is a handler function that allows for getting, creating, updating and deleting transactions
 func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Request) {
 	// Switching on the HTTP method
@@ -306,16 +307,13 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 
 		// Attempting to create a new transaction
 		isCreated, err := bc.CreateTransaction(*t.SenderBlockchainAddress,
-			*t.RecipientBlockchainAddress, "", *t.Value, publicKey, signature)
+			*t.RecipientBlockchainAddress, *t.Message, *t.Value, publicKey, signature)
 
 		// Setting the Content-Type of the response to application/json
 		w.Header().Add("Content-Type", "application/json")
 
 		var m []byte
 		if err != nil { // If there is an error during the transaction creation
-
-			// Log the error
-			log.Printf("ERROR by me: %v", err)
 
 			w.WriteHeader(http.StatusBadRequest)
 			// Create an anonymous struct to hold the status and the error message
