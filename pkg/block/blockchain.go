@@ -153,16 +153,19 @@ func (bc *Blockchain) Print() {
 
 // Create a new transaction
 func (bc *Blockchain) CreateTransaction(sender string, recipient string, message string, value float32,
-	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
+	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) (bool, error) {
 
 	isTransacted, err := bc.AddTransaction(sender, recipient, message, value, senderPublicKey, s)
 
+	// If there was an error while adding the transaction, log the error and return it
 	if err != nil {
 		log.Printf("ERROR: %v", err)
-		// TODO: Return errors
+		return false, err
 	}
 
+	// If the transaction was added successfully, broadcast it to the network
 	if isTransacted {
+		// Reverse engineer this part of the code
 		for _, n := range bc.neighbors {
 			publicKeyStr := fmt.Sprintf("%064x%064x", senderPublicKey.X.Bytes(),
 				senderPublicKey.Y.Bytes())
@@ -174,12 +177,16 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, message
 			endpoint := fmt.Sprintf("http://%s/transactions", n)
 			client := &http.Client{}
 			req, _ := http.NewRequest("PUT", endpoint, buf)
-			resp, _ := client.Do(req)
+			resp, err := client.Do(req)
+			if err != nil {
+				log.Printf("ERROR: %v", err)
+				return false, err
+			}
 			log.Printf("%v", resp)
 		}
 	}
 
-	return isTransacted
+	return isTransacted, nil
 }
 
 // AddTransaction adds a new transaction to the transaction pool

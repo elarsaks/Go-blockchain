@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -303,19 +304,37 @@ func (bcs *BlockchainServer) Transactions(w http.ResponseWriter, req *http.Reque
 		// Getting the blockchain from the server
 		bc := bcs.GetBlockchain()
 
-		// Creating a new transaction and getting whether the transaction was created successfully
-		isCreated := bc.CreateTransaction(*t.SenderBlockchainAddress,
+		// Attempting to create a new transaction
+		isCreated, err := bc.CreateTransaction(*t.SenderBlockchainAddress,
 			*t.RecipientBlockchainAddress, "", *t.Value, publicKey, signature)
 
 		// Setting the Content-Type of the response to application/json
 		w.Header().Add("Content-Type", "application/json")
 
-		// If the transaction was not created successfully, send a 400 response and a fail status message
 		var m []byte
-		if !isCreated {
+		if err != nil { // If there is an error during the transaction creation
+
+			// Log the error
+			log.Printf("ERROR by me: %v", err)
+
+			w.WriteHeader(http.StatusBadRequest)
+			// Create an anonymous struct to hold the status and the error message
+			errMsg := struct {
+				Status  string `json:"status"`
+				Message string `json:"message"`
+			}{
+				Status:  "fail",
+				Message: err.Error(),
+			}
+
+			// Marshal the struct into a JSON string
+			m, _ = json.Marshal(errMsg)
+		} else if !isCreated { // If the transaction was not created successfully
+			fmt.Println(" If the transaction was not created successfully")
+
 			w.WriteHeader(http.StatusBadRequest)
 			m = utils.JsonStatus("fail")
-		} else { // If the transaction was created successfully, send a 201 response and a success status message
+		} else { // If the transaction was created successfully
 			w.WriteHeader(http.StatusCreated)
 			m = utils.JsonStatus("success")
 		}

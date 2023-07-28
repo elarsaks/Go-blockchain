@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -82,10 +83,28 @@ func CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
 		buf := bytes.NewBuffer(m)
 
 		// Make a POST request to the miner's API to create a new transaction
-		resp, _ := http.Post(miner+"/transactions", "application/json", buf)
+		resp, err := http.Post(miner+"/transactions", "application/json", buf)
 
-		// Print the response status to stdout
-		fmt.Println("response Status:", resp.Status)
+		// Check if there was an error while making the POST request
+		if err != nil {
+			// Log the error message
+			log.Printf("ERROR: Failed to make POST request: %v", err)
+
+			// Pass the error message to the client
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Read the response body
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			// Log the error message
+			log.Printf("ERROR: Failed to read response body: %v", err)
+
+			// Pass the error message to the client
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
 
 		// Check the response status code and send a success response if it was 201
 		if resp.StatusCode == 201 {
@@ -93,8 +112,9 @@ func CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
 			return
 		}
 
-		// If the status code was not 201, send a fail response
-		io.WriteString(w, string(utils.JsonStatus("fail")))
+		// If the status code was not 201, send the response body (which contains the error message) to the client
+		w.WriteHeader(resp.StatusCode)
+		io.WriteString(w, string(body))
 
 	// If the HTTP method is not POST, send a 400 response and log an error message
 	default:
