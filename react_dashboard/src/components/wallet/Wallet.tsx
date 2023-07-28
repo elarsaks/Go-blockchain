@@ -110,7 +110,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
   const sendCrypto = () => {
     transaction({
-      message: "Transaction from React Dashboard",
+      message: "Transaction from React.",
       recipientBlockchainAddress: walletDetails.recipientAddress,
       senderBlockchainAddress: walletDetails.blockchainAddress,
       senderPrivateKey: walletDetails.privateKey,
@@ -128,9 +128,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           setIsError(null);
         }
       })
-      .catch((error) => {
-        console.log("error", error);
-      });
+      .catch((error) =>
+        setIsError({
+          message: error.response.data.message, // TODO: Improve errors
+        })
+      );
   };
 
   return (

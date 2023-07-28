@@ -24,7 +24,6 @@ services:
     ports:
       - 8080:8080
     environment:
-      - WALLET_SERVER_GATEWAY_TO_BLOCKCHAIN=http://miner-2:5002
       - PORT=8080
       - COMMAND=air
     volumes:

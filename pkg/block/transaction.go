@@ -9,20 +9,20 @@ import (
 // --- Types ---
 // Transaction represents a single transaction in the blockchain.
 type Transaction struct {
-	senderBlockchainAddress    string
-	recipientBlockchainAddress string
 	message                    string
+	recipientBlockchainAddress string
+	senderBlockchainAddress    string
 	value                      float32
 }
 
 // TransactionRequest represents a request to create a new transaction.
 type TransactionRequest struct {
-	SenderBlockchainAddress    *string  `json:"senderBlockchainAddress"`
-	RecipientBlockchainAddress *string  `json:"recipientBlockchainAddress"`
-	SenderPublicKey            *string  `json:"senderPublicKey"`
 	Message                    *string  `json:"message"`
-	Value                      *float32 `json:"value"`
+	RecipientBlockchainAddress *string  `json:"recipientBlockchainAddress"`
+	SenderBlockchainAddress    *string  `json:"senderBlockchainAddress"`
+	SenderPublicKey            *string  `json:"senderPublicKey"`
 	Signature                  *string  `json:"signature"`
+	Value                      *float32 `json:"value"`
 }
 
 // AmountResponse represents the response with the amount in a transaction.
@@ -83,15 +83,6 @@ func (t *Transaction) UnmarshalJSON(data []byte) error {
 
 // Validate checks if the transaction request is valid.
 func (tr *TransactionRequest) Validate() bool {
-	fmt.Println("Validating transaction request...",
-		tr.Message,
-		tr.RecipientBlockchainAddress,
-		tr.SenderBlockchainAddress,
-		tr.SenderPublicKey,
-		tr.Value,
-		tr.Signature,
-	)
-
 	if tr.SenderBlockchainAddress == nil ||
 		tr.RecipientBlockchainAddress == nil ||
 		tr.SenderPublicKey == nil ||
