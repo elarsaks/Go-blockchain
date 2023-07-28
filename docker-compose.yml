@@ -16,7 +16,6 @@ services:
       - /app/node_modules
 
   wallet-server:
-    image: goblockchain.azurecr.io/wallet-server:latest
     container_name: wallet-server
     build:
       context: .
@@ -31,7 +30,6 @@ services:
     restart: unless-stopped
 
   miner-1:
-    image: goblockchain.azurecr.io/miner:latest
     build:
       context: .
       dockerfile: ./blockchain_server/Dockerfile
@@ -45,7 +43,6 @@ services:
     restart: unless-stopped
 
   miner-2:
-    image: goblockchain.azurecr.io/miner:latest
     build:
       context: .
       dockerfile: ./blockchain_server/Dockerfile
@@ -60,7 +57,6 @@ services:
     restart: unless-stopped
 
   miner-3:
-    image: goblockchain.azurecr.io/miner:latest
     build:
       context: .
       dockerfile: ./blockchain_server/Dockerfile
