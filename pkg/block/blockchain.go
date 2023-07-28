@@ -153,11 +153,19 @@ func (bc *Blockchain) Print() {
 
 // Create a new transaction
 func (bc *Blockchain) CreateTransaction(sender string, recipient string, message string, value float32,
-	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) bool {
+	senderPublicKey *ecdsa.PublicKey, s *utils.Signature) (bool, error) {
 
-	isTransacted := bc.AddTransaction(sender, recipient, message, value, senderPublicKey, s)
+	isTransacted, err := bc.AddTransaction(sender, recipient, message, value, senderPublicKey, s)
 
+	// If there was an error while adding the transaction, log the error and return it
+	if err != nil {
+		log.Printf("ERROR: %v", err)
+		return false, err
+	}
+
+	// If the transaction was added successfully, broadcast it to the network
 	if isTransacted {
+		// Reverse engineer this part of the code
 		for _, n := range bc.neighbors {
 			publicKeyStr := fmt.Sprintf("%064x%064x", senderPublicKey.X.Bytes(),
 				senderPublicKey.Y.Bytes())
@@ -169,54 +177,64 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, message
 			endpoint := fmt.Sprintf("http://%s/transactions", n)
 			client := &http.Client{}
 			req, _ := http.NewRequest("PUT", endpoint, buf)
-			resp, _ := client.Do(req)
+			resp, err := client.Do(req)
+			if err != nil {
+				log.Printf("ERROR: %v", err)
+				return false, err
+			}
 			log.Printf("%v", resp)
 		}
 	}
 
-	return isTransacted
+	return isTransacted, nil
 }
 
-// Add a new transaction to the transaction pool
+// AddTransaction adds a new transaction to the transaction pool
+// sender is the blockchain address of the sender
+// recipient is the blockchain address of the recipient
+// message is a text message sent with the transaction
+// value is the value of the transaction
+// senderPublicKey is the public key of the sender
+// s is the signature for the transaction
+// The function returns a boolean indicating whether the transaction was added successfully and an error if one occurred
 func (bc *Blockchain) AddTransaction(sender string,
 	recipient string,
 	message string,
 	value float32,
 	senderPublicKey *ecdsa.PublicKey,
-	s *utils.Signature) bool {
+	s *utils.Signature) (bool, error) {
+
+	// Create a new transaction
 	t := NewTransaction(sender, recipient, message, value)
 
+	// If the sender is the mining address, add the transaction to the pool and return true
 	if sender == MINING_SENDER {
 		bc.transactionPool = append(bc.transactionPool, t)
-		return true
+		return true, nil
 	}
 
+	// If the transaction signature is not verified, return false and an error
+	if !bc.VerifyTransactionSignature(senderPublicKey, s, t) {
+		return false, fmt.Errorf("ERROR: Verify Transaction")
+	}
+
+	// Calculate the total balance of the sender
+	balance, err := bc.CalculateTotalBalance(sender)
+	if err != nil {
+		// If there is an error calculating the balance, return false and the error
+		return false, fmt.Errorf("ERROR: CalculateTotalAmount: %v", err)
+	}
+
+	// If the sender's balance is less than the value of the transaction, return false and an error
+	if balance < value {
+		return false, fmt.Errorf("ERROR: Not enough balance in a wallet")
+	}
+
+	// Add the transaction to the transaction pool
 	bc.transactionPool = append(bc.transactionPool, t)
-	// return true
-	// TODO: Return Verify transactions
 
-	if bc.VerifyTransactionSignature(senderPublicKey, s, t) {
-
-		balance, err := bc.CalculateTotalBalance(sender)
-
-		if err != nil {
-			log.Println("ERROR: CalculateTotalAmount") // TODO: Error handling
-			return false
-		}
-
-		if balance < value {
-			log.Println("ERROR: Not enough balance in a wallet")
-			return false
-		}
-
-		bc.transactionPool = append(bc.transactionPool, t)
-		return true
-	} else {
-
-		log.Println("ERROR: Verify Transaction")
-	}
-	return false
-
+	// Return true and no error
+	return true, nil
 }
 
 // Verify the signature of the transaction
@@ -263,7 +281,8 @@ func (bc *Blockchain) ProofOfWork() int {
 	return nonce
 }
 
-// Mining
+// Mining creates a new block and adds it to the blockchain.
+// It returns a boolean indicating whether mining was successful.
 func (bc *Blockchain) Mining() bool {
 	// Lock the blockchain while mining
 	bc.mux.Lock()
@@ -272,33 +291,64 @@ func (bc *Blockchain) Mining() bool {
 	// Log out blockchain
 	// bc.Print() // TODO: Remove debug
 
-	//	Dont mine when there is no transaction and blockchain already has few blocks
+	// Don't mine when there is no transaction and blockchain already has few blocks
 	if len(bc.transactionPool) == 0 && len(bc.chain) > 10 {
 		return false
 	}
 
-	bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, "MINING REWARD", MINING_REWARD, nil, nil)
+	// Add a mining reward transaction
+	_, err := bc.AddTransaction(MINING_SENDER, bc.blockchainAddress, "MINING REWARD", MINING_REWARD, nil, nil)
+
+	// If an error occurred adding the transaction, log the error and return false
+	if err != nil {
+		log.Printf("ERROR: %v", err)
+		return false
+	}
+
+	// Find a new proof of work and create a new block
 	nonce := bc.ProofOfWork()
 	previousHash := bc.LastBlock().Hash()
 	bc.CreateBlock(nonce, previousHash)
-	//TODO: Remove debug
+
+	// Log a successful mining operation
 	// log.Println("action=mining, status=success")
 
+	// Send a consensus request to each neighbor
 	for _, n := range bc.neighbors {
 		endpoint := fmt.Sprintf("http://%s/consensus", n)
 		client := &http.Client{}
 		req, _ := http.NewRequest("PUT", endpoint, nil)
-		resp, _ := client.Do(req)
+		resp, err := client.Do(req)
+
+		// If an error occurred making the request, log the error
+		if err != nil {
+			log.Printf("ERROR: %v", err)
+			return false
+		}
+
 		log.Printf("%v", resp)
 	}
 
+	// Return true indicating the mining operation was successful
 	return true
 }
 
-// Register new wallet address
+// RegisterNewWallet registers a new wallet on the blockchain
+// blockchainAddress is the address of the new wallet
+// message is a message that will be associated with the transaction creating the new wallet
+// The function returns a boolean indicating whether the wallet was registered successfully
 func (bc *Blockchain) RegisterNewWallet(blockchainAddress string, message string) bool {
-	bc.AddTransaction(MINING_SENDER, blockchainAddress, message, 0, nil, nil)
 
+	// Add a transaction for the new wallet
+	_, err := bc.AddTransaction(MINING_SENDER, blockchainAddress, message, 0, nil, nil)
+
+	// If an error occurred adding the transaction, log the error and return false
+	if err != nil {
+		log.Printf("ERROR: %v", err)
+		return false
+	}
+
+	// Return true indicating the wallet was registered successfully
 	return true
 }
 

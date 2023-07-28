@@ -128,9 +128,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           setIsError(null);
         }
       })
-      .catch((error) => {
-        console.log("error", error);
-      });
+      .catch((error) =>
+        setIsError({
+          message: error.response.data.message, // TODO: Improve errors
+        })
+      );
   };
 
   return (
