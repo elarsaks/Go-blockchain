@@ -206,7 +206,7 @@ func (bc *Blockchain) AddTransaction(sender string,
 	s *utils.Signature) (bool, error) {
 
 	// Create a new transaction
-	t := NewTransaction(sender, recipient, message, value)
+	t := NewTransaction(message, recipient, sender, value)
 
 	// If the sender is the mining address, add the transaction to the pool and return true
 	if sender == MINING_SENDER {
@@ -240,6 +240,7 @@ func (bc *Blockchain) AddTransaction(sender string,
 
 // Verify the signature of the transaction
 func (bc *Blockchain) VerifyTransactionSignature(
+
 	senderPublicKey *ecdsa.PublicKey,
 	s *utils.Signature,
 	t *Transaction) bool {
