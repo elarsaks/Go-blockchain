@@ -1,4 +1,4 @@
-package wallet_server
+package handlers
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ import (
 )
 
 // Get User wallet
-func (ws *WalletServer) GetUserWallet(w http.ResponseWriter, req *http.Request) {
+func (h *WalletServerHandler) GetUserWallet(w http.ResponseWriter, req *http.Request) {
 
 	fmt.Println("TESTING!")
 
@@ -40,7 +40,7 @@ func (ws *WalletServer) GetUserWallet(w http.ResponseWriter, req *http.Request) 
 	}
 
 	// Register the userWallet on the blockchain
-	resp, err := http.Post(ws.Gateway()+"/wallet/register", "application/json", bytes.NewBuffer(payloadBytes))
+	resp, err := http.Post(h.server.Gateway()+"/wallet/register", "application/json", bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		log.Printf("ERROR: Failed to register wallet: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)

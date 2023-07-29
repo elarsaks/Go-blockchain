@@ -1,4 +1,4 @@
-package wallet_server
+package handlers
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 	"github.com/elarsaks/Go-blockchain/pkg/utils"
 )
 
-func (ws *WalletServer) GetWalletBalance(w http.ResponseWriter, req *http.Request) {
+func (h *WalletServerHandler) GetWalletBalance(w http.ResponseWriter, req *http.Request) {
 	// Check if the HTTP method is GET
 	if req.Method != http.MethodGet {
 		log.Println("ERROR: Invalid HTTP Method")
@@ -23,7 +23,7 @@ func (ws *WalletServer) GetWalletBalance(w http.ResponseWriter, req *http.Reques
 	blockchainAddress := req.URL.Query().Get("blockchainAddress")
 
 	// Construct the endpoint URL for the blockchain API
-	endpoint := fmt.Sprintf("%s/balance?blockchainAddress=%s", ws.Gateway(), blockchainAddress)
+	endpoint := fmt.Sprintf("%s/balance?blockchainAddress=%s", h.server.Gateway(), blockchainAddress)
 
 	// Send a GET request to the blockchain API
 	resp, err := http.Get(endpoint)

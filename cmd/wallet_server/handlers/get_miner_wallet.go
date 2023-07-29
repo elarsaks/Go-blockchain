@@ -1,4 +1,4 @@
-package wallet_server
+package handlers
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func (ws *WalletServer) GetMinerWallet(w http.ResponseWriter, req *http.Request) {
+func (h *WalletServerHandler) GetMinerWallet(w http.ResponseWriter, req *http.Request) {
 	// Get the 'miner' query parameter from the URL
 	minerID := req.URL.Query().Get("miner_id")
 
@@ -22,7 +22,7 @@ func (ws *WalletServer) GetMinerWallet(w http.ResponseWriter, req *http.Request)
 	// Make a POST request to the miner's API to fetch the wallet
 	requestBody := []byte("optional_request_data")
 
-	resp, err := http.Post(fmt.Sprintf("http://"+ws.Gateway()+"/miner/wallet"),
+	resp, err := http.Post(fmt.Sprintf("http://"+h.server.Gateway()+"/miner/wallet"),
 		"application/json", bytes.NewBuffer(requestBody))
 
 	if err != nil {

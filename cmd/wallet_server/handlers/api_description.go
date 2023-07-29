@@ -1,13 +1,13 @@
-package wallet_server
+package handlers
 
 import (
 	"encoding/json"
 	"net/http"
 )
 
-func (ws *WalletServer) GetApiDescription(w http.ResponseWriter, r *http.Request) {
+func (h *WalletServerHandler) GetApiDescription(w http.ResponseWriter, r *http.Request) {
 	description := map[string]string{
-		"/":               "index",
+		"/":               "index .",
 		"/wallet":         "Wallet description...",
 		"/wallet/balance": "Wallet balance description...",
 		"/transaction":    "Transaction description...",
