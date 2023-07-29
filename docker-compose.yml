@@ -1,19 +1,19 @@
 version: "3.8"
 
 services:
-  react-dashboard:
-    build:
-      context: ./cmd/react_dashboard
-    command: npm run start-react
-    container_name: react-dashboard
-    restart: unless-stopped
-    ports:
-      - 3000:3000
-    environment:
-      - REACT_APP_GATEWAY_API_URL=http://localhost:${WALLET_SERVER_PORT}
-    volumes:
-      - ./cmd/react_dashboard:/app
-      - /app/node_modules
+  # react-dashboard:
+  #   build:
+  #     context: ./cmd/react_dashboard
+  #   command: npm run start-react
+  #   container_name: react-dashboard
+  #   restart: unless-stopped
+  #   ports:
+  #     - 3000:3000
+  #   environment:
+  #     - REACT_APP_GATEWAY_API_URL=http://localhost:${WALLET_SERVER_PORT}
+  #   volumes:
+  #     - ./cmd/react_dashboard:/app
+  #     - /app/node_modules
 
   wallet-server:
     container_name: wallet-server
@@ -29,32 +29,32 @@ services:
       - .:/app
     restart: unless-stopped
 
-  miner-1:
-    build:
-      context: .
-      dockerfile: ./cmd/blockchain_server/Dockerfile
-    ports:
-      - 5001:5001
-    environment:
-      - COMMAND=air
-      - PORT=5001
-    volumes:
-      - .:/app
-    restart: unless-stopped
-
-  # miner-2:
+  # miner-1:
   #   build:
   #     context: .
   #     dockerfile: ./cmd/blockchain_server/Dockerfile
-  #   container_name: miner-2
   #   ports:
-  #     - 5002:5002
+  #     - 5001:5001
   #   environment:
   #     - COMMAND=air
-  #     - PORT=5002
+  #     - PORT=5001
   #   volumes:
   #     - .:/app
   #   restart: unless-stopped
+
+  miner-2:
+    build:
+      context: .
+      dockerfile: ./cmd/blockchain_server/Dockerfile
+    container_name: miner-2
+    ports:
+      - 5002:5002
+    environment:
+      - COMMAND=air
+      - PORT=5002
+    volumes:
+      - .:/app
+    restart: unless-stopped
 
   # miner-3:
   #   build:

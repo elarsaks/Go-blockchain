@@ -7,6 +7,7 @@ import (
 	"github.com/elarsaks/Go-blockchain/pkg/wallet"
 )
 
+// TODO: Remove this debug function
 func LogMethods(i interface{}) {
 	t := reflect.TypeOf(i)
 
@@ -19,6 +20,9 @@ func LogMethods(i interface{}) {
 type BlockchainServer interface {
 	Port() uint16
 	GetWallet() *wallet.Wallet
+
+	// TODO: Learn interfaces
+	// TODO: Add GetBlockchain() method into controllers
 }
 
 type BlockchainServerHandler struct {
@@ -26,6 +30,6 @@ type BlockchainServerHandler struct {
 }
 
 func NewBlockchainServerHandler(s BlockchainServer) *BlockchainServerHandler {
-	LogMethods(s)
+	// LogMethods(s)
 	return &BlockchainServerHandler{server: s}
 }

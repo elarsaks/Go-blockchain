@@ -122,6 +122,7 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 		bc = block.NewBlockchain(minersWallet.BlockchainAddress(), bcs.Port())
 		cache["blockchain"] = bc
 
+		//? Why do we need to register the wallet here ?
 		// Call RegisterNewWallet to register the provided wallet address
 		success := bc.RegisterNewWallet(minersWallet.BlockchainAddress(), "Register Miner Wallet")
 		if !success {
