@@ -43,7 +43,6 @@ func (ws *WalletServer) Run() {
 
 	// Define routes
 	router.HandleFunc("/", handler.GetApiDescription)
-	// These methods need to be implemented as methods of WalletServerHandler
 	router.HandleFunc("/user/wallet", handler.GetUserWallet)
 	router.HandleFunc("/wallet/balance", handler.GetWalletBalance)
 	router.HandleFunc("/transaction", handler.CreateTransaction)
