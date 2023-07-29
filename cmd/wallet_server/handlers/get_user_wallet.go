@@ -3,7 +3,6 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -13,8 +12,6 @@ import (
 
 // Get User wallet
 func (h *WalletServerHandler) GetUserWallet(w http.ResponseWriter, req *http.Request) {
-
-	fmt.Println("TESTING!")
 
 	if req.Method != http.MethodPost {
 		http.Error(w, "Invalid HTTP Method", http.StatusBadRequest)

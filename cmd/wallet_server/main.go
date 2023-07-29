@@ -48,7 +48,7 @@ func (ws *WalletServer) Run() {
 	router.HandleFunc("/wallet/balance", handler.GetWalletBalance)
 	router.HandleFunc("/transaction", handler.CreateTransaction)
 	router.HandleFunc("/miner/blocks", handler.GetBlocks)
-	// router.HandleFunc("/miner/wallet", ws.GetMinerWallet) // TODO
+	router.HandleFunc("/miner/wallet", handler.GetMinerWallet)
 
 	// Start server
 	log.Fatal(http.ListenAndServe("0.0.0.0:"+strconv.Itoa(int(ws.Port())), router))
