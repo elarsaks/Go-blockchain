@@ -1,13 +1,31 @@
 package handlers
 
 import (
-	blockchain_server "github.com/elarsaks/Go-blockchain/pkg/blockchain_server"
+	"fmt"
+	"reflect"
+
+	"github.com/elarsaks/Go-blockchain/pkg/wallet"
 )
 
-type BlockchainServerHandler struct {
-	server *blockchain_server.BlockchainServer
+func LogMethods(i interface{}) {
+	t := reflect.TypeOf(i)
+
+	for i := 0; i < t.NumMethod(); i++ {
+		method := t.Method(i)
+		fmt.Println(method.Name)
+	}
 }
 
-func NewBlockchainServerHandler(s *blockchain_server.BlockchainServer) *BlockchainServerHandler {
+type BlockchainServer interface {
+	Port() uint16
+	GetWallet() *wallet.Wallet
+}
+
+type BlockchainServerHandler struct {
+	server BlockchainServer
+}
+
+func NewBlockchainServerHandler(s BlockchainServer) *BlockchainServerHandler {
+	LogMethods(s)
 	return &BlockchainServerHandler{server: s}
 }

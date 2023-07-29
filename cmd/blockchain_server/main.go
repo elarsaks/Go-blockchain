@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/elarsaks/Go-blockchain/cmd/blockchain_server/handlers"
 	"github.com/elarsaks/Go-blockchain/pkg/block"
 	"github.com/elarsaks/Go-blockchain/pkg/utils"
 	"github.com/elarsaks/Go-blockchain/pkg/wallet"
@@ -27,6 +28,16 @@ type BlockchainServer struct {
 	//* NOTE: In real world app we would not attach the wallet to the server
 	// But for the sake of simplicity we will do it here,
 	// because we dont store miners credentials in a database.
+}
+
+// Get the port of the BlockchainServer
+func (bcs *BlockchainServer) Port() uint16 {
+	return bcs.port
+}
+
+// GetWallet method for BlockchainServer
+func (bcs *BlockchainServer) GetWallet() *wallet.Wallet {
+	return bcs.Wallet
 }
 
 // Get the wallet balance by blockchain address in the Blockchain
@@ -76,18 +87,18 @@ func (bcs *BlockchainServer) Consensus(w http.ResponseWriter, req *http.Request)
 	}
 }
 
-// Get the last 10 blocks of the BlockchainServer
-func (bcs *BlockchainServer) GetBlocks(w http.ResponseWriter, req *http.Request) {
-	switch req.Method {
-	case http.MethodGet:
-		w.Header().Add("Content-Type", "application/json")
-		bc := bcs.GetBlockchain()
-		m, _ := json.Marshal(bc.GetBlocks(10))
-		io.WriteString(w, string(m[:]))
-	default:
-		log.Printf("ERROR: Invalid HTTP Method")
-	}
-}
+// // Get the last 10 blocks of the BlockchainServer
+// func (bcs *BlockchainServer) GetBlocks(w http.ResponseWriter, req *http.Request) {
+// 	switch req.Method {
+// 	case http.MethodGet:
+// 		w.Header().Add("Content-Type", "application/json")
+// 		bc := bcs.GetBlockchain()
+// 		m, _ := json.Marshal(bc.GetBlocks(10))
+// 		io.WriteString(w, string(m[:]))
+// 	default:
+// 		log.Printf("ERROR: Invalid HTTP Method")
+// 	}
+// }
 
 // Get the gateway of the BlockchainServer
 func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) {
@@ -171,11 +182,6 @@ func (bcs *BlockchainServer) Mine(w http.ResponseWriter, req *http.Request) {
 		log.Println("ERROR: Invalid HTTP Method")
 		w.WriteHeader(http.StatusBadRequest)
 	}
-}
-
-// Get the port of the BlockchainServer
-func (bcs *BlockchainServer) Port() uint16 {
-	return bcs.port
 }
 
 // Register the wallet in the BlockchainServer
@@ -424,11 +430,16 @@ func (bcs *BlockchainServer) Run() {
 	router := mux.NewRouter()
 	router.Use(utils.CorsMiddleware())
 
+	handler := handlers.NewBlockchainServerHandler(bcs)
+
+	router.HandleFunc("/miner/blocks", handler.GetBlocks)
+	router.HandleFunc("/miner/wallet", handler.MinerWallet)
+
 	// Define routes
-	router.HandleFunc("/miner/wallet", bcs.MinerWallet)
+	// router.HandleFunc("/miner/wallet", bcs.MinerWallet)
 	router.HandleFunc("/wallet/register", bcs.RegisterWallet)
 	router.HandleFunc("/", bcs.GetChain)
-	router.HandleFunc("/miner/blocks", bcs.GetBlocks)
+	// router.HandleFunc("/miner/blocks", bcs.GetBlocks)
 	router.HandleFunc("/transactions", bcs.Transactions)
 	router.HandleFunc("/mine", bcs.Mine)
 	router.HandleFunc("/mine/start", bcs.StartMine)
