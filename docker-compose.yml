@@ -29,18 +29,18 @@ services:
       - .:/app
     restart: unless-stopped
 
-  # miner-1:
-  #   build:
-  #     context: .
-  #     dockerfile: ./cmd/blockchain_server/Dockerfile
-  #   ports:
-  #     - 5001:5001
-  #   environment:
-  #     - COMMAND=air
-  #     - PORT=5001
-  #   volumes:
-  #     - .:/app
-  #   restart: unless-stopped
+  miner-1:
+    build:
+      context: .
+      dockerfile: ./cmd/blockchain_server/Dockerfile
+    ports:
+      - 5001:5001
+    environment:
+      - COMMAND=air
+      - PORT=5001
+    volumes:
+      - .:/app
+    restart: unless-stopped
 
   miner-2:
     build:
@@ -56,16 +56,16 @@ services:
       - .:/app
     restart: unless-stopped
 
-  # miner-3:
-  #   build:
-  #     context: .
-  #     dockerfile: ./cmd/blockchain_server/Dockerfile
-  #   container_name: miner-3
-  #   ports:
-  #     - 5003:5003
-  #   environment:
-  #     - COMMAND=air
-  #     - PORT=5003
-  #   volumes:
-  #     - .:/app
-  #   restart: unless-stopped
+  miner-3:
+    build:
+      context: .
+      dockerfile: ./cmd/blockchain_server/Dockerfile
+    container_name: miner-3
+    ports:
+      - 5003:5003
+    environment:
+      - COMMAND=air
+      - PORT=5003
+    volumes:
+      - .:/app
+    restart: unless-stopped
