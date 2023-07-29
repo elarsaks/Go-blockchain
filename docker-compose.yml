@@ -19,7 +19,7 @@ services:
     container_name: wallet-server
     build:
       context: .
-      dockerfile: ./wallet_server/Dockerfile
+      dockerfile: ./cmd/wallet_server/Dockerfile
     ports:
       - ${WALLET_SERVER_PORT}:${WALLET_SERVER_PORT}
     environment:
