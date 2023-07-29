@@ -87,19 +87,6 @@ func (bcs *BlockchainServer) Consensus(w http.ResponseWriter, req *http.Request)
 	}
 }
 
-// // Get the last 10 blocks of the BlockchainServer
-// func (bcs *BlockchainServer) GetBlocks(w http.ResponseWriter, req *http.Request) {
-// 	switch req.Method {
-// 	case http.MethodGet:
-// 		w.Header().Add("Content-Type", "application/json")
-// 		bc := bcs.GetBlockchain()
-// 		m, _ := json.Marshal(bc.GetBlocks(10))
-// 		io.WriteString(w, string(m[:]))
-// 	default:
-// 		log.Printf("ERROR: Invalid HTTP Method")
-// 	}
-// }
-
 // Get the gateway of the BlockchainServer
 func (bcs *BlockchainServer) GetChain(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/elarsaks/Go-blockchain/pkg/block"
 	"github.com/elarsaks/Go-blockchain/pkg/wallet"
 )
 
@@ -20,7 +21,7 @@ func LogMethods(i interface{}) {
 type BlockchainServer interface {
 	Port() uint16
 	GetWallet() *wallet.Wallet
-
+	GetBlockchain() *block.Blockchain
 	// TODO: Learn interfaces
 	// TODO: Add GetBlockchain() method into controllers
 }
