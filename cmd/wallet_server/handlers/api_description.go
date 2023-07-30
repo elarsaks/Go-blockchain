@@ -7,7 +7,7 @@ import (
 
 func (h *WalletServerHandler) GetApiDescription(w http.ResponseWriter, r *http.Request) {
 	description := map[string]string{
-		"/":               "index .",
+		"/":               "index . v2",
 		"/wallet":         "Wallet description...",
 		"/wallet/balance": "Wallet balance description...",
 		"/transaction":    "Transaction description...",
