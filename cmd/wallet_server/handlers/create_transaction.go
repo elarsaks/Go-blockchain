@@ -3,7 +3,6 @@ package handlers
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -15,8 +14,8 @@ import (
 	"github.com/elarsaks/Go-blockchain/pkg/wallet"
 )
 
-// CreateTransaction is responsible for creating a new transaction
-func CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
+// Create a new transaction
+func (h *WalletServerHandler) CreateTransaction(w http.ResponseWriter, req *http.Request) {
 	//* NOTE: We are not just passing request to miner, because we need to sign the transaction
 	// Switching on the HTTP method
 	switch req.Method {
@@ -85,7 +84,7 @@ func CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
 		buf := bytes.NewBuffer(m)
 
 		// Make a POST request to the miner's API to create a new transaction
-		resp, err := http.Post(miner+"/transactions", "application/json", buf)
+		resp, err := http.Post(h.server.Gateway()+"/transactions", "application/json", buf)
 
 		// Check if there was an error while making the POST request
 		if err != nil {
@@ -123,41 +122,4 @@ func CreateTransaction(w http.ResponseWriter, req *http.Request, miner string) {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Println("ERROR: Invalid HTTP Method")
 	}
-}
-
-// Handler function to get requested blocks
-func GetBlocks(w http.ResponseWriter, req *http.Request, miner string) {
-	// Get the 'amount' query parameter from the URL
-	amountStr := req.URL.Query().Get("amount")
-	amount, err := strconv.Atoi(amountStr)
-	if err != nil || amount <= 0 {
-		http.Error(w, "Invalid amount parameter", http.StatusBadRequest)
-		return
-	}
-
-	// Make a GET request to miner-2's API to fetch blocks
-	resp, err := http.Get(fmt.Sprintf(miner+"/miner/blocks?amount=%d", amount))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	defer resp.Body.Close()
-
-	// Check the response status code
-	if resp.StatusCode != http.StatusOK {
-		http.Error(w, "Error fetching blocks from miner-2", resp.StatusCode)
-		return
-	}
-
-	// Decode the JSON response into a slice of Block
-	var blocks []block.Block
-	if err := json.NewDecoder(resp.Body).Decode(&blocks); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Respond with JSON-encoded blocks
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*") // Example CORS header, customize as needed
-	json.NewEncoder(w).Encode(blocks)
 }

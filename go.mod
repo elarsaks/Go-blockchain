@@ -1,6 +1,6 @@
 module github.com/elarsaks/Go-blockchain
 
-go 1.20
+go 1.18
 
 require (
 	github.com/btcsuite/btcutil v1.0.2

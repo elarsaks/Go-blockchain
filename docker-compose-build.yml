@@ -3,7 +3,7 @@ version: "3.8"
 services:
   react-dashboard:
     build:
-      context: ./react_dashboard
+      context: ./cmd/react_dashboard
     command: npm run start-react
     container_name: react-dashboard
     restart: unless-stopped
@@ -12,7 +12,7 @@ services:
     environment:
       - REACT_APP_GATEWAY_API_URL=https://go-blockchain.azurewebsites.net/
     volumes:
-      - ./react_dashboard:/app
+      - ./cmd/react_dashboard:/app
       - /app/node_modules
 
   wallet-server:
@@ -20,7 +20,7 @@ services:
     container_name: wallet-server
     build:
       context: .
-      dockerfile: ./wallet_server/Dockerfile
+      dockerfile: ./cmd/wallet_server/Dockerfile
     ports:
       - 8080:8080
     environment:
@@ -35,7 +35,7 @@ services:
     container_name: miner-1
     build:
       context: .
-      dockerfile: ./blockchain_server/Dockerfile
+      dockerfile: ./cmd/blockchain_server/Dockerfile
     ports:
       - 5001:5001
     environment:
