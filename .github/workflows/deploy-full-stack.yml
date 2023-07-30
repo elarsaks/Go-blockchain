@@ -70,5 +70,5 @@ jobs:
 
       - name: Build and Push Docker images
         run: |
-          docker-compose build wallet-server miner-1
+          docker-compose build --no-cache wallet-server miner-1
           docker-compose push wallet-server miner-1
