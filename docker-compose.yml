@@ -15,19 +15,18 @@ services:
       - ./cmd/react_dashboard:/app
       - node_modules:/app/node_modules
 
-  # wallet-server:
-  #   container_name: wallet-server
-  #   build:
-  #     context: .
-  #     dockerfile: ./cmd/wallet_server/Dockerfile
-  #   ports:
-  #     - ${WALLET_SERVER_PORT}:${WALLET_SERVER_PORT}
-  #   environment:
-  #     - COMMAND=air
-  #     - PORT=${WALLET_SERVER_PORT}
-  #   volumes:
-  #     - .:/app
-  #   restart: unless-stopped
+  wallet-server:
+    container_name: wallet-server
+    build:
+      context: .
+      dockerfile: ./cmd/wallet_server/Dockerfile
+    ports:
+      - 5000:5000
+    environment:
+      - PORT=${WALLET_SERVER_PORT} #TODO: Remove this after editing Golang
+    volumes:
+      - .:/app
+    restart: unless-stopped
 
   # miner-1:
   #   build:

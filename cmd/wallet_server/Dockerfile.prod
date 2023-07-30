@@ -1,0 +1,38 @@
+# Start from the base Golang image as builder stage
+FROM golang:1.18.0-alpine AS builder
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+RUN go mod download
+
+# Copy the entire project into the container
+COPY . .
+
+# Set the working directory to "wallet_server"
+WORKDIR /app/cmd/wallet_server
+
+# Build the Go app
+RUN go build -o main .
+
+# Start a new stage from scratch
+FROM alpine:latest AS runner
+
+# Add ca-certificates in case you need them
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the binary file from the builder stage
+COPY --from=builder /app/cmd/wallet_server/main ./main
+
+# Set the port number to expose
+EXPOSE 8080
+
+# Set the default command to run the application
+CMD ["./main"]
