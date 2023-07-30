@@ -12,17 +12,13 @@ func (h *WalletServerHandler) GetMinerWallet(w http.ResponseWriter, req *http.Re
 	// Get the 'miner' query parameter from the URL
 	minerID := req.URL.Query().Get("miner_id")
 
-	// TODO: this could be recived from the blockchain (nodes should know each other)
-	minerUrl := map[string]string{
-		"1": "miner-1:5001",
-		"2": "miner-2:5002",
-		"3": "miner-3:5003",
-	}
+	// Set the gateway to the miner
+	h.server.SetGateway(minerID)
 
 	// Make a POST request to the miner's API to fetch the wallet
 	requestBody := []byte("optional_request_data")
 
-	resp, err := http.Post(fmt.Sprintf("http://"+minerUrl[minerID]+"/miner/wallet"),
+	resp, err := http.Post(fmt.Sprintf(h.server.Gateway()+"/miner/wallet"),
 		"application/json", bytes.NewBuffer(requestBody))
 
 	if err != nil {

@@ -28,6 +28,21 @@ func (ws *WalletServer) Gateway() string {
 	return ws.gateway
 }
 
+func (ws *WalletServer) SetGateway(gateway string) bool {
+	switch gateway {
+	case "1":
+		ws.gateway = "http://miner-1:5001"
+	case "2":
+		ws.gateway = "http://miner-2:5002"
+	case "3":
+		ws.gateway = "http://miner-3:5003"
+	default:
+		ws.gateway = "http://miner-1:5001"
+	}
+
+	return true
+}
+
 func NewWalletServer(port uint16, gateway string) *WalletServer {
 	return &WalletServer{port, gateway}
 }
