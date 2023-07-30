@@ -1,8 +1,9 @@
 
 # Go-blockchain (🚧 UNDER DEVELOPMENT 🚧)
 - [*LIVE EXAMPLE*](https://elarsaks.github.io/Go-blockchain/)
-- [*PROJECT WIKI*](https://github.com/elarsaks/Go-blockchain/wiki) 
+- [*PROJECT WIKI*](https://github.com/elarsaks/Go-blockchain/wiki)
 
+![Topology Diagram](https://github.com/elarsaks/Go-blockchain/blob/main/docs/topology.png)
 
 # Table of Contents
 1. [About](#about)
