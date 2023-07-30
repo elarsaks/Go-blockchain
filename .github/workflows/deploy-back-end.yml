@@ -34,12 +34,9 @@ jobs:
         id: get_version
         run: echo "::set-output name=VERSION::$(git rev-parse --short HEAD)"
 
-      - name: Build Docker images
+      - name: Build and Push Docker images
         run: |
-          docker build -t goblockchain.azurecr.io/wallet-server:${{ steps.get_version.outputs.VERSION }} -f ./cmd/wallet_server/Dockerfile .
-          docker build -t goblockchain.azurecr.io/miner:${{ steps.get_version.outputs.VERSION }} -f ./cmd/blockchain_server/Dockerfile .
-
-      - name: Push Docker images
-        run: |
+          docker build -t goblockchain.azurecr.io/wallet-server:${{ steps.get_version.outputs.VERSION }} -f ./cmd/wallet_server/Dockerfile ../..
           docker push goblockchain.azurecr.io/wallet-server:${{ steps.get_version.outputs.VERSION }}
+          docker build -t goblockchain.azurecr.io/miner:${{ steps.get_version.outputs.VERSION }} -f ./cmd/blockchain_server/Dockerfile ../..
           docker push goblockchain.azurecr.io/miner:${{ steps.get_version.outputs.VERSION }}
