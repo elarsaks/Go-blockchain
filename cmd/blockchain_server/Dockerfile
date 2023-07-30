@@ -4,7 +4,7 @@ FROM golang:1.18.0-alpine
 WORKDIR /app
 
 # Copy the entire parent_folder into the container
-COPY ../../ .
+COPY . .
 
 # Install the "air" tool for live-reloading (if needed)
 RUN go install github.com/cosmtrek/air@latest
