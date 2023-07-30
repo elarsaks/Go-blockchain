@@ -30,19 +30,19 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd react_dashboard
+          cd cmd/react_dashboard
           npm ci
 
       - name: Build
         run: |
-          cd react_dashboard
+          cd cmd/react_dashboard
           npm run build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./react_dashboard/build
+          publish_dir: ./cmd/react_dashboard/build
 
   build-and-push-docker-images:
     runs-on: ubuntu-latest
