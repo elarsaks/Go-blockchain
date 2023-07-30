@@ -20,7 +20,7 @@ services:
     container_name: wallet-server
     build:
       context: .
-      dockerfile: ./wallet_server/Dockerfile
+      dockerfile: ./cmd/wallet_server/Dockerfile
     ports:
       - 8080:8080
     environment:
@@ -35,7 +35,7 @@ services:
     container_name: miner-1
     build:
       context: .
-      dockerfile: ./blockchain_server/Dockerfile
+      dockerfile: ./cmd/blockchain_server/Dockerfile
     ports:
       - 5001:5001
     environment:

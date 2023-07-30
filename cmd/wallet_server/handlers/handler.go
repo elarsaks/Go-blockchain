@@ -3,6 +3,7 @@ package handlers
 type WalletServer interface {
 	Port() uint16
 	Gateway() string
+	SetGateway(gateway string) bool
 }
 
 type WalletServerHandler struct {
