@@ -1,0 +1,9 @@
+# Ignore node_modules directory
+react_dashboard
+
+# Ignore .git directory
+.git
+
+# Ignore any log files
+*.log
+

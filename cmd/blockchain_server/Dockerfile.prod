@@ -1,10 +1,10 @@
-# Start from the base Golang image
-FROM golang:1.18.0-alpine
+# Builder Stage
+FROM golang:1.18.0-alpine AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy go mod and sum files
+# Copy the go mod and sum files
 COPY go.mod go.sum ./
 
 # Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
@@ -19,8 +19,23 @@ COPY . .
 # Set the working directory to "blockchain_server"
 WORKDIR /app/cmd/blockchain_server
 
-# Set the port number to expose
+# Compile the project
+RUN go build -o /app/main .
+
+# Runner Stage
+FROM alpine:latest AS runner
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the binary from builder stage
+COPY --from=builder /app/main .
+
+# Install ca-certificates
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
+
+# Expose the port
 EXPOSE ${BLOCKCHAIN_SERVER_PORT}
 
 # Set the default command to run the application
-CMD ["sh", "-c", "air run"]
+CMD ["./main"]
