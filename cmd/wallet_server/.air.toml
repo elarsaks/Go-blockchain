@@ -1,0 +1,15 @@
+[build]
+# Build binary.
+cmd = "go build -o ./tmp/app/main main.go"
+# Read binary.
+bin = "tmp/app/main"
+# Run binary.
+full_bin = "./tmp/app/main -port ${PORT} "
+# Watch changes in those files
+include_ext = ["go", "yml"]
+# Watch changes in these directories 
+include_dir = ["handlers"]
+# Ignore changes in these files
+exclude_dir = ["tmp"]
+# Stop builds from triggering too fast
+delay = 1000 # ms

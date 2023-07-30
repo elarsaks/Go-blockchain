@@ -4,13 +4,13 @@ FROM golang:1.18.0-alpine
 WORKDIR /app
 
 # Copy the entire parent_folder into the container
-COPY ./ .
+COPY ../../ .
 
 # Install the "air" tool for live-reloading (if needed)
 RUN go install github.com/cosmtrek/air@latest
 
 # Set the working directory to "blockchain_server"
-WORKDIR /app/blockchain_server
+WORKDIR /app/cmd/blockchain_server
 
 # Set the port number to expose
 EXPOSE ${BLOCKCHAIN_SERVER_PORT}
