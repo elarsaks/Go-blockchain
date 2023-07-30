@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - DEPLOY-back-end
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -29,7 +30,16 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      - name: Build and Push Docker images
+      - name: Get the version
+        id: get_version
+        run: echo "::set-output name=VERSION::$(git rev-parse --short HEAD)"
+
+      - name: Build Docker images
         run: |
-          docker-compose build --no-cache wallet-server miner-1
-          docker-compose push wallet-server miner-1
+          docker build -t goblockchain.azurecr.io/wallet-server:${{ steps.get_version.outputs.VERSION }} -f ./cmd/wallet_server/Dockerfile .
+          docker build -t goblockchain.azurecr.io/miner:${{ steps.get_version.outputs.VERSION }} -f ./cmd/blockchain_server/Dockerfile .
+
+      - name: Push Docker images
+        run: |
+          docker push goblockchain.azurecr.io/wallet-server:${{ steps.get_version.outputs.VERSION }}
+          docker push goblockchain.azurecr.io/miner:${{ steps.get_version.outputs.VERSION }}
