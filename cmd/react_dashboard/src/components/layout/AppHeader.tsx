@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Cube from "./Cube";
 
 type AppHeaderProps = {
   title: string;
@@ -7,6 +8,7 @@ type AppHeaderProps = {
 
 const HeaderContainer = styled.header`
   display: flex;
+  justify-content: space-between;
   align-items: center;
   background-color: #00acd7;
   color: white;
@@ -22,6 +24,7 @@ const Title = styled.h1`
 const AppHeader: React.FC<AppHeaderProps> = ({ title }) => (
   <HeaderContainer>
     <Title>{title}</Title>
+    <Cube />
   </HeaderContainer>
 );
 
