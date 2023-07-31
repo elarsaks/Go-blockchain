@@ -80,7 +80,7 @@ func (bcs *BlockchainServer) Run() {
 	handler := handlers.NewBlockchainServerHandler(bcs)
 
 	// Define routes
-	router.HandleFunc("/", handler.GetChain)
+	router.HandleFunc("/chain", handler.GetChain)
 	router.HandleFunc("/balance", handler.Balance)
 	router.HandleFunc("/consensus", handler.Consensus)
 	router.HandleFunc("/mine", handler.Mine)
