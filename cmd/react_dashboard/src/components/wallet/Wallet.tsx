@@ -110,7 +110,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
   const sendCrypto = () => {
     transaction({
-      message: "Transaction from React.",
+      message: "USER TRANSACTION",
       recipientBlockchainAddress: walletDetails.recipientAddress,
       senderBlockchainAddress: walletDetails.blockchainAddress,
       senderPrivateKey: walletDetails.privateKey,

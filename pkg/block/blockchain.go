@@ -249,10 +249,6 @@ func (bc *Blockchain) VerifyTransactionSignature(
 
 	log.Println("Validate signature", string(m))
 
-	// Print out the transaction
-	// fmt.Println("Verify TransactionSignature")
-	// fmt.Printf("%v\n", string(m[:]))
-
 	h := sha256.Sum256([]byte(m))
 	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
 }
