@@ -1,0 +1,39 @@
+# Builder Stage
+FROM golang:1.18.0-alpine AS builder
+
+# Install git.
+# GCC is also necessary for cgo.
+RUN apk update && apk add --no-cache git gcc musl-dev
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+RUN go mod download
+
+# Copy the entire parent_folder into the container
+COPY . .
+
+# Set the working directory to "blockchain_server"
+WORKDIR /app/cmd/blockchain_server
+
+# Compile the project
+RUN go build -o /app/main .
+
+# Runner Stage
+FROM alpine:latest AS runner
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the binary from builder stage
+COPY --from=builder /app/main .
+
+# Expose the port
+EXPOSE ${BLOCKCHAIN_SERVER_PORT}
+
+# Set the default command to run the application
+CMD ["./main"]

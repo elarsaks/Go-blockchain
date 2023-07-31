@@ -15,60 +15,59 @@ services:
       - ./cmd/react_dashboard:/app
       - node_modules:/app/node_modules
 
-  # wallet-server:
-  #   container_name: wallet-server
-  #   build:
-  #     context: .
-  #     dockerfile: ./cmd/wallet_server/Dockerfile
-  #   ports:
-  #     - ${WALLET_SERVER_PORT}:${WALLET_SERVER_PORT}
-  #   environment:
-  #     - COMMAND=air
-  #     - PORT=${WALLET_SERVER_PORT}
-  #   volumes:
-  #     - .:/app
-  #   restart: unless-stopped
+  wallet-server:
+    container_name: wallet-server
+    build:
+      context: .
+      dockerfile: ./cmd/wallet_server/Dockerfile
+    ports:
+      - 5000:5000
+    environment:
+      - PORT=${WALLET_SERVER_PORT}
+    volumes:
+      - .:/app
+    restart: unless-stopped
 
-  # miner-1:
-  #   build:
-  #     context: .
-  #     dockerfile: ./cmd/blockchain_server/Dockerfile
-  #   ports:
-  #     - 5001:5001
-  #   environment:
-  #     - COMMAND=air
-  #     - PORT=5001
-  #   volumes:
-  #     - .:/app
-  #   restart: unless-stopped
+  miner-1:
+    build:
+      context: .
+      dockerfile: ./cmd/blockchain_server/Dockerfile
+    ports:
+      - 5001:5001
+    environment:
+      - COMMAND=air
+      - PORT=5001
+    volumes:
+      - .:/app
+    restart: unless-stopped
 
-  # miner-2:
-  #   build:
-  #     context: .
-  #     dockerfile: ./cmd/blockchain_server/Dockerfile
-  #   container_name: miner-2
-  #   ports:
-  #     - 5002:5002
-  #   environment:
-  #     - COMMAND=air
-  #     - PORT=5002
-  #   volumes:
-  #     - .:/app
-  #   restart: unless-stopped
+  miner-2:
+    build:
+      context: .
+      dockerfile: ./cmd/blockchain_server/Dockerfile
+    container_name: miner-2
+    ports:
+      - 5002:5002
+    environment:
+      - COMMAND=air
+      - PORT=5002
+    volumes:
+      - .:/app
+    restart: unless-stopped
 
-  # miner-3:
-  #   build:
-  #     context: .
-  #     dockerfile: ./cmd/blockchain_server/Dockerfile
-  #   container_name: miner-3
-  #   ports:
-  #     - 5003:5003
-  #   environment:
-  #     - COMMAND=air
-  #     - PORT=5003
-  #   volumes:
-  #     - .:/app
-  #   restart: unless-stopped
+  miner-3:
+    build:
+      context: .
+      dockerfile: ./cmd/blockchain_server/Dockerfile
+    container_name: miner-3
+    ports:
+      - 5003:5003
+    environment:
+      - COMMAND=air
+      - PORT=5003
+    volumes:
+      - .:/app
+    restart: unless-stopped
 
 volumes:
   node_modules:
