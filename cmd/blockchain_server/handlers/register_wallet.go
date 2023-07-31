@@ -39,7 +39,7 @@ func (h *BlockchainServerHandler) RegisterWallet(w http.ResponseWriter, req *htt
 		}
 
 		// Call RegisterNewWallet to register the provided wallet address
-		success := h.server.GetBlockchain().RegisterNewWallet(requestBody.BlockchainAddress, "Register User Wallet")
+		success := h.server.GetBlockchain().RegisterNewWallet(requestBody.BlockchainAddress, "REGISTER USER WALLET")
 		if !success {
 			log.Println("ERROR: Failed to register wallet")
 			w.WriteHeader(http.StatusInternalServerError)

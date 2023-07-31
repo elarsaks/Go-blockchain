@@ -39,8 +39,8 @@ const Cube: React.FC = () => {
 
     // Create face material
     const faceMaterial = new MeshBasicMaterial({
-      color: "#000000",
-      opacity: 0.3,
+      color: "#00008B",
+      opacity: 0.2,
       transparent: true,
     });
     const cubeMesh = new Mesh(geometry, faceMaterial);

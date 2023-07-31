@@ -10,6 +10,9 @@ COPY package*.json ./
 # Install dependencies 
 RUN npm install
 
+# Create a group and user
+#COPY --chown=node:node . .
+
 # Copy the keys directory
 COPY keys ./keys
 
