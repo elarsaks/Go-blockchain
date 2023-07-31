@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -12,6 +13,8 @@ import (
 
 // Resolve the conflicts in the BlockchainServer
 func (h *BlockchainServerHandler) Consensus(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("CALL CONSENSUS")
+
 	switch req.Method {
 	case http.MethodPut:
 		bc := h.server.GetBlockchain()
