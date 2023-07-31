@@ -1,11 +1,26 @@
-FROM node:17.0.0
-RUN apt update && apt upgrade -y
+# Start with a base image containing Node.js runtime
+FROM node:17.0.0 
+
+# Set the working directory in the builder stage
 WORKDIR /app
-COPY package.json /app/package.json
-RUN chown node:node /app
-RUN chown -R node:node /app 
+
+# Copy package.json file
+COPY package*.json ./
+
+# Install dependencies 
+RUN npm install
+
+# Copy the keys directory
+COPY keys ./keys
+
+# Copy the rest of your app's source code from your host to your image filesystem.
+COPY . .
+
+# Change to the node user
 USER node
-RUN npm install 
-COPY keys /app/keys
-COPY --chown=node . /app
+
+# Expose the listening port of your app
 EXPOSE 3000
+
+# Run the app
+CMD ["npm", "run", "start-react"]

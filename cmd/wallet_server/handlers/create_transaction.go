@@ -17,7 +17,6 @@ import (
 // Create a new transaction
 func (h *WalletServerHandler) CreateTransaction(w http.ResponseWriter, req *http.Request) {
 	//* NOTE: We are not just passing request to miner, because we need to sign the transaction
-
 	// Switching on the HTTP method
 	switch req.Method {
 	case http.MethodPost:
