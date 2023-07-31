@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import {
   Scene,
   PerspectiveCamera,
@@ -40,7 +40,7 @@ const Cube: React.FC = () => {
     // Create face material
     const faceMaterial = new MeshBasicMaterial({
       color: "#000000",
-      opacity: 0.2,
+      opacity: 0.3,
       transparent: true,
     });
     const cubeMesh = new Mesh(geometry, faceMaterial);
