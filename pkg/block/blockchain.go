@@ -357,6 +357,9 @@ func (bc *Blockchain) RegisterNewWallet(blockchainAddress string, message string
 		return false
 	}
 
+	// Mine a new block when the wallet is registered successfully
+	bc.StartMining()
+
 	// Return true indicating the wallet was registered successfully
 	return true
 }
