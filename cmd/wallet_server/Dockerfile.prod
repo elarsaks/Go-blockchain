@@ -1,5 +1,9 @@
-# Start from the base Golang image as builder stage
+# Start from the base Golang image
 FROM golang:1.18.0-alpine AS builder
+
+# Install git.
+# GCC is also necessary for cgo.
+RUN apk update && apk add --no-cache git gcc musl-dev
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -21,18 +25,10 @@ RUN go build -o main .
 
 # Start a new stage from scratch
 FROM alpine:latest AS runner
-
-# Add ca-certificates in case you need them
-RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
-
-# Set the working directory
 WORKDIR /app
 
-# Copy the binary file from the builder stage
-COPY --from=builder /app/cmd/wallet_server/main ./main
+# Copy the binary from builder
+COPY --from=builder /app/cmd/wallet_server/main .
 
-# Set the port number to expose
-EXPOSE 8080
-
-# Set the default command to run the application
-CMD ["./main"]
+# Set the command to run when starting the container
+CMD ["/app/main"]

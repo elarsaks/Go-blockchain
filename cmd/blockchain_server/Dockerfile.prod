@@ -1,6 +1,10 @@
 # Builder Stage
 FROM golang:1.18.0-alpine AS builder
 
+# Install git.
+# GCC is also necessary for cgo.
+RUN apk update && apk add --no-cache git gcc musl-dev
+
 # Set the working directory inside the container
 WORKDIR /app
 
@@ -9,9 +13,6 @@ COPY go.mod go.sum ./
 
 # Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
 RUN go mod download
-
-# Install the "air" tool for live-reloading (if needed)
-RUN go install github.com/cosmtrek/air@latest
 
 # Copy the entire parent_folder into the container
 COPY . .
@@ -30,9 +31,6 @@ WORKDIR /app
 
 # Copy the binary from builder stage
 COPY --from=builder /app/main .
-
-# Install ca-certificates
-RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 # Expose the port
 EXPOSE ${BLOCKCHAIN_SERVER_PORT}
