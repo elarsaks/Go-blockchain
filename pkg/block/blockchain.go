@@ -50,11 +50,20 @@ func (bc *Blockchain) Run() {
 
 // Find neighbors of the Blockchain
 func (bc *Blockchain) SetNeighbors() {
-	bc.neighbors = utils.FindNeighbors(
-		utils.GetHost(), bc.port,
-		NEIGHBOR_IP_RANGE_START, NEIGHBOR_IP_RANGE_END,
-		BLOCKCHAIN_PORT_RANGE_START, BLOCKCHAIN_PORT_RANGE_END)
-	log.Printf("%v", bc.neighbors)
+
+	bc.neighbors = []string{
+		"http://miner-1:5001",
+		"http://miner-2:5002",
+		"http://miner-3:5003",
+	}
+
+	/*
+		bc.neighbors = utils.FindNeighbors(
+			utils.GetHost(), bc.port,
+			NEIGHBOR_IP_RANGE_START, NEIGHBOR_IP_RANGE_END,
+			BLOCKCHAIN_PORT_RANGE_START, BLOCKCHAIN_PORT_RANGE_END)*/
+
+	// log.Printf("%v", bc.neighbors)
 }
 
 // Sync neighbors of the Blockchain
@@ -249,10 +258,6 @@ func (bc *Blockchain) VerifyTransactionSignature(
 
 	log.Println("Validate signature", string(m))
 
-	// Print out the transaction
-	// fmt.Println("Verify TransactionSignature")
-	// fmt.Printf("%v\n", string(m[:]))
-
 	h := sha256.Sum256([]byte(m))
 	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
 }
@@ -320,11 +325,15 @@ func (bc *Blockchain) Mining() bool {
 	bc.CreateBlock(nonce, previousHash)
 
 	// Log a successful mining operation
-	// log.Println("action=mining, status=success")
+	// #debug
+	log.Println("action=mining, status=success")
 
 	// Send a consensus request to each neighbor
 	for _, n := range bc.neighbors {
-		endpoint := fmt.Sprintf("http://%s/consensus", n)
+
+		fmt.Println("Send consensus to neigbour ", n)
+
+		endpoint := fmt.Sprintf("%s/consensus", n)
 		client := &http.Client{}
 		req, _ := http.NewRequest("PUT", endpoint, nil)
 		resp, err := client.Do(req)
@@ -356,6 +365,9 @@ func (bc *Blockchain) RegisterNewWallet(blockchainAddress string, message string
 		log.Printf("ERROR: %v", err)
 		return false
 	}
+
+	// Mine a new block when the wallet is registered successfully
+	bc.StartMining()
 
 	// Return true indicating the wallet was registered successfully
 	return true
@@ -415,33 +427,65 @@ func (bc *Blockchain) ValidChain(chain []*Block) bool {
 	return true
 }
 
-// Resolve conflicts
+// ResolveConflicts resolves conflicts in the blockchain by checking the chains of its neighbors
+// and replacing its own chain with the longest valid chain found.
 func (bc *Blockchain) ResolveConflicts() bool {
+	// Initialize variables to track the longest chain and its length
 	var longestChain []*Block = nil
 	maxLength := len(bc.chain)
 
+	// Iterate over the neighbors to fetch their chains
 	for _, n := range bc.neighbors {
-		endpoint := fmt.Sprintf("http://%s/chain", n)
-		resp, _ := http.Get(endpoint)
-		if resp.StatusCode == 200 {
+		fmt.Println("Resolve conflict with ", n)
+
+		// Construct the endpoint URL to fetch the chain from the neighbor
+		endpoint := fmt.Sprintf("%s/chain", n)
+
+		// Send an HTTP GET request to the neighbor's endpoint to fetch their chain
+		resp, err := http.Get(endpoint)
+		if err != nil {
+
+			// Log any error that occurred while fetching the chain
+			log.Printf("ERROR: Failed to fetch chain from neighbor %s: %v", n, err)
+			continue // Skip to the next neighbor in case of error
+		}
+
+		// Check the response status code to see if the request was successful
+		if resp.StatusCode == http.StatusOK {
 			var bcResp Blockchain
 			decoder := json.NewDecoder(resp.Body)
-			_ = decoder.Decode(&bcResp)
 
+			// Decode the JSON response into a Blockchain object
+			err := decoder.Decode(&bcResp)
+			if err != nil {
+				// Log any error that occurred during JSON decoding
+				log.Printf("ERROR: Failed to decode JSON response from neighbor %s: %v", n, err)
+				continue // Skip to the next neighbor in case of error
+			}
+
+			// Get the chain from the neighbor's Blockchain object
 			chain := bcResp.Chain()
 
+			// Check if the fetched chain is longer than the current longest chain
+			// and if it is a valid chain using bc.ValidChain()
 			if len(chain) > maxLength && bc.ValidChain(chain) {
 				maxLength = len(chain)
 				longestChain = chain
 			}
+		} else {
+			// Log the status code if the request to the neighbor's endpoint was not successful
+			log.Printf("WARNING: Failed to fetch chain from neighbor %s. Status code: %d", n, resp.StatusCode)
 		}
 	}
 
+	// If a longer valid chain was found, replace the blockchain's chain with it
 	if longestChain != nil {
 		bc.chain = longestChain
-		log.Printf("Resovle confilicts replaced")
+		log.Printf("INFO: Resolved conflicts. Replaced blockchain with the longest valid chain.")
 		return true
 	}
-	log.Printf("Resovle conflicts not replaced")
+
+	// If no longer valid chain was found, log and return false
+	log.Printf("INFO: No longer valid chain found among neighbors. No conflicts resolved.")
 	return false
 }
