@@ -324,7 +324,7 @@ func (bc *Blockchain) Mining() bool {
 
 		fmt.Println("Send consensus to neigbour ", n)
 
-		endpoint := fmt.Sprintf("%s/consensus", n)
+		endpoint := fmt.Sprintf("http://%s/consensus", n)
 		client := &http.Client{}
 		req, _ := http.NewRequest("PUT", endpoint, nil)
 		resp, err := client.Do(req)
@@ -430,7 +430,7 @@ func (bc *Blockchain) ResolveConflicts() bool {
 		fmt.Println("Resolve conflict with ", n)
 
 		// Construct the endpoint URL to fetch the chain from the neighbor
-		endpoint := fmt.Sprintf("%s/chain", n)
+		endpoint := fmt.Sprintf("http://%s/chain", n)
 
 		// Send an HTTP GET request to the neighbor's endpoint to fetch their chain
 		resp, err := http.Get(endpoint)
