@@ -38,83 +38,44 @@ type BalanceResponse struct {
 	Error   string  `json:"error"`
 }
 
-// --- Functions ---
-// NewTransaction creates a new transaction.
-func NewTransaction(sender string, recipient string, message string, value float32) *Transaction {
-	return &Transaction{sender, recipient, message, value}
-}
+func (bc *Blockchain) AddTransaction(sender string,
+	recipient string,
+	message string,
+	value float32,
+	senderPublicKey *ecdsa.PublicKey,
+	s *utils.Signature) (bool, error) {
 
-// --- Methods ---
-// Print outputs the details of the transaction.
-func (t *Transaction) Print() {
-	fmt.Printf("%s\n", strings.Repeat("-", 40))
-	fmt.Printf(" senderBlockchainAddress      %s\n", t.senderBlockchainAddress)
-	fmt.Printf(" recipientBlockchainAddress   %s\n", t.recipientBlockchainAddress)
-	fmt.Printf(" message                      %s\n", t.message)
-	fmt.Printf(" value                          %.1f\n", t.value)
-}
+	// Create a new transaction
+	t := NewTransaction(message, recipient, sender, value)
 
-// MarshalJSON implements the Marshaler interface for the Transaction type.
-func (t *Transaction) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Message   string  `json:"message"`
-		Recipient string  `json:"recipientBlockchainAddress"`
-		Sender    string  `json:"senderBlockchainAddress"`
-		Value     float32 `json:"value"`
-	}{
-		Message:   t.message,
-		Recipient: t.recipientBlockchainAddress,
-		Sender:    t.senderBlockchainAddress,
-		Value:     t.value,
-	})
-}
-
-// UnmarshalJSON implements the Unmarshaler interface for the Transaction type.
-func (t *Transaction) UnmarshalJSON(data []byte) error {
-	v := &struct {
-		Message   *string  `json:"message"`
-		Recipient *string  `json:"recipientBlockchainAddress"`
-		Sender    *string  `json:"senderBlockchainAddress"`
-		Value     *float32 `json:"value"`
-	}{
-		Message:   &t.message,
-		Recipient: &t.recipientBlockchainAddress,
-		Sender:    &t.senderBlockchainAddress,
-		Value:     &t.value,
+	// If the sender is the mining address, add the transaction to the pool and return true
+	if sender == MINING_SENDER {
+		bc.transactionPool = append(bc.transactionPool, t)
+		return true, nil
 	}
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
+
+	// If the transaction signature is not verified, return false and an error
+	if !bc.VerifyTransactionSignature(senderPublicKey, s, t) {
+		return false, fmt.Errorf("ERROR: Verify Transaction")
 	}
-	return nil
-}
 
-// Validate checks if the transaction request is valid.
-func (tr *TransactionRequest) Validate() bool {
-	if tr.SenderBlockchainAddress == nil ||
-		tr.RecipientBlockchainAddress == nil ||
-		tr.SenderPublicKey == nil ||
-		tr.Message == nil ||
-		tr.Value == nil ||
-		tr.Signature == nil {
-		return false
+	// Calculate the total balance of the sender
+	balance, err := bc.CalculateTotalBalance(sender)
+	if err != nil {
+		// If there is an error calculating the balance, return false and the error
+		return false, fmt.Errorf("ERROR: CalculateTotalAmount: %v", err)
 	}
-	return true
-}
 
-// MarshalJSON implements the Marshaler interface for the AmountResponse type.
-func (br *BalanceResponse) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Balance float32 `json:"balance"`
-		Error   string  `json:"error"`
-	}{
-		Balance: br.Balance,
-		Error:   br.Error,
-	})
-}
+	// If the sender's balance is less than the value of the transaction, return false and an error
+	if balance < value {
+		return false, fmt.Errorf("ERROR: Not enough balance in a wallet")
+	}
 
-// Get the transaction pool the Blockchain
-func (bc *Blockchain) TransactionPool() []*Transaction {
-	return bc.transactionPool
+	// Add the transaction to the transaction pool
+	bc.transactionPool = append(bc.transactionPool, t)
+
+	// Return true and no error
+	return true, nil
 }
 
 // Empty the transaction pool the Blockchain
@@ -161,46 +122,6 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, message
 	return isTransacted, nil
 }
 
-func (bc *Blockchain) AddTransaction(sender string,
-	recipient string,
-	message string,
-	value float32,
-	senderPublicKey *ecdsa.PublicKey,
-	s *utils.Signature) (bool, error) {
-
-	// Create a new transaction
-	t := NewTransaction(message, recipient, sender, value)
-
-	// If the sender is the mining address, add the transaction to the pool and return true
-	if sender == MINING_SENDER {
-		bc.transactionPool = append(bc.transactionPool, t)
-		return true, nil
-	}
-
-	// If the transaction signature is not verified, return false and an error
-	if !bc.VerifyTransactionSignature(senderPublicKey, s, t) {
-		return false, fmt.Errorf("ERROR: Verify Transaction")
-	}
-
-	// Calculate the total balance of the sender
-	balance, err := bc.CalculateTotalBalance(sender)
-	if err != nil {
-		// If there is an error calculating the balance, return false and the error
-		return false, fmt.Errorf("ERROR: CalculateTotalAmount: %v", err)
-	}
-
-	// If the sender's balance is less than the value of the transaction, return false and an error
-	if balance < value {
-		return false, fmt.Errorf("ERROR: Not enough balance in a wallet")
-	}
-
-	// Add the transaction to the transaction pool
-	bc.transactionPool = append(bc.transactionPool, t)
-
-	// Return true and no error
-	return true, nil
-}
-
 // Copy the transaction pool
 func (bc *Blockchain) CopyTransactionPool() []*Transaction {
 	transactions := make([]*Transaction, 0)
@@ -215,9 +136,31 @@ func (bc *Blockchain) CopyTransactionPool() []*Transaction {
 	return transactions
 }
 
+// NewTransaction creates a new transaction.
+func NewTransaction(sender string, recipient string, message string, value float32) *Transaction {
+	return &Transaction{sender, recipient, message, value}
+}
+
+// Get the transaction pool the Blockchain
+func (bc *Blockchain) TransactionPool() []*Transaction {
+	return bc.transactionPool
+}
+
+// Validate checks if the transaction request is valid.
+func (tr *TransactionRequest) Validate() bool {
+	if tr.SenderBlockchainAddress == nil ||
+		tr.RecipientBlockchainAddress == nil ||
+		tr.SenderPublicKey == nil ||
+		tr.Message == nil ||
+		tr.Value == nil ||
+		tr.Signature == nil {
+		return false
+	}
+	return true
+}
+
 // Verify the signature of the transaction
 func (bc *Blockchain) VerifyTransactionSignature(
-
 	senderPublicKey *ecdsa.PublicKey,
 	s *utils.Signature,
 	t *Transaction) bool {
@@ -228,4 +171,58 @@ func (bc *Blockchain) VerifyTransactionSignature(
 
 	h := sha256.Sum256([]byte(m))
 	return ecdsa.Verify(senderPublicKey, h[:], s.R, s.S)
+}
+
+// Print outputs the details of the transaction.
+func (t *Transaction) Print() {
+	fmt.Printf("%s\n", strings.Repeat("-", 40))
+	fmt.Printf(" senderBlockchainAddress      %s\n", t.senderBlockchainAddress)
+	fmt.Printf(" recipientBlockchainAddress   %s\n", t.recipientBlockchainAddress)
+	fmt.Printf(" message                      %s\n", t.message)
+	fmt.Printf(" value                          %.1f\n", t.value)
+}
+
+// MarshalJSON implements the Marshaler interface for the AmountResponse type.
+func (br *BalanceResponse) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Balance float32 `json:"balance"`
+		Error   string  `json:"error"`
+	}{
+		Balance: br.Balance,
+		Error:   br.Error,
+	})
+}
+
+// MarshalJSON implements the Marshaler interface for the Transaction type.
+func (t *Transaction) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Message   string  `json:"message"`
+		Recipient string  `json:"recipientBlockchainAddress"`
+		Sender    string  `json:"senderBlockchainAddress"`
+		Value     float32 `json:"value"`
+	}{
+		Message:   t.message,
+		Recipient: t.recipientBlockchainAddress,
+		Sender:    t.senderBlockchainAddress,
+		Value:     t.value,
+	})
+}
+
+// UnmarshalJSON implements the Unmarshaler interface for the Transaction type.
+func (t *Transaction) UnmarshalJSON(data []byte) error {
+	v := &struct {
+		Message   *string  `json:"message"`
+		Recipient *string  `json:"recipientBlockchainAddress"`
+		Sender    *string  `json:"senderBlockchainAddress"`
+		Value     *float32 `json:"value"`
+	}{
+		Message:   &t.message,
+		Recipient: &t.recipientBlockchainAddress,
+		Sender:    &t.senderBlockchainAddress,
+		Value:     &t.value,
+	}
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	return nil
 }
