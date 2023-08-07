@@ -18,13 +18,10 @@ const (
 
 	BLOCKCHAIN_PORT_RANGE_START      = 5001
 	BLOCKCHAIN_PORT_RANGE_END        = 5003
-	NEIGHBOR_IP_RANGE_START          = 1   // This is default IP range for Docker containers
-	NEIGHBOR_IP_RANGE_END            = 254 // Docker used bridge network, as a default
+	NEIGHBOR_IP_RANGE_START          = 0
+	NEIGHBOR_IP_RANGE_END            = 1
 	BLOCKCHIN_NEIGHBOR_SYNC_TIME_SEC = 20
 )
-
-// TODO: Hold neighbours in a blockchain_server, so they can be updated
-// var NEIGHBORS = []string{"http://miner-1:5001", "http://miner-2:5002", "http://miner-3:5003"}
 
 // Definition of the Block type
 type Block struct {

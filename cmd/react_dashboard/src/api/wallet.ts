@@ -9,6 +9,8 @@ function fetchUserWalletDetails(): Promise<WalletDetails> {
   return axios
     .post<WalletDetailsResponse>(REACT_APP_GATEWAY_API_URL + "/user/wallet")
     .then(({ data }) => {
+      console.log(data);
+
       const camelCaseResponseData: WalletDetails = {
         blockchainAddress: data.blockchainAddress,
         privateKey: data.privateKey,

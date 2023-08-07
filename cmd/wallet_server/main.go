@@ -31,13 +31,13 @@ func (ws *WalletServer) Gateway() string {
 func (ws *WalletServer) SetGateway(gateway string) bool {
 	switch gateway {
 	case "1":
-		ws.gateway = "http://miner-1:5001"
+		ws.gateway = "http://localhost:5001"
 	case "2":
-		ws.gateway = "http://miner-2:5002"
+		ws.gateway = "http://localhost:5002"
 	case "3":
-		ws.gateway = "http://miner-3:5003"
+		ws.gateway = "http://localhost:5003"
 	default:
-		ws.gateway = "http://miner-1:5001"
+		ws.gateway = "http://localhost:5001"
 	}
 
 	fmt.Printf("Gateway to Blockchain: %s\n", ws.gateway)
@@ -85,6 +85,6 @@ func main() {
 	// Print gateway and port
 	log.Printf("Port: %d\n", port)
 
-	app := NewWalletServer(uint16(port), "http://miner-1:5001")
+	app := NewWalletServer(uint16(port), "http://localhost:5001")
 	app.Run()
 }

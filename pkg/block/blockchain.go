@@ -50,20 +50,11 @@ func (bc *Blockchain) Run() {
 
 // Find neighbors of the Blockchain
 func (bc *Blockchain) SetNeighbors() {
-
-	bc.neighbors = []string{
-		"http://miner-1:5001",
-		"http://miner-2:5002",
-		"http://miner-3:5003",
-	}
-
-	/*
-		bc.neighbors = utils.FindNeighbors(
-			utils.GetHost(), bc.port,
-			NEIGHBOR_IP_RANGE_START, NEIGHBOR_IP_RANGE_END,
-			BLOCKCHAIN_PORT_RANGE_START, BLOCKCHAIN_PORT_RANGE_END)*/
-
-	// log.Printf("%v", bc.neighbors)
+	bc.neighbors = utils.FindNeighbors(
+		utils.GetHost(), bc.port,
+		NEIGHBOR_IP_RANGE_START, NEIGHBOR_IP_RANGE_END,
+		BLOCKCHAIN_PORT_RANGE_START, BLOCKCHAIN_PORT_RANGE_END)
+	log.Printf("%v", bc.neighbors)
 }
 
 // Sync neighbors of the Blockchain
