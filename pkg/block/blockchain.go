@@ -272,6 +272,9 @@ func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions 
 	zeros := strings.Repeat("0", difficulty)
 	guessBlock := Block{0, nonce, previousHash, transactions}
 	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
+
+	log.Println("VALID PROOF: ", guessHashStr[:difficulty] == zeros)
+
 	return guessHashStr[:difficulty] == zeros
 }
 
@@ -296,8 +299,9 @@ func (bc *Blockchain) Mining() bool {
 	// Log out blockchain
 	// bc.Print() // TODO: Remove debug
 
+	//* DEBUG #Consensus
 	// Don't mine when there is no transaction and blockchain already has few blocks
-	if len(bc.transactionPool) == 0 && len(bc.chain) > 10 {
+	if len(bc.transactionPool) == 0 /* && len(bc.chain) > 5 */ {
 		return false
 	}
 
