@@ -30,7 +30,7 @@ func (h *WalletServerHandler) GetBlocks(w http.ResponseWriter, req *http.Request
 
 	// Check the response status code
 	if resp.StatusCode != http.StatusOK {
-		http.Error(w, "Error fetching blocks from miner-2", resp.StatusCode)
+		http.Error(w, "Error fetching blocks from miner", resp.StatusCode)
 		return
 	}
 
