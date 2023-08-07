@@ -9,8 +9,6 @@ import (
 	"github.com/elarsaks/Go-blockchain/pkg/block"
 )
 
-// TODO: Describe the purpose of this function
-
 // Get the wallet balance by blockchain address in the Blockchain
 func (h *BlockchainServerHandler) Balance(w http.ResponseWriter, req *http.Request) {
 	switch req.Method {

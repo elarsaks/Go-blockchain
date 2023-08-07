@@ -1,4 +1,4 @@
-name: Full Stack Deployment
+name: Delpoy front-end
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd cmd/react_dashboard
-          npm ci
+          npm i
 
       - name: Build
         run: |
