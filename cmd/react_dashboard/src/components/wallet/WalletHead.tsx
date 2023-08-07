@@ -15,15 +15,15 @@ const MinerTitleContainer = styled.div`
   align-items: center;
 `;
 
-const TypeSelect = styled.select`
+const TypeSelect = styled.select<{ disabled?: boolean }>`
   padding: 0.75rem 1.5rem;
   margin-right: 1rem;
-  background-color: #ffffff;
-  color: #00acd7;
-  border: 1px solid #00acd7;
+  background-color: ${(props) => (props.disabled ? "#f0f0f0" : "#ffffff")};
+  color: ${(props) => (props.disabled ? "#a0a0a0" : "#00acd7")};
+  border: 1px solid ${(props) => (props.disabled ? "#a0a0a0" : "#00acd7")};
   border-radius: 5px;
   font-weight: bold;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
 `;
 
 const Title = styled.h2`
@@ -129,7 +129,6 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     [type, selectedMiner.value]
   );
 
-  // TODO: balance should only update when there is a new block
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;
 
@@ -163,6 +162,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
             <TypeSelect
               value={selectedMiner.value}
               onChange={handleMinerChange}
+              disabled={true}
             >
               {miners.map((miner) => (
                 <option key={miner.value} value={miner.value}>
