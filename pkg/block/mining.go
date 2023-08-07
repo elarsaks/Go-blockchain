@@ -13,29 +13,6 @@ import (
 // Blockchain Proof and Mining Methods
 // ==============================
 
-// ValidProof validates the proof of work.
-func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
-	zeros := strings.Repeat("0", difficulty)
-	guessBlock := Block{0, nonce, previousHash, transactions}
-	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
-
-	//* DEBUG #Consensus
-	log.Println("VALID PROOF: ", guessHashStr[:difficulty] == zeros)
-
-	return guessHashStr[:difficulty] == zeros
-}
-
-// ProofOfWork finds the proof of work.
-func (bc *Blockchain) ProofOfWork() int {
-	transactions := bc.CopyTransactionPool()
-	previousHash := bc.LastBlock().Hash()
-	nonce := 0
-	for !bc.ValidProof(nonce, previousHash, transactions, MINING_DIFFICULTY) {
-		nonce += 1
-	}
-	return nonce
-}
-
 // Mining creates a new block and adds it to the blockchain.
 func (bc *Blockchain) Mining() bool {
 	// Lock the blockchain while mining
@@ -99,63 +76,33 @@ func (bc *Blockchain) StartMining() {
 	_ = time.AfterFunc(time.Second*MINING_TIMER_SEC, bc.StartMining)
 }
 
-// ==============================
-// Blockchain Wallet and Balance Methods
-// ==============================
+// ValidProof validates the proof of work.
+func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
+	zeros := strings.Repeat("0", difficulty)
+	guessBlock := Block{0, nonce, previousHash, transactions}
+	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
 
-// RegisterNewWallet registers a new wallet on the blockchain.
-func (bc *Blockchain) RegisterNewWallet(blockchainAddress string, message string) bool {
+	//* DEBUG #Consensus
+	log.Println("VALID PROOF: ", guessHashStr[:difficulty] == zeros)
 
-	// Add a transaction for the new wallet
-	_, err := bc.AddTransaction(MINING_SENDER, blockchainAddress, message, 0, nil, nil)
-
-	// If an error occurred adding the transaction, log the error and return false
-	if err != nil {
-		log.Printf("ERROR: %v", err)
-		return false
-	}
-
-	// Mine a new block when the wallet is registered successfully
-	bc.StartMining()
-
-	// Return true indicating the wallet was registered successfully
-	return true
+	return guessHashStr[:difficulty] == zeros
 }
 
-// CalculateTotalBalance calculates the total balance of crypto on the specific address in the Blockchain.
-func (bc *Blockchain) CalculateTotalBalance(blockchainAddress string) (float32, error) {
-	var totalBalance float32 = 0.0
-	addressFound := false
-
-	for _, b := range bc.chain {
-		for _, t := range b.transactions {
-			value := t.value
-
-			if blockchainAddress == t.recipientBlockchainAddress {
-				totalBalance += value
-				addressFound = true
-			}
-
-			if blockchainAddress == t.senderBlockchainAddress {
-				totalBalance -= value
-				addressFound = true
-			}
-		}
+// ProofOfWork finds the proof of work.
+func (bc *Blockchain) ProofOfWork() int {
+	transactions := bc.CopyTransactionPool()
+	previousHash := bc.LastBlock().Hash()
+	nonce := 0
+	for !bc.ValidProof(nonce, previousHash, transactions, MINING_DIFFICULTY) {
+		nonce += 1
 	}
-
-	if !addressFound {
-		return 0.0, fmt.Errorf("Address not found in the Blockchain")
-	}
-
-	return totalBalance, nil
+	return nonce
 }
-
-// ==============================
-// Blockchain Chain Validation and Conflict Resolution Methods
-// ==============================
 
 // ValidChain validates the chain.
 func (bc *Blockchain) ValidChain(chain []*Block) bool {
+
+	//* DEGUG #Consensus
 	preBlock := chain[0]
 	currentIndex := 1
 	for currentIndex < len(chain) {
@@ -234,4 +181,55 @@ func (bc *Blockchain) ResolveConflicts() bool {
 	// If no longer valid chain was found, log and return false
 	log.Printf("INFO: No longer valid chain found among neighbors. No conflicts resolved.")
 	return false
+}
+
+// ==============================
+// Blockchain Wallet and Balance Methods
+// ==============================
+
+// RegisterNewWallet registers a new wallet on the blockchain.
+func (bc *Blockchain) RegisterNewWallet(blockchainAddress string, message string) bool {
+
+	// Add a transaction for the new wallet
+	_, err := bc.AddTransaction(MINING_SENDER, blockchainAddress, message, 0, nil, nil)
+
+	// If an error occurred adding the transaction, log the error and return false
+	if err != nil {
+		log.Printf("ERROR: %v", err)
+		return false
+	}
+
+	// Mine a new block when the wallet is registered successfully
+	bc.StartMining()
+
+	// Return true indicating the wallet was registered successfully
+	return true
+}
+
+// CalculateTotalBalance calculates the total balance of crypto on the specific address in the Blockchain.
+func (bc *Blockchain) CalculateTotalBalance(blockchainAddress string) (float32, error) {
+	var totalBalance float32 = 0.0
+	addressFound := false
+
+	for _, b := range bc.chain {
+		for _, t := range b.transactions {
+			value := t.value
+
+			if blockchainAddress == t.recipientBlockchainAddress {
+				totalBalance += value
+				addressFound = true
+			}
+
+			if blockchainAddress == t.senderBlockchainAddress {
+				totalBalance -= value
+				addressFound = true
+			}
+		}
+	}
+
+	if !addressFound {
+		return 0.0, fmt.Errorf("Address not found in the Blockchain")
+	}
+
+	return totalBalance, nil
 }
