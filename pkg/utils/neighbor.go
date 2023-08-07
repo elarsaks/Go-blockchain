@@ -55,4 +55,6 @@ func GetHost() string {
 		return "127.0.0.1"
 	}
 	return address[0]
+
+	return "127.0.0.1"
 }

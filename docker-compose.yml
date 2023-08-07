@@ -38,7 +38,7 @@ services:
     environment:
       - COMMAND=air
       - PORT=5001
-      - MINER_HOST=miner-2
+      - MINER_HOST=miner
     volumes:
       - .:/app
     restart: unless-stopped
@@ -47,12 +47,13 @@ services:
     build:
       context: .
       dockerfile: ./cmd/blockchain_server/Dockerfile
-    container_name: miner-2
+    container_name: miner
     ports:
       - 5002:5002
     environment:
       - COMMAND=air
       - PORT=5002
+      - MINER_HOST=miner
     volumes:
       - .:/app
     restart: unless-stopped
@@ -67,7 +68,7 @@ services:
     environment:
       - COMMAND=air
       - PORT=5003
-      - MINER_HOST=miner-1
+      - MINER_HOST=miner
     volumes:
       - .:/app
     restart: unless-stopped

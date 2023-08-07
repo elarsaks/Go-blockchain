@@ -2,6 +2,7 @@ package block
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/elarsaks/Go-blockchain/pkg/utils"
@@ -13,6 +14,15 @@ import (
 
 // SetNeighbors discovers and sets the neighbors for the blockchain instance.
 func (bc *Blockchain) SetNeighbors() {
+	if host := os.Getenv("MINER_HOST"); host != "" {
+		bc.neighbors = []string{
+			"http://" + host + "-1:5001",
+			"http://" + host + "-2:5002",
+			"http://" + host + "-3:5003",
+		}
+		return
+	}
+
 	bc.neighbors = utils.FindNeighbors(
 		utils.GetHost(), bc.port,
 		NEIGHBOR_IP_RANGE_START, NEIGHBOR_IP_RANGE_END,
