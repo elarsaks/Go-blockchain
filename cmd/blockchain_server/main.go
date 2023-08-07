@@ -100,7 +100,7 @@ func (bcs *BlockchainServer) Run() {
 	bcs.GetBlockchain().Run()
 
 	// Register the miner's wallet
-	bcs.RegisterMinersWallet()
+	// bcs.RegisterMinersWallet()
 
 	router := mux.NewRouter()
 	router.Use(utils.CorsMiddleware())

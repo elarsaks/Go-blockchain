@@ -27,6 +27,10 @@ function fetchWalletBalance(blockchainAddress: string): Promise<string> {
       `${REACT_APP_GATEWAY_API_URL}/wallet/balance?blockchainAddress=${blockchainAddress}`
     )
     .then(({ data }) => {
+      console.log(data);
+
+      // TODO: Get single wallet working!!!
+
       if (data.error) {
         throw new Error(data.error);
       }
