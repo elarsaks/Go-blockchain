@@ -46,3 +46,8 @@ type WalletDetailsResponse = {
   privateKey: string;
   publicKey: string;
 };
+
+type MiningContextType = {
+  mining: boolean;
+  setMining: React.Dispatch<React.SetStateAction<boolean>>;
+};

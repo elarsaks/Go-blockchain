@@ -6,7 +6,7 @@ import Background from "components/layout/Background";
 import BlockDiv from "components/BlockDiv";
 import Loader from "components/shared/Loader";
 import Notification from "components/shared/Notification";
-import React, { useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import Wallet from "components/wallet/Wallet";
 const AppWrapper = styled.div`
@@ -35,10 +35,16 @@ const WalletWrapperContainer = styled.div`
   }
 `;
 
+export const MiningContext = React.createContext<MiningContextType>({
+  mining: false,
+  setMining: () => {},
+});
+
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState({ message: "" });
   const [blockchain, setBlockchain] = useState<Block[]>([]);
+  const [mining, setMining] = useState(false);
 
   function fetchchainData() {
     return fetchBlockchainData()
@@ -54,7 +60,9 @@ function App() {
 
   useEffect(() => {
     // Fetch blockchain data immediately on component mount
-    fetchchainData();
+    fetchchainData().then(() => {
+      setMining(false);
+    });
 
     // Fetch blockchain data every second
     const intervalId = setInterval(() => {
@@ -72,10 +80,12 @@ function App() {
       <ContentContainer className="App">
         <AppInfo />
 
-        <WalletWrapperContainer>
-          <Wallet type="Miner" />
-          <Wallet type="User" />
-        </WalletWrapperContainer>
+        <MiningContext.Provider value={{ mining, setMining }}>
+          <WalletWrapperContainer>
+            <Wallet type="Miner" />
+            <Wallet type="User" />
+          </WalletWrapperContainer>
+        </MiningContext.Provider>
 
         {isLoading && (
           <Notification
