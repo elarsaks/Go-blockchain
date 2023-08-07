@@ -6,7 +6,7 @@ import Background from "components/layout/Background";
 import BlockDiv from "components/BlockDiv";
 import Loader from "components/shared/Loader";
 import Notification from "components/shared/Notification";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import Wallet from "components/wallet/Wallet";
 const AppWrapper = styled.div`
@@ -35,7 +35,7 @@ const WalletWrapperContainer = styled.div`
   }
 `;
 
-export const MiningContext = React.createContext<MiningContextType>({
+export const MiningContext = createContext<MiningContextType>({
   mining: false,
   setMining: () => {},
 });
