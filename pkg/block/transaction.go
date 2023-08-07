@@ -161,14 +161,6 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, message
 	return isTransacted, nil
 }
 
-// AddTransaction adds a new transaction to the transaction pool
-// sender is the blockchain address of the sender
-// recipient is the blockchain address of the recipient
-// message is a text message sent with the transaction
-// value is the value of the transaction
-// senderPublicKey is the public key of the sender
-// s is the signature for the transaction
-// The function returns a boolean indicating whether the transaction was added successfully and an error if one occurred
 func (bc *Blockchain) AddTransaction(sender string,
 	recipient string,
 	message string,

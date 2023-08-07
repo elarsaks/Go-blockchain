@@ -7,7 +7,11 @@ import (
 	"github.com/elarsaks/Go-blockchain/pkg/utils"
 )
 
-// Find neighbors of the Blockchain
+// ==============================
+// Blockchain Neighbor Management Methods
+// ==============================
+
+// SetNeighbors discovers and sets the neighbors for the blockchain instance.
 func (bc *Blockchain) SetNeighbors() {
 	bc.neighbors = utils.FindNeighbors(
 		utils.GetHost(), bc.port,
@@ -16,14 +20,14 @@ func (bc *Blockchain) SetNeighbors() {
 	log.Printf("%v", bc.neighbors)
 }
 
-// Sync neighbors of the Blockchain
+// SyncNeighbors synchronizes the neighbors ensuring thread safety.
 func (bc *Blockchain) SyncNeighbors() {
 	bc.muxNeighbors.Lock()
 	defer bc.muxNeighbors.Unlock()
 	bc.SetNeighbors()
 }
 
-// Start syncing neighbors of the Blockchain
+// StartSyncNeighbors initiates the synchronization process and schedules it to run periodically.
 func (bc *Blockchain) StartSyncNeighbors() {
 	bc.SyncNeighbors()
 	_ = time.AfterFunc(time.Second*BLOCKCHIN_NEIGHBOR_SYNC_TIME_SEC, bc.StartSyncNeighbors)

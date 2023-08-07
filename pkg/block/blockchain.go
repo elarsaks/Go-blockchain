@@ -9,7 +9,11 @@ import (
 	"sync"
 )
 
-// Constants related to blockchain configuration
+// ==============================
+// Blockchain Struct and Methods
+// ==============================
+
+// Blockchain represents the entire blockchain structure.
 type Blockchain struct {
 	transactionPool   []*Transaction
 	chain             []*Block
@@ -20,7 +24,7 @@ type Blockchain struct {
 	muxNeighbors      sync.Mutex
 }
 
-// Create a new instance of Blockchain
+// NewBlockchain creates a new instance of Blockchain.
 func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 	b := &Block{}
 	bc := new(Blockchain)
@@ -30,41 +34,19 @@ func NewBlockchain(blockchainAddress string, port uint16) *Blockchain {
 	return bc
 }
 
-// Get chain of the Blockchain
+// Chain returns the chain of the Blockchain.
 func (bc *Blockchain) Chain() []*Block {
 	return bc.chain
 }
 
-// Run the Blockchain
+// Run initializes and runs the Blockchain.
 func (bc *Blockchain) Run() {
 	bc.StartSyncNeighbors()
 	bc.ResolveConflicts()
 	bc.StartMining() // Start mining automatically
 }
 
-// MarshalJSON implements the Marshaler interface for the Blockchain type.
-func (bc *Blockchain) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Blocks []*Block `json:"chain"`
-	}{
-		Blocks: bc.chain,
-	})
-}
-
-// UnmarshalJSON implements the Unmarshaler interface for the Blockchain type.
-func (bc *Blockchain) UnmarshalJSON(data []byte) error {
-	v := &struct {
-		Blocks *[]*Block `json:"chain"`
-	}{
-		Blocks: &bc.chain,
-	}
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	return nil
-}
-
-// Create a new block
+// CreateBlock creates a new block and appends it to the blockchain.
 func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
 	b := NewBlock(nonce, previousHash, bc.transactionPool)
 	bc.chain = append(bc.chain, b)
@@ -79,12 +61,12 @@ func (bc *Blockchain) CreateBlock(nonce int, previousHash [32]byte) *Block {
 	return b
 }
 
-// Get the last block of the Blockchain
+// LastBlock returns the last block of the Blockchain.
 func (bc *Blockchain) LastBlock() *Block {
 	return bc.chain[len(bc.chain)-1]
 }
 
-// Get latest blocks of the Blockchain
+// GetBlocks returns the latest blocks of the Blockchain.
 func (bc *Blockchain) GetBlocks(amount int) []*Block {
 	n := len(bc.chain)
 	var last10Blocks []*Block
@@ -103,7 +85,7 @@ func (bc *Blockchain) GetBlocks(amount int) []*Block {
 	return last10Blocks
 }
 
-// Print the Blockchain
+// Print displays the entire blockchain.
 func (bc *Blockchain) Print() {
 	for i, block := range bc.chain {
 		fmt.Printf("%s Chain %d %s\n", strings.Repeat("=", 25), i,
@@ -111,4 +93,28 @@ func (bc *Blockchain) Print() {
 		block.Print()
 	}
 	fmt.Printf("%s\n", strings.Repeat("*", 25))
+}
+
+// JSON Handling for Blockchain
+
+// MarshalJSON customizes the JSON encoding of the blockchain.
+func (bc *Blockchain) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Blocks []*Block `json:"chain"`
+	}{
+		Blocks: bc.chain,
+	})
+}
+
+// UnmarshalJSON customizes the JSON decoding of the blockchain.
+func (bc *Blockchain) UnmarshalJSON(data []byte) error {
+	v := &struct {
+		Blocks *[]*Block `json:"chain"`
+	}{
+		Blocks: &bc.chain,
+	}
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	return nil
 }

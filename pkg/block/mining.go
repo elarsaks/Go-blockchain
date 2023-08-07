@@ -9,7 +9,11 @@ import (
 	"time"
 )
 
-// Validate the proof of work
+// ==============================
+// Blockchain Proof and Mining Methods
+// ==============================
+
+// ValidProof validates the proof of work.
 func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions []*Transaction, difficulty int) bool {
 	zeros := strings.Repeat("0", difficulty)
 	guessBlock := Block{0, nonce, previousHash, transactions}
@@ -21,7 +25,7 @@ func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions 
 	return guessHashStr[:difficulty] == zeros
 }
 
-// Proof of work
+// ProofOfWork finds the proof of work.
 func (bc *Blockchain) ProofOfWork() int {
 	transactions := bc.CopyTransactionPool()
 	previousHash := bc.LastBlock().Hash()
@@ -33,7 +37,6 @@ func (bc *Blockchain) ProofOfWork() int {
 }
 
 // Mining creates a new block and adds it to the blockchain.
-// It returns a boolean indicating whether mining was successful.
 func (bc *Blockchain) Mining() bool {
 	// Lock the blockchain while mining
 	bc.mux.Lock()
@@ -89,10 +92,18 @@ func (bc *Blockchain) Mining() bool {
 	return true
 }
 
-// RegisterNewWallet registers a new wallet on the blockchain
-// blockchainAddress is the address of the new wallet
-// message is a message that will be associated with the transaction creating the new wallet
-// The function returns a boolean indicating whether the wallet was registered successfully
+// StartMining initiates the mining process.
+func (bc *Blockchain) StartMining() {
+	bc.Mining()
+	// Schedule the next mining operation to occur after MINING_TIMER_SEC seconds.
+	_ = time.AfterFunc(time.Second*MINING_TIMER_SEC, bc.StartMining)
+}
+
+// ==============================
+// Blockchain Wallet and Balance Methods
+// ==============================
+
+// RegisterNewWallet registers a new wallet on the blockchain.
 func (bc *Blockchain) RegisterNewWallet(blockchainAddress string, message string) bool {
 
 	// Add a transaction for the new wallet
@@ -111,14 +122,7 @@ func (bc *Blockchain) RegisterNewWallet(blockchainAddress string, message string
 	return true
 }
 
-// Start mining
-func (bc *Blockchain) StartMining() {
-	bc.Mining()
-	// Schedule the next mining operation to occur after MINING_TIMER_SEC seconds.
-	_ = time.AfterFunc(time.Second*MINING_TIMER_SEC, bc.StartMining)
-}
-
-//* Calculate the total balance of crypto on the specific address in the Blockchain
+// CalculateTotalBalance calculates the total balance of crypto on the specific address in the Blockchain.
 func (bc *Blockchain) CalculateTotalBalance(blockchainAddress string) (float32, error) {
 	var totalBalance float32 = 0.0
 	addressFound := false
@@ -146,7 +150,11 @@ func (bc *Blockchain) CalculateTotalBalance(blockchainAddress string) (float32, 
 	return totalBalance, nil
 }
 
-// Validate the chain
+// ==============================
+// Blockchain Chain Validation and Conflict Resolution Methods
+// ==============================
+
+// ValidChain validates the chain.
 func (bc *Blockchain) ValidChain(chain []*Block) bool {
 	preBlock := chain[0]
 	currentIndex := 1
@@ -166,8 +174,7 @@ func (bc *Blockchain) ValidChain(chain []*Block) bool {
 	return true
 }
 
-// ResolveConflicts resolves conflicts in the blockchain by checking the chains of its neighbors
-// and replacing its own chain with the longest valid chain found.
+// ResolveConflicts resolves conflicts in the blockchain by checking the chains of its neighbors.
 func (bc *Blockchain) ResolveConflicts() bool {
 	// Initialize variables to track the longest chain and its length
 	var longestChain []*Block = nil
