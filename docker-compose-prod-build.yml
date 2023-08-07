@@ -12,6 +12,7 @@ services:
     environment:
       - PORT=8080
       - COMMAND=air
+      - MINER_HOST=miner-1
     volumes:
       - .:/app
     restart: unless-stopped
@@ -27,6 +28,7 @@ services:
     environment:
       - COMMAND=air
       - PORT=5001
+      - MINER_HOST=miner
     volumes:
       - .:/app
     restart: unless-stopped
@@ -39,6 +41,7 @@ services:
     environment:
       - COMMAND=air
       - PORT=5002
+      - MINER_HOST=miner
     volumes:
       - .:/app
     restart: unless-stopped
@@ -51,6 +54,7 @@ services:
     environment:
       - COMMAND=air
       - PORT=5003
+      - MINER_HOST=miner
     volumes:
       - .:/app
     restart: unless-stopped
