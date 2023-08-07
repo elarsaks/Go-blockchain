@@ -273,6 +273,7 @@ func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions 
 	guessBlock := Block{0, nonce, previousHash, transactions}
 	guessHashStr := fmt.Sprintf("%x", guessBlock.Hash())
 
+	//* DEBUG #Consensus
 	log.Println("VALID PROOF: ", guessHashStr[:difficulty] == zeros)
 
 	return guessHashStr[:difficulty] == zeros
@@ -299,9 +300,9 @@ func (bc *Blockchain) Mining() bool {
 	// Log out blockchain
 	// bc.Print() // TODO: Remove debug
 
-	//* DEBUG #Consensus
+	//* DEBUG #Consensus Wallet registration mining should be done some where else
 	// Don't mine when there is no transaction and blockchain already has few blocks
-	if len(bc.transactionPool) == 0 /* && len(bc.chain) > 5 */ {
+	if len(bc.transactionPool) == 0 {
 		return false
 	}
 
@@ -371,6 +372,7 @@ func (bc *Blockchain) RegisterNewWallet(blockchainAddress string, message string
 // Start mining
 func (bc *Blockchain) StartMining() {
 	bc.Mining()
+	// Schedule the next mining operation to occur after MINING_TIMER_SEC seconds.
 	_ = time.AfterFunc(time.Second*MINING_TIMER_SEC, bc.StartMining)
 }
 

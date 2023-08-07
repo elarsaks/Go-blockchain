@@ -71,9 +71,36 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 	return bc
 }
 
+// RegisterMinersWallet registers the miner's wallet
+func (bcs *BlockchainServer) RegisterMinersWallet() {
+	minersWallet := wallet.NewWallet()
+
+	portStr := strconv.Itoa(int(bcs.Port()))
+	lastDigit := portStr[len(portStr)-1:]
+	message := "Register Miner Wallet " + lastDigit
+
+	// Call RegisterNewWallet to register the provided wallet address
+	success := bcs.GetBlockchain().RegisterNewWallet(minersWallet.BlockchainAddress(), message)
+	if !success {
+		log.Println("ERROR: Failed to register wallet")
+		// TODO: Handle error
+		return
+	}
+
+	// Setting the wallet in the BlockchainServer object
+	bcs.Wallet = minersWallet
+
+	log.Printf("privateKey %v", minersWallet.PrivateKeyStr())
+	log.Printf("publicKey %v", minersWallet.PublicKeyStr())
+	log.Printf("blockchainAddress %v", minersWallet.BlockchainAddress())
+}
+
 // Run the BlockchainServer
 func (bcs *BlockchainServer) Run() {
 	bcs.GetBlockchain().Run()
+
+	// Register the miner's wallet
+	bcs.RegisterMinersWallet()
 
 	router := mux.NewRouter()
 	router.Use(utils.CorsMiddleware())
