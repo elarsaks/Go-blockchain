@@ -24,6 +24,7 @@ services:
       - 5000:5000
     environment:
       - PORT=${WALLET_SERVER_PORT}
+      - MINER_HOST=miner-1
     volumes:
       - .:/app
     restart: unless-stopped
@@ -37,6 +38,7 @@ services:
     environment:
       - COMMAND=air
       - PORT=5001
+      - MINER_HOST=miner-2
     volumes:
       - .:/app
     restart: unless-stopped
@@ -65,6 +67,7 @@ services:
     environment:
       - COMMAND=air
       - PORT=5003
+      - MINER_HOST=miner-1
     volumes:
       - .:/app
     restart: unless-stopped

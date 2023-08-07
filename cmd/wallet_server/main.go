@@ -24,20 +24,30 @@ func (ws *WalletServer) Port() uint16 {
 	return ws.port
 }
 
+func GetHost() string {
+	if host := os.Getenv("MINER_HOST"); host != "" {
+		return host
+	}
+	return "127.0.0.1"
+}
+
 func (ws *WalletServer) Gateway() string {
 	return ws.gateway
 }
 
 func (ws *WalletServer) SetGateway(gateway string) bool {
+
+	host := GetHost()
+
 	switch gateway {
 	case "1":
-		ws.gateway = "http://localhost:5001"
+		ws.gateway = fmt.Sprintf("http://%s:5001", host)
 	case "2":
-		ws.gateway = "http://localhost:5002"
+		ws.gateway = fmt.Sprintf("http://%s:5002", host)
 	case "3":
-		ws.gateway = "http://localhost:5003"
+		ws.gateway = fmt.Sprintf("http://%s:5003", host)
 	default:
-		ws.gateway = "http://localhost:5001"
+		ws.gateway = fmt.Sprintf("http://%s:5001", host)
 	}
 
 	fmt.Printf("Gateway to Blockchain: %s\n", ws.gateway)
