@@ -51,6 +51,13 @@ func (bcs *BlockchainServer) GetBlockchain() *block.Blockchain {
 		bc = block.NewBlockchain(minersWallet.BlockchainAddress(), bcs.Port())
 		cache["blockchain"] = bc
 
+		// Setting the wallet in the BlockchainServer object
+		bcs.Wallet = minersWallet
+
+		log.Printf("privateKey %v", minersWallet.PrivateKeyStr())
+		log.Printf("publicKey %v", minersWallet.PublicKeyStr())
+		log.Printf("blockchainAddress %v", minersWallet.BlockchainAddress())
+
 	}
 	return bc
 }
