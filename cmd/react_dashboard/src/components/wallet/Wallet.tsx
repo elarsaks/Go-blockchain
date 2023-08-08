@@ -3,7 +3,6 @@ import React, { useEffect, useState, useContext } from "react";
 import { transaction } from "api/wallet";
 import Notification from "components/shared/Notification";
 import WalletHead from "./WalletHead";
-import { MiningContext } from "App";
 
 interface WalletContainerProps {
   isMiner: boolean;
@@ -75,7 +74,6 @@ type WalletProps = {
 };
 
 const Wallet: React.FC<WalletProps> = ({ type }) => {
-  const { mining, setMining } = useContext(MiningContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState<LocalError>(null);
   const [isAnyFieldEmpty, setIsAnyFieldEmpty] = useState(false);
@@ -125,7 +123,6 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             message: "Transaction failed.",
           });
         } else {
-          setMining(true);
           setIsError(null);
         }
       })
@@ -195,7 +192,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         </Field>
 
         <Field>
-          <Label>Amount: {mining}</Label>
+          <Label>Amount: </Label>
           <Input
             type="text"
             name="amount"

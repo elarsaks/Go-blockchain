@@ -6,7 +6,7 @@ import Background from "components/layout/Background";
 import BlockDiv from "components/BlockDiv";
 import Loader from "components/shared/Loader";
 import Notification from "components/shared/Notification";
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Wallet from "components/wallet/Wallet";
 const AppWrapper = styled.div`
@@ -34,11 +34,6 @@ const WalletWrapperContainer = styled.div`
     justify-content: center;
   }
 `;
-
-export const MiningContext = createContext<MiningContextType>({
-  mining: false,
-  setMining: () => {},
-});
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -80,12 +75,10 @@ function App() {
       <ContentContainer className="App">
         <AppInfo />
 
-        <MiningContext.Provider value={{ mining, setMining }}>
-          <WalletWrapperContainer>
-            <Wallet type="Miner" />
-            <Wallet type="User" />
-          </WalletWrapperContainer>
-        </MiningContext.Provider>
+        <WalletWrapperContainer>
+          <Wallet type="Miner" />
+          <Wallet type="User" />
+        </WalletWrapperContainer>
 
         {isLoading && (
           <Notification
