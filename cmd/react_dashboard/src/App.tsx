@@ -49,6 +49,14 @@ function App() {
   });
 
   function fetchchainData() {
+    dispatchUtil({
+      type: "ON",
+      payload: {
+        type: "info",
+        message: "Fetching blockchain data...",
+      },
+    });
+
     return fetchBlockchainData()
       .then((blocks) => {
         setBlockchain(blocks);
@@ -71,13 +79,12 @@ function App() {
   useEffect(() => {
     // Fetch blockchain data immediately on component mount
     fetchchainData();
-    // Fetch blockchain data every second
+    // Fetch blockchain data every 5 seconds
     const intervalId = setInterval(() => {
       fetchchainData();
-    }, 10000);
-
-    // Clean up function to clear the interval when the component unmounts
-    return () => clearInterval(intervalId);
+    }, 5000);
+    // Clear interval on component unmount
+    return clearInterval(intervalId);
   }, []);
 
   return (
@@ -101,25 +108,7 @@ function App() {
           />
         )}
 
-        {/* {isLoading && (
-          <Notification
-            type="info"
-            insideContainer={false}
-            message="Loading blockchain data."
-          />
-        )}
-
-        {isError.message && !isLoading && (
-          <Notification
-            type="error"
-            message="Sorry, there was an error loading blockchain data."
-            underDevelopment={true}
-            insideContainer={false}
-          />
-        )} */}
-
-        {!isLoading &&
-          !isError.message &&
+        {!utilState.isActive &&
           blockchain.map((block, index) => (
             <React.Fragment key={index}>
               <Loader height={100} />
