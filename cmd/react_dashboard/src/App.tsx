@@ -39,7 +39,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState({ message: "" });
   const [blockchain, setBlockchain] = useState<Block[]>([]);
-  const [mining, setMining] = useState(false);
 
   function fetchchainData() {
     return fetchBlockchainData()
@@ -55,10 +54,7 @@ function App() {
 
   useEffect(() => {
     // Fetch blockchain data immediately on component mount
-    fetchchainData().then(() => {
-      setMining(false);
-    });
-
+    fetchchainData();
     // Fetch blockchain data every second
     const intervalId = setInterval(() => {
       fetchchainData();

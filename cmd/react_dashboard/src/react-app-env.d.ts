@@ -51,3 +51,9 @@ type MiningContextType = {
   mining: boolean;
   setMining: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+type UtilState = {
+  isActive: boolean;
+  type: string;
+  message: string;
+};
