@@ -1,7 +1,8 @@
-import styled from "styled-components";
-import React, { useEffect, useState, useContext } from "react";
 import { transaction } from "api/wallet";
 import Notification from "components/shared/Notification";
+import React, { useEffect, useState, useContext } from "react";
+import styled from "styled-components";
+import UtilReducer from "store/UtilReducer";
 import WalletHead from "./WalletHead";
 
 interface WalletContainerProps {
@@ -74,8 +75,6 @@ type WalletProps = {
 };
 
 const Wallet: React.FC<WalletProps> = ({ type }) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState<LocalError>(null);
   const [isAnyFieldEmpty, setIsAnyFieldEmpty] = useState(false);
   const [walletDetails, setWalletDetails] = useState<WalletState>({
     amount: "",
@@ -84,6 +83,12 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     privateKey: "",
     publicKey: "",
     recipientAddress: "",
+  });
+
+  const [utilState, dispatchUtil] = React.useReducer(UtilReducer, {
+    isActive: false,
+    type: "info",
+    message: "",
   });
 
   useEffect(() => {
@@ -119,16 +124,27 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
     })
       .then((response) => {
         if (response.message === "fail") {
-          setIsError({
-            message: "Transaction failed.",
+          dispatchUtil({
+            type: "ON",
+            payload: {
+              type: "error",
+              message: "Transaction failed",
+            },
           });
         } else {
-          setIsError(null);
+          dispatchUtil({
+            type: "OFF",
+            payload: null,
+          });
         }
       })
       .catch((error) =>
-        setIsError({
-          message: error.response.data.message, // TODO: Improve errors
+        dispatchUtil({
+          type: "ON",
+          payload: {
+            type: "error",
+            message: error.message,
+          },
         })
       );
   };
@@ -139,8 +155,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         type={type}
         walletDetails={walletDetails}
         setWalletDetails={setWalletDetails}
-        setIsLoading={setIsLoading}
-        setIsError={setIsError}
+        dispatchUtil={dispatchUtil}
       />
 
       <Form>
@@ -202,21 +217,12 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           />
         </Field>
 
-        {isLoading && (
+        {utilState.isActive && (
           <Notification
-            type="info"
-            message="Loading data."
-            underDevelopment={false}
-            insideContainer={true}
-          />
-        )}
-
-        {isError && (
-          <Notification
-            type="error"
-            message={isError.message || "Something went wrong."}
+            type={utilState.type}
+            message={utilState.message}
             underDevelopment={true}
-            insideContainer={true}
+            insideContainer={false}
           />
         )}
 

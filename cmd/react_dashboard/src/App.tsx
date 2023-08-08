@@ -8,8 +8,8 @@ import Loader from "components/shared/Loader";
 import Notification from "components/shared/Notification";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import Wallet from "components/wallet/Wallet";
 import UtilReducer from "store/UtilReducer";
+import Wallet from "components/wallet/Wallet";
 
 const AppWrapper = styled.div`
   margin: 0;
@@ -38,10 +38,7 @@ const WalletWrapperContainer = styled.div`
 `;
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState({ message: "" });
   const [blockchain, setBlockchain] = useState<Block[]>([]);
-
   const [utilState, dispatchUtil] = React.useReducer(UtilReducer, {
     isActive: false,
     type: "info",
