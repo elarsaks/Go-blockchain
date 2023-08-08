@@ -9,6 +9,8 @@ import Notification from "components/shared/Notification";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Wallet from "components/wallet/Wallet";
+import UtilReducer from "store/UtilReducer";
+
 const AppWrapper = styled.div`
   margin: 0;
   position: absolute;
@@ -40,15 +42,29 @@ function App() {
   const [isError, setIsError] = useState({ message: "" });
   const [blockchain, setBlockchain] = useState<Block[]>([]);
 
+  const [utilState, dispatchUtil] = React.useReducer(UtilReducer, {
+    isActive: false,
+    type: "info",
+    message: "",
+  });
+
   function fetchchainData() {
     return fetchBlockchainData()
       .then((blocks) => {
         setBlockchain(blocks);
-        setIsLoading(false);
+        dispatchUtil({
+          type: "OFF",
+          payload: null,
+        });
       })
       .catch((error) => {
-        setIsError({ message: "Failed to fetch blockchain data" });
-        setIsLoading(false);
+        dispatchUtil({
+          type: "ON",
+          payload: {
+            type: "error",
+            message: error.message,
+          },
+        });
       });
   }
 
@@ -76,7 +92,16 @@ function App() {
           <Wallet type="User" />
         </WalletWrapperContainer>
 
-        {isLoading && (
+        {utilState.isActive && (
+          <Notification
+            type={utilState.type}
+            message={utilState.message}
+            underDevelopment={true}
+            insideContainer={false}
+          />
+        )}
+
+        {/* {isLoading && (
           <Notification
             type="info"
             insideContainer={false}
@@ -91,7 +116,7 @@ function App() {
             underDevelopment={true}
             insideContainer={false}
           />
-        )}
+        )} */}
 
         {!isLoading &&
           !isError.message &&
