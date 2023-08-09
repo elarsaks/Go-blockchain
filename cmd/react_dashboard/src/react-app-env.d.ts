@@ -72,3 +72,10 @@ type UtilAction =
       type: "OFF";
       payload: null;
     };
+
+type WalletStore = {
+  minerWallet: WalletState;
+  userWallet: WalletState;
+  setMinerWallet: React.Dispatch<React.SetStateAction<WalletState>>;
+  setUserWallet: React.Dispatch<React.SetStateAction<WalletState>>;
+};
