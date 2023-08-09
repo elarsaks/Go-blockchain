@@ -1,7 +1,8 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { fetchMinerWalletDetails } from "api/miner";
+import { fetchUserWalletDetails, fetchWalletBalance } from "api/wallet";
+import { WalletContext } from "store/WalletProvider";
+import React, { Dispatch, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { fetchMinerWalletDetails } from "../../api/miner";
-import { fetchUserWalletDetails, fetchWalletBalance } from "../../api/wallet";
 
 const TitleRow = styled.div`
   display: flex;
@@ -38,7 +39,6 @@ const Balance = styled.h2`
 interface WalletHeadProps {
   type: string;
   walletDetails: WalletState;
-  setWalletDetails: Dispatch<SetStateAction<WalletState>>;
   dispatchUtil: Dispatch<UtilAction>;
 }
 
@@ -48,12 +48,7 @@ const miners = [
   { value: "3", text: "Miner 3" },
 ];
 
-const WalletHead: React.FC<WalletHeadProps> = ({
-  type,
-  walletDetails,
-  setWalletDetails,
-  dispatchUtil,
-}) => {
+const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
   const [selectedMiner, setSelectedMiner] = useState<{
     value: string;
     text: string;
@@ -68,6 +63,16 @@ const WalletHead: React.FC<WalletHeadProps> = ({
       fetchMinerDetails(selectedMiner.value);
     }
   };
+
+  const walletContext = useContext(WalletContext);
+
+  const walletDetails =
+    type === "Miner" ? walletContext.minerWallet : walletContext.userWallet;
+
+  const setWalletDetails =
+    type === "Miner"
+      ? walletContext.setMinerWallet
+      : walletContext.setUserWallet;
 
   function fetchUserDetails() {
     dispatchUtil({

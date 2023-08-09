@@ -88,9 +88,6 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       ? walletContext?.setMinerWallet
       : walletContext?.setUserWallet;
 
-  const otherWalletDetails =
-    type === "Miner" ? walletContext?.userWallet : walletContext?.minerWallet;
-
   const [utilState, dispatchUtil] = React.useReducer(UtilReducer, {
     isActive: false,
     type: "info",
@@ -160,7 +157,6 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       <WalletHead
         type={type}
         walletDetails={walletDetails}
-        setWalletDetails={setWalletDetails}
         dispatchUtil={dispatchUtil}
       />
 
@@ -207,7 +203,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
                 ? "User Blockchain Address"
                 : "Miner Blockchain Address"
             }
-            value={otherWalletDetails?.blockchainAddress}
+            value={walletDetails.recipientAddress}
             onChange={handleInputChange}
           />
         </Field>
