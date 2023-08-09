@@ -76,6 +76,8 @@ type WalletDetailsResponse = {
 type WalletStore = {
   minerWallet: WalletState;
   userWallet: WalletState;
+  util: UtilState;
   setMinerWallet: React.Dispatch<React.SetStateAction<WalletState>>;
   setUserWallet: React.Dispatch<React.SetStateAction<WalletState>>;
+  setUtil: React.Dispatch<React.SetStateAction<UtilState>>;
 };
