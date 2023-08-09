@@ -74,7 +74,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
       type: "ON",
       payload: {
         type: "info",
-        message: "Fetching user wallet details...",
+        message: "User wallet will be regitered when next block is mined...",
       },
     });
 
@@ -117,6 +117,11 @@ const WalletHead: React.FC<WalletHeadProps> = ({
             ...prevDetails,
             ...minerWalletDetails,
           }));
+
+          dispatchUtil({
+            type: "OFF",
+            payload: null,
+          });
 
           return minerWalletDetails.blockchainAddress;
         })

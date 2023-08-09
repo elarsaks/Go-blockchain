@@ -221,7 +221,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           <Notification
             type={utilState.type}
             message={utilState.message}
-            underDevelopment={true}
+            underDevelopment={utilState.type !== "info"}
             insideContainer={false}
           />
         )}
