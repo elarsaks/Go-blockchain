@@ -29,24 +29,6 @@ type Transaction = {
   value: string;
 };
 
-type WalletDetails = {
-  blockchainAddress: string;
-  privateKey: string;
-  publicKey: string;
-};
-
-type WalletState = WalletDetails & {
-  amount: string;
-  balance: string;
-  recipientAddress: string;
-};
-
-type WalletDetailsResponse = {
-  blockchainAddress: string;
-  privateKey: string;
-  publicKey: string;
-};
-
 type MiningContextType = {
   mining: boolean;
   setMining: React.Dispatch<React.SetStateAction<boolean>>;
@@ -72,6 +54,24 @@ type UtilAction =
       type: "OFF";
       payload: null;
     };
+
+type WalletDetails = {
+  blockchainAddress: string;
+  privateKey: string;
+  publicKey: string;
+};
+
+type WalletState = WalletDetails & {
+  amount: string;
+  balance: string;
+  recipientAddress: string;
+};
+
+type WalletDetailsResponse = {
+  blockchainAddress: string;
+  privateKey: string;
+  publicKey: string;
+};
 
 type WalletStore = {
   minerWallet: WalletState;

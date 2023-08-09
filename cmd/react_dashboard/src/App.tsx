@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import UtilReducer from "store/UtilReducer";
 import Wallet from "components/wallet/Wallet";
+import { WalletProvider } from "store/WalletProvider";
 
 const AppWrapper = styled.div`
   margin: 0;
@@ -92,8 +93,10 @@ function App() {
         <AppInfo />
 
         <WalletWrapperContainer>
-          <Wallet type="Miner" />
-          <Wallet type="User" />
+          <WalletProvider>
+            <Wallet type="Miner" />
+            <Wallet type="User" />
+          </WalletProvider>
         </WalletWrapperContainer>
 
         {utilState.isActive && (
