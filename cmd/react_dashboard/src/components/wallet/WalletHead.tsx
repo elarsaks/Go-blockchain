@@ -39,8 +39,7 @@ interface WalletHeadProps {
   type: string;
   walletDetails: WalletState;
   setWalletDetails: Dispatch<SetStateAction<WalletState>>;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-  setIsError: Dispatch<SetStateAction<LocalError>>;
+  dispatchUtil: Dispatch<UtilAction>;
 }
 
 const miners = [
@@ -53,8 +52,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({
   type,
   walletDetails,
   setWalletDetails,
-  setIsLoading,
-  setIsError,
+  dispatchUtil,
 }) => {
   const [selectedMiner, setSelectedMiner] = useState<{
     value: string;
@@ -72,20 +70,45 @@ const WalletHead: React.FC<WalletHeadProps> = ({
   };
 
   function fetchUserDetails() {
-    setIsLoading(true);
+    dispatchUtil({
+      type: "ON",
+      payload: {
+        type: "info",
+        message: "User wallet will be regitered when next block is mined...",
+      },
+    });
+
     fetchUserWalletDetails()
-      .then((userWalletDetails: WalletDetails) =>
+      .then((userWalletDetails: WalletDetails) => {
         setWalletDetails((prevDetails) => ({
           ...prevDetails,
           ...userWalletDetails,
-        }))
-      )
-      .catch((error: LocalError) => setIsError(error))
-      .finally(() => setIsLoading(false));
+        }));
+        dispatchUtil({
+          type: "OFF",
+          payload: null,
+        });
+      })
+      .catch((error: LocalError) =>
+        dispatchUtil({
+          type: "ON",
+          payload: {
+            type: "error",
+            message: "Failed to fetch user wallet details",
+          },
+        })
+      );
   }
 
   function fetchMinerDetails(selectedMinerId: string) {
-    setIsLoading(true);
+    dispatchUtil({
+      type: "ON",
+      payload: {
+        type: "info",
+        message: "Fetching miner wallet details...",
+      },
+    });
+
     // Fetch miner wallet details
     return (
       fetchMinerWalletDetails(selectedMinerId)
@@ -94,7 +117,11 @@ const WalletHead: React.FC<WalletHeadProps> = ({
             ...prevDetails,
             ...minerWalletDetails,
           }));
-          setIsError(null);
+
+          dispatchUtil({
+            type: "OFF",
+            payload: null,
+          });
 
           return minerWalletDetails.blockchainAddress;
         })
@@ -106,11 +133,8 @@ const WalletHead: React.FC<WalletHeadProps> = ({
               ...prevDetails,
               balance: balance === "0" ? "0.00" : balance,
             }));
-            setIsError(null);
           })
         )
-        .catch((error: LocalError) => setIsError(error))
-        .finally(() => setIsLoading(false))
     );
   }
 
@@ -134,20 +158,17 @@ const WalletHead: React.FC<WalletHeadProps> = ({
 
     if (walletDetails.blockchainAddress) {
       walletUpdate = setInterval(() => {
-        fetchWalletBalance(walletDetails.blockchainAddress)
-          .then((balance) => {
-            setWalletDetails((prevDetails) => ({
-              ...prevDetails,
-              balance: balance === "0" ? "0.00" : balance,
-            }));
-            setIsError(null);
-          })
-          .catch((error: LocalError) => setIsError(error));
+        fetchWalletBalance(walletDetails.blockchainAddress).then((balance) => {
+          setWalletDetails((prevDetails) => ({
+            ...prevDetails,
+            balance: balance === "0" ? "0.00" : balance,
+          }));
+        });
       }, 10000);
     }
 
     return () => clearInterval(walletUpdate);
-  }, [setIsError, setWalletDetails, walletDetails.blockchainAddress]);
+  }, [setWalletDetails, walletDetails.blockchainAddress]);
 
   return (
     <div>

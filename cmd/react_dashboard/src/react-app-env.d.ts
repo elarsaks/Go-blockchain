@@ -51,3 +51,24 @@ type MiningContextType = {
   mining: boolean;
   setMining: React.Dispatch<React.SetStateAction<boolean>>;
 };
+
+type UtilState = {
+  isActive: boolean;
+  type: "info" | "warning" | "error" | "success";
+  message: string;
+};
+
+// If type is "ON", then payload is an object with type and message properties.
+// If type is "OFF", then payload is null.
+type UtilAction =
+  | {
+      type: "ON";
+      payload: {
+        type: "info" | "warning" | "error" | "success";
+        message: string;
+      };
+    }
+  | {
+      type: "OFF";
+      payload: null;
+    };

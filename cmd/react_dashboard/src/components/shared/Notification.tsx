@@ -71,7 +71,7 @@ const SubMessage = styled.h1`
 
 interface NotificationProps {
   message: string;
-  type: "info" | "warning" | "error";
+  type: "info" | "warning" | "error" | "success";
   underDevelopment?: boolean;
   insideContainer: boolean;
 }
