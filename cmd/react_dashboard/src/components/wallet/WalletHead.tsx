@@ -1,7 +1,5 @@
-import { WalletContext } from "store/WalletProvider";
-import React, { Dispatch, useContext, useEffect, useState } from "react";
+import React, { Dispatch, useState } from "react";
 import styled from "styled-components";
-import { /* walletDetails, */ fetchWalletBalance } from "api/wallet";
 
 const TitleRow = styled.div`
   display: flex;
@@ -35,45 +33,34 @@ const Balance = styled.h2`
   color: #00acd7;
 `;
 
-interface WalletHeadProps {
-  type: string;
-  walletDetails: WalletState;
-  dispatchUtil: Dispatch<UtilAction>;
-}
-
 const miners = [
   { value: "1", text: "Miner 1" },
   { value: "2", text: "Miner 2" },
   { value: "3", text: "Miner 3" },
 ];
 
-const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
+interface WalletHeadProps {
+  type: string;
+  walletDetails: WalletState;
+  dispatchUtil: Dispatch<UtilAction>;
+}
+
+const WalletHead: React.FC<WalletHeadProps> = ({
+  type,
+  walletDetails,
+  //  dispatchUtil,  // TODO: Handle multiple miner wallets (in store)
+}) => {
   const [selectedMiner, setSelectedMiner] = useState<{
     value: string;
     text: string;
   }>(miners[0]);
 
-  const walletContext = useContext(WalletContext);
-  const wallet =
-    type === "Miner"
-      ? {
-          details: walletContext.minerWallet,
-          set: walletContext.setMinerWallet,
-        }
-      : {
-          details: walletContext.userWallet,
-          set: walletContext.setUserWallet,
-        };
-
-  // TODO: Handle multiple miner wallets (in store)
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     const selectedMiner = miners.find((miner) => miner.value === selectedValue);
 
-    if (selectedMiner) {
-      setSelectedMiner(selectedMiner);
-      //   fetchMinerDetails(selectedMiner.value);
-    }
+    // TODO: Dispatch action to update miner wallet
+    if (selectedMiner) setSelectedMiner(selectedMiner);
   };
 
   return (
@@ -81,7 +68,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
       {type === "User" ? (
         <TitleRow>
           <Title>User Wallet</Title>
-          <Balance>{`${wallet.details.balance}₿`}</Balance>
+          <Balance>{`${walletDetails.balance}₿`}</Balance>
         </TitleRow>
       ) : (
         <TitleRow>
@@ -100,7 +87,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
             <Title>{` Wallet`}</Title>
           </MinerTitleContainer>
 
-          <Balance>{`${wallet.details.balance}₿`}</Balance>
+          <Balance>{`${walletDetails.balance}₿`}</Balance>
         </TitleRow>
       )}
     </div>
