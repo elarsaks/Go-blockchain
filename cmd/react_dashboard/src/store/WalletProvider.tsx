@@ -59,6 +59,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     message: "",
   });
 
+  // Fetch wallet details
   useEffect(() => {
     // Fetch miner wallet details
     fetchMinerWalletDetails("1")
@@ -92,6 +93,41 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         });
       });
   }, []);
+
+  // Fetch wallet balance
+  useEffect(() => {
+    // Fetch miner wallet balance
+    fetchWalletBalance(minerWallet.blockchainAddress)
+      .then((minerBalance) => {
+        setMinerWallet((prevDetails) => ({
+          ...prevDetails,
+          balance: minerBalance,
+        }));
+      })
+      .catch((error) => {
+        setUtil({
+          isActive: true,
+          type: "error",
+          message: "Failed to fetch miner wallet balance",
+        });
+      });
+
+    // Fetch user wallet balance
+    fetchWalletBalance(userWallet.blockchainAddress)
+      .then((userBalance) => {
+        setUserWallet((prevDetails) => ({
+          ...prevDetails,
+          balance: userBalance,
+        }));
+      })
+      .catch((error) => {
+        setUtil({
+          isActive: true,
+          type: "error",
+          message: "Failed to fetch user wallet balance",
+        });
+      });
+  }, [minerWallet.blockchainAddress, userWallet.blockchainAddress]);
 
   return (
     <WalletContext.Provider

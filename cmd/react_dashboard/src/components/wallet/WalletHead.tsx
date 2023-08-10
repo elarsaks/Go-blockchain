@@ -69,66 +69,6 @@ const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
   const walletDetails =
     type === "Miner" ? walletContext.minerWallet : walletContext.userWallet;
 
-  const setWalletDetails =
-    type === "Miner"
-      ? walletContext.setMinerWallet
-      : walletContext.setUserWallet;
-
-  // function fetchMinerDetails(selectedMinerId: string) {
-  //   dispatchUtil({
-  //     type: "ON",
-  //     payload: {
-  //       type: "info",
-  //       message: "Fetching miner wallet details...",
-  //     },
-  //   });
-
-  //   // Fetch miner wallet details
-  //   return (
-  //     fetchMinerWalletDetails(selectedMinerId)
-  //       .then((minerWalletDetails: WalletDetails) => {
-  //         setWalletDetails((prevDetails) => ({
-  //           ...prevDetails,
-  //           ...minerWalletDetails,
-  //         }));
-
-  //         dispatchUtil({
-  //           type: "OFF",
-  //           payload: null,
-  //         });
-
-  //         return minerWalletDetails.blockchainAddress;
-  //       })
-
-  //       // Fetch miner wallet balance
-  //       .then((blockchainAddress) =>
-  //         fetchWalletBalance(blockchainAddress).then((balance) => {
-  //           setWalletDetails((prevDetails) => ({
-  //             ...prevDetails,
-  //             balance: balance === "0" ? "0.00" : balance,
-  //           }));
-  //         })
-  //       )
-  //   );
-  // }
-
-  useEffect(() => {
-    let walletUpdate: NodeJS.Timeout;
-
-    if (walletDetails.blockchainAddress) {
-      walletUpdate = setInterval(() => {
-        fetchWalletBalance(walletDetails.blockchainAddress).then((balance) => {
-          setWalletDetails((prevDetails) => ({
-            ...prevDetails,
-            balance: balance === "0" ? "0.00" : balance,
-          }));
-        });
-      }, 10000);
-    }
-
-    return () => clearInterval(walletUpdate);
-  }, [setWalletDetails, walletDetails.blockchainAddress]);
-
   return (
     <div>
       {type === "User" ? (
