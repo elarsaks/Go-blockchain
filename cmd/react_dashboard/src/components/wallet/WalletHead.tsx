@@ -42,14 +42,9 @@ const miners = [
 interface WalletHeadProps {
   type: string;
   walletDetails: WalletState;
-  dispatchUtil: Dispatch<UtilAction>;
 }
 
-const WalletHead: React.FC<WalletHeadProps> = ({
-  type,
-  walletDetails,
-  //  dispatchUtil,  // TODO: Handle multiple miner wallets (in store)
-}) => {
+const WalletHead: React.FC<WalletHeadProps> = ({ type, walletDetails }) => {
   const [selectedMiner, setSelectedMiner] = useState<{
     value: string;
     text: string;

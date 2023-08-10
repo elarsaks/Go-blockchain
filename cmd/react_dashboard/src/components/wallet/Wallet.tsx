@@ -2,7 +2,6 @@ import { transaction } from "api/wallet";
 import Notification from "components/shared/Notification";
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import UtilReducer from "store/UtilReducer";
 import WalletHead from "./WalletHead";
 import { WalletContext } from "store/WalletProvider";
 
@@ -88,12 +87,6 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       ? walletContext?.setMinerWallet
       : walletContext?.setUserWallet;
 
-  const [utilState, dispatchUtil] = React.useReducer(UtilReducer, {
-    isActive: false,
-    type: "info",
-    message: "",
-  });
-
   useEffect(() => {
     setIsAnyFieldEmpty(
       walletDetails.blockchainAddress === "" ||
@@ -124,41 +117,15 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       senderPrivateKey: walletDetails.privateKey,
       senderPublicKey: walletDetails.publicKey,
       value: walletDetails.amount,
-    })
-      .then((response) => {
-        if (response.message === "fail") {
-          dispatchUtil({
-            type: "ON",
-            payload: {
-              type: "error",
-              message: "Transaction failed",
-            },
-          });
-        } else {
-          dispatchUtil({
-            type: "OFF",
-            payload: null,
-          });
-        }
-      })
-      .catch((error) =>
-        dispatchUtil({
-          type: "ON",
-          payload: {
-            type: "error",
-            message: error.message,
-          },
-        })
-      );
+    }).then((response) => {
+      // TODO: Connect to store
+      console.log(response);
+    });
   };
 
   return (
     <WalletContainer isMiner={type === "Miner"}>
-      <WalletHead
-        type={type}
-        walletDetails={walletDetails}
-        dispatchUtil={dispatchUtil}
-      />
+      <WalletHead type={type} walletDetails={walletDetails} />
 
       <Form>
         <Field>
