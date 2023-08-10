@@ -26,9 +26,13 @@ export const WalletContext = createContext({
 
 interface WalletProviderProps {
   children: React.ReactNode;
+  previousHash?: string;
 }
 
-export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
+export const WalletProvider: React.FC<WalletProviderProps> = ({
+  children,
+  previousHash,
+}) => {
   const [minerWallet, dispatchMinerWallet] = useReducer(
     WalletReducer,
     initialState
@@ -38,22 +42,56 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     initialState
   );
 
-  // Fetch wallet details
-  useEffect(() => {
+  function getMinerWallet() {
+    dispatchMinerWallet({
+      type: "SET_WALLET_UTIL",
+      payload: {
+        isActive: true,
+        type: "info",
+        message: "Fetching miner wallet details",
+      },
+    });
     fetchMinerWalletDetails("1")
       .then((minerDetails) => {
         dispatchMinerWallet({ type: "SET_WALLET", payload: minerDetails });
+        dispatchMinerWallet({
+          type: "SET_WALLET_UTIL",
+          payload: {
+            isActive: false,
+            type: "info",
+            message: "",
+          },
+        });
       })
       .catch((error) => {
-        // Handle error
+        dispatchMinerWallet({
+          type: "SET_WALLET_UTIL",
+          payload: {
+            isActive: true,
+            type: "error",
+            message: "Failed to fetch miner wallet details",
+          },
+        });
       });
+  }
+
+  // Fetch wallet details
+  useEffect(() => {
+    getMinerWallet();
 
     fetchUserWalletDetails()
       .then((userDetails) => {
         dispatchUserWallet({ type: "SET_WALLET", payload: userDetails });
       })
       .catch((error) => {
-        // Handle error
+        dispatchUserWallet({
+          type: "SET_WALLET_UTIL",
+          payload: {
+            isActive: true,
+            type: "error",
+            message: "Failed to fetch user wallet details",
+          },
+        });
       });
   }, []);
 
@@ -80,7 +118,11 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       .catch((error) => {
         // Handle error
       });
-  }, [minerWallet.blockchainAddress, userWallet.blockchainAddress]);
+  }, [
+    minerWallet.blockchainAddress,
+    userWallet.blockchainAddress,
+    previousHash,
+  ]);
 
   return (
     <WalletContext.Provider

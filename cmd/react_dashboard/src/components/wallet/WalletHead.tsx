@@ -65,17 +65,6 @@ const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
           set: walletContext.setUserWallet,
         };
 
-  useEffect(() => {
-    fetchWalletBalance(wallet.details.blockchainAddress)
-      .then((balance) => {
-        console.log(balance);
-        console.log(walletContext);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  });
-
   // TODO: Handle multiple miner wallets (in store)
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;

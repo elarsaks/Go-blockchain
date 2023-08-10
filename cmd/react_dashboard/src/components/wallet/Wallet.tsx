@@ -219,11 +219,11 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           />
         </Field>
 
-        {utilState.isActive && (
+        {walletDetails.util.isActive && (
           <Notification
-            type={utilState.type}
-            message={utilState.message}
-            underDevelopment={utilState.type !== "info"}
+            type={walletDetails.util.type}
+            message={walletDetails.util.message}
+            underDevelopment={walletDetails.util.type !== "info"}
             insideContainer={false}
           />
         )}

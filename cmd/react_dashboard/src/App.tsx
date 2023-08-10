@@ -93,7 +93,7 @@ function App() {
         <AppInfo />
 
         <WalletWrapperContainer>
-          <WalletProvider>
+          <WalletProvider previousHash={blockchain[0]?.previousHash}>
             <Wallet type="Miner" />
             <Wallet type="User" />
           </WalletProvider>
