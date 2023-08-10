@@ -73,11 +73,19 @@ type WalletDetailsResponse = {
   publicKey: string;
 };
 
-type WalletStore = {
-  minerWallet: WalletState;
-  userWallet: WalletState;
+type StoreWallet = {
+  amount: string;
+  balance: string;
+  blockchainAddress: string;
+  privateKey: string;
+  publicKey: string;
+  recipientAddress: string;
   util: UtilState;
-  setMinerWallet: React.Dispatch<React.SetStateAction<WalletState>>;
-  setUserWallet: React.Dispatch<React.SetStateAction<WalletState>>;
-  setUtil: React.Dispatch<React.SetStateAction<UtilState>>;
+};
+
+type WalletStore = {
+  minerWallet: StoreWallet;
+  userWallet: StoreWallet;
+  setMinerWallet: React.Dispatch<React.SetStateAction<StoreWallet>>;
+  setUserWallet: React.Dispatch<React.SetStateAction<StoreWallet>>;
 };

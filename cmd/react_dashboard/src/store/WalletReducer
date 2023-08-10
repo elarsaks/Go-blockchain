@@ -1,0 +1,33 @@
+// Define the actions
+type Action =
+  | { type: "SET_MINER_WALLET"; payload: StoreWallet }
+  | { type: "SET_USER_WALLET"; payload: WalletState }
+  | { type: "SET_MINER_UTIL"; payload: UtilState }
+  | { type: "SET_USER_UTIL"; payload: UtilState };
+
+export default (state: typeof initialState, action: Action) => {
+  switch (action.type) {
+    case "SET_MINER_WALLET":
+      return {
+        ...state,
+        minerWallet: { ...state.minerWallet, ...action.payload },
+      };
+    case "SET_USER_WALLET":
+      return {
+        ...state,
+        userWallet: { ...state.userWallet, ...action.payload },
+      };
+    case "SET_MINER_UTIL":
+      return {
+        ...state,
+        minerWallet: { ...state.minerWallet, util: action.payload },
+      };
+    case "SET_USER_UTIL":
+      return {
+        ...state,
+        userWallet: { ...state.userWallet, util: action.payload },
+      };
+    default:
+      return state;
+  }
+};

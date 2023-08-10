@@ -10,7 +10,13 @@ export const WalletContext = createContext<WalletStore>({
     privateKey: "",
     publicKey: "",
     recipientAddress: "",
+    util: {
+      isActive: false,
+      type: "info",
+      message: "",
+    },
   },
+  setMinerWallet: () => {},
   userWallet: {
     amount: "",
     balance: "0.00",
@@ -18,14 +24,12 @@ export const WalletContext = createContext<WalletStore>({
     privateKey: "",
     publicKey: "",
     recipientAddress: "",
+    util: {
+      isActive: false,
+      type: "info",
+      message: "",
+    },
   },
-  util: {
-    isActive: false,
-    type: "info",
-    message: "",
-  },
-  setUtil: () => {},
-  setMinerWallet: () => {},
   setUserWallet: () => {},
 });
 
@@ -35,28 +39,32 @@ interface WalletProviderProps {
 }
 
 export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
-  const [minerWallet, setMinerWallet] = useState<WalletState>({
+  const [minerWallet, setMinerWallet] = useState<StoreWallet>({
     amount: "",
     balance: "0.00",
     blockchainAddress: "",
     privateKey: "",
     publicKey: "",
     recipientAddress: "",
+    util: {
+      isActive: false,
+      type: "info",
+      message: "",
+    },
   });
 
-  const [userWallet, setUserWallet] = useState<WalletState>({
+  const [userWallet, setUserWallet] = useState<StoreWallet>({
     amount: "",
     balance: "0.00",
     blockchainAddress: "",
     privateKey: "",
     publicKey: "",
     recipientAddress: "",
-  });
-
-  const [util, setUtil] = useState<UtilState>({
-    isActive: false,
-    type: "info",
-    message: "",
+    util: {
+      isActive: false,
+      type: "info",
+      message: "",
+    },
   });
 
   // Fetch wallet details
@@ -69,13 +77,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
           ...minerDetails,
         }));
       })
-      .catch((error) => {
-        setUtil({
-          isActive: true,
-          type: "error",
-          message: "Failed to fetch miner wallet details",
-        });
-      });
+      .catch((error) => {});
 
     // Fetch user wallet details
     fetchUserWalletDetails()
@@ -85,13 +87,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
           ...userDetails,
         }));
       })
-      .catch((error) => {
-        setUtil({
-          isActive: true,
-          type: "error",
-          message: "Failed to fetch user wallet details",
-        });
-      });
+      .catch((error) => {});
   }, []);
 
   // Fetch wallet balance
@@ -104,13 +100,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
           balance: minerBalance,
         }));
       })
-      .catch((error) => {
-        setUtil({
-          isActive: true,
-          type: "error",
-          message: "Failed to fetch miner wallet balance",
-        });
-      });
+      .catch((error) => {});
 
     // Fetch user wallet balance
     fetchWalletBalance(userWallet.blockchainAddress)
@@ -120,13 +110,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
           balance: userBalance,
         }));
       })
-      .catch((error) => {
-        setUtil({
-          isActive: true,
-          type: "error",
-          message: "Failed to fetch user wallet balance",
-        });
-      });
+      .catch((error) => {});
   }, [minerWallet.blockchainAddress, userWallet.blockchainAddress]);
 
   return (
@@ -134,8 +118,6 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       value={{
         minerWallet,
         userWallet,
-        util,
-        setUtil,
         setUserWallet,
         setMinerWallet,
       }}
