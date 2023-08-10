@@ -87,3 +87,13 @@ type WalletStore = {
   setMinerWallet: React.Dispatch<React.SetStateAction<StoreWallet>>;
   setUserWallet: React.Dispatch<React.SetStateAction<StoreWallet>>;
 };
+
+type WalletAction =
+  | {
+      type: "SET_WALLET";
+      payload: Partial<StoreWallet>;
+    }
+  | {
+      type: "SET_UTIL";
+      payload: UtilState;
+    };

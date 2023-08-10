@@ -1,6 +1,6 @@
 type WalletAction =
   | { type: "SET_WALLET"; payload: Partial<StoreWallet> }
-  | { type: "SET_UTIL"; payload: UtilState };
+  | { type: "SET_WALLET_UTIL"; payload: UtilState };
 
 export default (state: StoreWallet, action: WalletAction): StoreWallet => {
   switch (action.type) {
@@ -9,7 +9,7 @@ export default (state: StoreWallet, action: WalletAction): StoreWallet => {
         ...state,
         ...action.payload,
       };
-    case "SET_UTIL":
+    case "SET_WALLET_UTIL":
       return {
         ...state,
         util: action.payload,
