@@ -94,6 +94,6 @@ type WalletAction =
       payload: Partial<StoreWallet>;
     }
   | {
-      type: "SET_UTIL";
+      type: "SET_WALLET_UTIL";
       payload: UtilState;
     };

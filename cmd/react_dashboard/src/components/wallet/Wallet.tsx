@@ -110,10 +110,10 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   ) => {
     const { name, value } = event.target;
 
-    setWalletDetails((prevDetails) => ({
-      ...prevDetails,
+    setWalletDetails({
+      ...walletDetails,
       [name]: value,
-    }));
+    });
   };
 
   const sendCrypto = () => {
