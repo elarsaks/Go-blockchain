@@ -60,7 +60,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
 
     if (selectedMiner) {
       setSelectedMiner(selectedMiner);
-      fetchMinerDetails(selectedMiner.value);
+      //   fetchMinerDetails(selectedMiner.value);
     }
   };
 
@@ -74,89 +74,43 @@ const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
       ? walletContext.setMinerWallet
       : walletContext.setUserWallet;
 
-  function fetchUserDetails() {
-    dispatchUtil({
-      type: "ON",
-      payload: {
-        type: "info",
-        message: "User wallet will be regitered when next block is mined...",
-      },
-    });
+  // function fetchMinerDetails(selectedMinerId: string) {
+  //   dispatchUtil({
+  //     type: "ON",
+  //     payload: {
+  //       type: "info",
+  //       message: "Fetching miner wallet details...",
+  //     },
+  //   });
 
-    fetchUserWalletDetails()
-      .then((userWalletDetails: WalletDetails) => {
-        setWalletDetails((prevDetails) => ({
-          ...prevDetails,
-          ...userWalletDetails,
-        }));
-        dispatchUtil({
-          type: "OFF",
-          payload: null,
-        });
-      })
-      .catch((error: LocalError) =>
-        dispatchUtil({
-          type: "ON",
-          payload: {
-            type: "error",
-            message: "Failed to fetch user wallet details",
-          },
-        })
-      );
-  }
+  //   // Fetch miner wallet details
+  //   return (
+  //     fetchMinerWalletDetails(selectedMinerId)
+  //       .then((minerWalletDetails: WalletDetails) => {
+  //         setWalletDetails((prevDetails) => ({
+  //           ...prevDetails,
+  //           ...minerWalletDetails,
+  //         }));
 
-  function fetchMinerDetails(selectedMinerId: string) {
-    dispatchUtil({
-      type: "ON",
-      payload: {
-        type: "info",
-        message: "Fetching miner wallet details...",
-      },
-    });
+  //         dispatchUtil({
+  //           type: "OFF",
+  //           payload: null,
+  //         });
 
-    // Fetch miner wallet details
-    return (
-      fetchMinerWalletDetails(selectedMinerId)
-        .then((minerWalletDetails: WalletDetails) => {
-          setWalletDetails((prevDetails) => ({
-            ...prevDetails,
-            ...minerWalletDetails,
-          }));
+  //         return minerWalletDetails.blockchainAddress;
+  //       })
 
-          dispatchUtil({
-            type: "OFF",
-            payload: null,
-          });
-
-          return minerWalletDetails.blockchainAddress;
-        })
-
-        // Fetch miner wallet balance
-        .then((blockchainAddress) =>
-          fetchWalletBalance(blockchainAddress).then((balance) => {
-            setWalletDetails((prevDetails) => ({
-              ...prevDetails,
-              balance: balance === "0" ? "0.00" : balance,
-            }));
-          })
-        )
-    );
-  }
-
-  useEffect(() => {
-    if (type === "User") {
-      fetchUserDetails();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
-
-  useEffect(
-    () => {
-      if (type === "Miner") fetchMinerDetails(selectedMiner.value);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [type, selectedMiner.value]
-  );
+  //       // Fetch miner wallet balance
+  //       .then((blockchainAddress) =>
+  //         fetchWalletBalance(blockchainAddress).then((balance) => {
+  //           setWalletDetails((prevDetails) => ({
+  //             ...prevDetails,
+  //             balance: balance === "0" ? "0.00" : balance,
+  //           }));
+  //         })
+  //       )
+  //   );
+  // }
 
   useEffect(() => {
     let walletUpdate: NodeJS.Timeout;

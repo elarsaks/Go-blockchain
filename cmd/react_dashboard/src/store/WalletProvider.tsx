@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { fetchUserWalletDetails, fetchWalletBalance } from "api/wallet";
 import { fetchMinerWalletDetails } from "api/miner";
 
@@ -58,6 +58,40 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     type: "info",
     message: "",
   });
+
+  useEffect(() => {
+    // Fetch miner wallet details
+    fetchMinerWalletDetails("1")
+      .then((minerDetails) => {
+        setMinerWallet((prevDetails) => ({
+          ...prevDetails,
+          ...minerDetails,
+        }));
+      })
+      .catch((error) => {
+        setUtil({
+          isActive: true,
+          type: "error",
+          message: "Failed to fetch miner wallet details",
+        });
+      });
+
+    // Fetch user wallet details
+    fetchUserWalletDetails()
+      .then((userDetails) => {
+        setUserWallet((prevDetails) => ({
+          ...prevDetails,
+          ...userDetails,
+        }));
+      })
+      .catch((error) => {
+        setUtil({
+          isActive: true,
+          type: "error",
+          message: "Failed to fetch user wallet details",
+        });
+      });
+  }, []);
 
   return (
     <WalletContext.Provider
