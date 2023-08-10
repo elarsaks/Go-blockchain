@@ -93,7 +93,8 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         walletDetails.privateKey === "" ||
         walletDetails.publicKey === "" ||
         walletDetails.recipientAddress === "" ||
-        walletDetails.amount === ""
+        walletDetails.amount === "" ||
+        !walletDetails.util.isActive
     );
   }, [walletDetails]);
 

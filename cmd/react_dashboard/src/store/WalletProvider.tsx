@@ -27,6 +27,8 @@ export const WalletContext = createContext({
   userWallet: initialState,
   setUserWallet: (wallet: Partial<StoreWallet>) => {},
   setMinerWallet: (wallet: Partial<StoreWallet>) => {},
+  setUserWalletUtil: (util: UtilState) => {},
+  setMinerWalletUtil: (util: UtilState) => {},
 });
 
 interface WalletProviderProps {
@@ -197,6 +199,10 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
           dispatchUserWallet({ type: "SET_WALLET", payload: wallet }),
         setMinerWallet: (wallet: Partial<StoreWallet>) =>
           dispatchMinerWallet({ type: "SET_WALLET", payload: wallet }),
+        setUserWalletUtil: (util: UtilState) =>
+          dispatchUserWallet({ type: "SET_WALLET_UTIL", payload: util }),
+        setMinerWalletUtil: (util: UtilState) =>
+          dispatchMinerWallet({ type: "SET_WALLET_UTIL", payload: util }),
       }}
     >
       {children}

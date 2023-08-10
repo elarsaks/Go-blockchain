@@ -50,7 +50,7 @@ type UtilAction =
     };
 
 type UtilState = {
-  isActive: boolean;
+  isActive: boolean | undefined;
   type: "info" | "warning" | "error" | "success";
   message: string;
 };
