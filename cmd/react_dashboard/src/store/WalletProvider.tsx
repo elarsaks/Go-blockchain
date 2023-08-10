@@ -109,6 +109,62 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
       });
   }
 
+  function getUserWalletWalletBalance() {
+    fetchWalletBalance(userWallet.blockchainAddress)
+      .then((userBalance) => {
+        dispatchUserWallet({
+          type: "SET_WALLET",
+          payload: { balance: userBalance },
+        });
+        dispatchUserWallet({
+          type: "SET_WALLET_UTIL",
+          payload: {
+            isActive: false,
+            type: "info",
+            message: "",
+          },
+        });
+      })
+      .catch((error) =>
+        dispatchUserWallet({
+          type: "SET_WALLET_UTIL",
+          payload: {
+            isActive: true,
+            type: "error",
+            message: "Failed to fetch user wallet details",
+          },
+        })
+      );
+  }
+
+  function getMinerWalletWalletBalance() {
+    fetchWalletBalance(minerWallet.blockchainAddress)
+      .then((minerBalance) => {
+        dispatchMinerWallet({
+          type: "SET_WALLET",
+          payload: { balance: minerBalance },
+        });
+        dispatchMinerWallet({
+          type: "SET_WALLET_UTIL",
+          payload: {
+            isActive: false,
+            type: "info",
+            message: "",
+          },
+        });
+      })
+      .catch((error) =>
+        dispatchMinerWallet({
+          type: "SET_WALLET_UTIL",
+          payload: {
+            isActive: true,
+            type: "error",
+            message: "Failed to fetch miner wallet details", // Fixed the message to refer to miner instead of user
+          },
+        })
+      );
+  }
+
   // Fetch wallet details
   useEffect(() => {
     getMinerWallet();
@@ -117,27 +173,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
 
   // Fetch wallet balance
   useEffect(() => {
-    fetchWalletBalance(minerWallet.blockchainAddress)
-      .then((minerBalance) => {
-        dispatchMinerWallet({
-          type: "SET_WALLET",
-          payload: { balance: minerBalance },
-        });
-      })
-      .catch((error) => {
-        // Handle error
-      });
-
-    fetchWalletBalance(userWallet.blockchainAddress)
-      .then((userBalance) => {
-        dispatchUserWallet({
-          type: "SET_WALLET",
-          payload: { balance: userBalance },
-        });
-      })
-      .catch((error) => {
-        // Handle error
-      });
+    if (minerWallet.blockchainAddress) getMinerWalletWalletBalance();
+    if (userWallet.blockchainAddress) getUserWalletWalletBalance();
   }, [
     minerWallet.blockchainAddress,
     userWallet.blockchainAddress,
