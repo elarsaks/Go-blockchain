@@ -62,6 +62,13 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
     fetchUserWalletDetails()
       .then((userDetails) => {
         dispatchUserWallet({ type: "SET_WALLET", payload: userDetails });
+        dispatchMinerWallet({
+          type: "SET_WALLET",
+          payload: {
+            recipientAddress: userDetails.blockchainAddress,
+          },
+        });
+
         dispatchUserWallet({
           type: "SET_WALLET_UTIL",
           payload: {
@@ -95,6 +102,13 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
     fetchMinerWalletDetails("1")
       .then((minerDetails) => {
         dispatchMinerWallet({ type: "SET_WALLET", payload: minerDetails });
+        dispatchUserWallet({
+          type: "SET_WALLET",
+          payload: {
+            recipientAddress: minerDetails.blockchainAddress,
+          },
+        });
+
         dispatchMinerWallet({
           type: "SET_WALLET_UTIL",
           payload: {
