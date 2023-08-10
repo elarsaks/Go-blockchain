@@ -34,12 +34,6 @@ type MiningContextType = {
   setMining: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-type UtilState = {
-  isActive: boolean;
-  type: "info" | "warning" | "error" | "success";
-  message: string;
-};
-
 // If type is "ON", then payload is an object with type and message properties.
 // If type is "OFF", then payload is null.
 type UtilAction =
@@ -54,6 +48,12 @@ type UtilAction =
       type: "OFF";
       payload: null;
     };
+
+type UtilState = {
+  isActive: boolean;
+  type: "info" | "warning" | "error" | "success";
+  message: string;
+};
 
 type WalletDetails = {
   blockchainAddress: string;
@@ -73,15 +73,13 @@ type WalletDetailsResponse = {
   publicKey: string;
 };
 
-type StoreWallet = {
+type StoreWalletDetails = WalletDetails & {
   amount: string;
   balance: string;
-  blockchainAddress: string;
-  privateKey: string;
-  publicKey: string;
   recipientAddress: string;
-  util: UtilState;
 };
+
+type StoreWallet = StoreWalletDetails & { util: UtilState };
 
 type WalletStore = {
   minerWallet: StoreWallet;

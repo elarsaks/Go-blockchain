@@ -1,7 +1,5 @@
-import { fetchMinerWalletDetails } from "api/miner";
-import { fetchUserWalletDetails, fetchWalletBalance } from "api/wallet";
 import { WalletContext } from "store/WalletProvider";
-import React, { Dispatch, useContext, useEffect, useState } from "react";
+import React, { Dispatch, useContext, useState } from "react";
 import styled from "styled-components";
 
 const TitleRow = styled.div`
