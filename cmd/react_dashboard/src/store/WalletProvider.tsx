@@ -1,7 +1,12 @@
-import React, { createContext, useReducer, useEffect } from "react";
 import { fetchUserWalletDetails, fetchWalletBalance } from "api/wallet";
 import { fetchMinerWalletDetails } from "api/miner";
 import WalletReducer from "store/WalletReducer";
+import React, {
+  createContext,
+  useCallback,
+  useEffect,
+  useReducer,
+} from "react";
 
 const initialState: StoreWallet = {
   amount: "",
@@ -109,7 +114,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
       });
   }
 
-  function getUserWalletWalletBalance() {
+  const getUserWalletWalletBalance = useCallback(() => {
     fetchWalletBalance(userWallet.blockchainAddress)
       .then((userBalance) => {
         dispatchUserWallet({
@@ -135,9 +140,9 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
           },
         })
       );
-  }
+  }, [userWallet.blockchainAddress]);
 
-  function getMinerWalletWalletBalance() {
+  const getMinerWalletWalletBalance = useCallback(() => {
     fetchWalletBalance(minerWallet.blockchainAddress)
       .then((minerBalance) => {
         dispatchMinerWallet({
@@ -163,7 +168,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
           },
         })
       );
-  }
+  }, [minerWallet.blockchainAddress]);
 
   // Fetch wallet details
   useEffect(() => {
@@ -178,6 +183,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
   }, [
     minerWallet.blockchainAddress,
     userWallet.blockchainAddress,
+    getMinerWalletWalletBalance,
+    getUserWalletWalletBalance,
     previousHash,
   ]);
 

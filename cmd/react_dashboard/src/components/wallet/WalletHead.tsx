@@ -1,4 +1,4 @@
-import React, { Dispatch, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const TitleRow = styled.div`
