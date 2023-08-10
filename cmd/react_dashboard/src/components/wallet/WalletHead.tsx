@@ -1,7 +1,6 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { WalletContext } from "store/WalletProvider";
+import React, { Dispatch, useContext, useState } from "react";
 import styled from "styled-components";
-import { fetchMinerWalletDetails } from "../../api/miner";
-import { fetchUserWalletDetails, fetchWalletBalance } from "../../api/wallet";
 
 const TitleRow = styled.div`
   display: flex;
@@ -38,7 +37,6 @@ const Balance = styled.h2`
 interface WalletHeadProps {
   type: string;
   walletDetails: WalletState;
-  setWalletDetails: Dispatch<SetStateAction<WalletState>>;
   dispatchUtil: Dispatch<UtilAction>;
 }
 
@@ -48,12 +46,7 @@ const miners = [
   { value: "3", text: "Miner 3" },
 ];
 
-const WalletHead: React.FC<WalletHeadProps> = ({
-  type,
-  walletDetails,
-  setWalletDetails,
-  dispatchUtil,
-}) => {
+const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
   const [selectedMiner, setSelectedMiner] = useState<{
     value: string;
     text: string;
@@ -65,110 +58,14 @@ const WalletHead: React.FC<WalletHeadProps> = ({
 
     if (selectedMiner) {
       setSelectedMiner(selectedMiner);
-      fetchMinerDetails(selectedMiner.value);
+      //   fetchMinerDetails(selectedMiner.value);
     }
   };
 
-  function fetchUserDetails() {
-    dispatchUtil({
-      type: "ON",
-      payload: {
-        type: "info",
-        message: "User wallet will be regitered when next block is mined...",
-      },
-    });
+  const walletContext = useContext(WalletContext);
 
-    fetchUserWalletDetails()
-      .then((userWalletDetails: WalletDetails) => {
-        setWalletDetails((prevDetails) => ({
-          ...prevDetails,
-          ...userWalletDetails,
-        }));
-        dispatchUtil({
-          type: "OFF",
-          payload: null,
-        });
-      })
-      .catch((error: LocalError) =>
-        dispatchUtil({
-          type: "ON",
-          payload: {
-            type: "error",
-            message: "Failed to fetch user wallet details",
-          },
-        })
-      );
-  }
-
-  function fetchMinerDetails(selectedMinerId: string) {
-    dispatchUtil({
-      type: "ON",
-      payload: {
-        type: "info",
-        message: "Fetching miner wallet details...",
-      },
-    });
-
-    // Fetch miner wallet details
-    return (
-      fetchMinerWalletDetails(selectedMinerId)
-        .then((minerWalletDetails: WalletDetails) => {
-          setWalletDetails((prevDetails) => ({
-            ...prevDetails,
-            ...minerWalletDetails,
-          }));
-
-          dispatchUtil({
-            type: "OFF",
-            payload: null,
-          });
-
-          return minerWalletDetails.blockchainAddress;
-        })
-
-        // Fetch miner wallet balance
-        .then((blockchainAddress) =>
-          fetchWalletBalance(blockchainAddress).then((balance) => {
-            setWalletDetails((prevDetails) => ({
-              ...prevDetails,
-              balance: balance === "0" ? "0.00" : balance,
-            }));
-          })
-        )
-    );
-  }
-
-  useEffect(() => {
-    if (type === "User") {
-      fetchUserDetails();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
-
-  useEffect(
-    () => {
-      if (type === "Miner") fetchMinerDetails(selectedMiner.value);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [type, selectedMiner.value]
-  );
-
-  useEffect(() => {
-    let walletUpdate: NodeJS.Timeout;
-
-    if (walletDetails.blockchainAddress) {
-      walletUpdate = setInterval(() => {
-        fetchWalletBalance(walletDetails.blockchainAddress).then((balance) => {
-          setWalletDetails((prevDetails) => ({
-            ...prevDetails,
-            balance: balance === "0" ? "0.00" : balance,
-          }));
-        });
-      }, 10000);
-    }
-
-    return () => clearInterval(walletUpdate);
-  }, [setWalletDetails, walletDetails.blockchainAddress]);
+  const walletDetails =
+    type === "Miner" ? walletContext.minerWallet : walletContext.userWallet;
 
   return (
     <div>

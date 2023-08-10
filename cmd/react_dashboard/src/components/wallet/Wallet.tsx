@@ -4,6 +4,7 @@ import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import UtilReducer from "store/UtilReducer";
 import WalletHead from "./WalletHead";
+import { WalletContext } from "store/WalletProvider";
 
 interface WalletContainerProps {
   isMiner: boolean;
@@ -76,14 +77,16 @@ type WalletProps = {
 
 const Wallet: React.FC<WalletProps> = ({ type }) => {
   const [isAnyFieldEmpty, setIsAnyFieldEmpty] = useState(false);
-  const [walletDetails, setWalletDetails] = useState<WalletState>({
-    amount: "",
-    balance: "0.00",
-    blockchainAddress: "",
-    privateKey: "",
-    publicKey: "",
-    recipientAddress: "",
-  });
+
+  const walletContext = useContext(WalletContext);
+
+  const walletDetails =
+    type === "Miner" ? walletContext.minerWallet : walletContext.userWallet;
+
+  const setWalletDetails =
+    type === "Miner"
+      ? walletContext?.setMinerWallet
+      : walletContext?.setUserWallet;
 
   const [utilState, dispatchUtil] = React.useReducer(UtilReducer, {
     isActive: false,
@@ -107,10 +110,10 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   ) => {
     const { name, value } = event.target;
 
-    setWalletDetails((prevDetails) => ({
-      ...prevDetails,
+    setWalletDetails({
+      ...walletDetails,
       [name]: value,
-    }));
+    });
   };
 
   const sendCrypto = () => {
@@ -154,7 +157,6 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       <WalletHead
         type={type}
         walletDetails={walletDetails}
-        setWalletDetails={setWalletDetails}
         dispatchUtil={dispatchUtil}
       />
 
