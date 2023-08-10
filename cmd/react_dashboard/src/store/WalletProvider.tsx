@@ -42,6 +42,40 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
     initialState
   );
 
+  function getUserWallet() {
+    dispatchUserWallet({
+      type: "SET_WALLET_UTIL",
+      payload: {
+        isActive: true,
+        type: "info",
+        message: "Fetching user wallet details",
+      },
+    });
+
+    fetchUserWalletDetails()
+      .then((userDetails) => {
+        dispatchUserWallet({ type: "SET_WALLET", payload: userDetails });
+        dispatchUserWallet({
+          type: "SET_WALLET_UTIL",
+          payload: {
+            isActive: false,
+            type: "info",
+            message: "",
+          },
+        });
+      })
+      .catch((error) => {
+        dispatchUserWallet({
+          type: "SET_WALLET_UTIL",
+          payload: {
+            isActive: true,
+            type: "error",
+            message: "Failed to fetch user wallet details",
+          },
+        });
+      });
+  }
+
   function getMinerWallet() {
     dispatchMinerWallet({
       type: "SET_WALLET_UTIL",
@@ -78,21 +112,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
   // Fetch wallet details
   useEffect(() => {
     getMinerWallet();
-
-    fetchUserWalletDetails()
-      .then((userDetails) => {
-        dispatchUserWallet({ type: "SET_WALLET", payload: userDetails });
-      })
-      .catch((error) => {
-        dispatchUserWallet({
-          type: "SET_WALLET_UTIL",
-          payload: {
-            isActive: true,
-            type: "error",
-            message: "Failed to fetch user wallet details",
-          },
-        });
-      });
+    getUserWallet();
   }, []);
 
   // Fetch wallet balance
