@@ -123,10 +123,26 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       senderPrivateKey: wallet.details.privateKey,
       senderPublicKey: wallet.details.publicKey,
       value: wallet.details.amount,
-    }).then((response) => {
-      // TODO: Connect to store
-      console.log(response);
-    });
+    })
+      .then((response) => {
+        walletContext.setMinerWalletUtil({
+          isActive: true,
+          type: "info",
+          message:
+            "Balance will be updated when the next block is mined. It takes maximum 23 seconds.",
+        });
+
+        walletContext.setUserWalletUtil({
+          isActive: true,
+          type: "info",
+          message:
+            "Balance will be updated when the next block is mined. It takes maximum 23 seconds.",
+        });
+      })
+      .catch((error) => {
+        // TODO: Handle error (After fixing the backend)
+        console.log(error);
+      });
   };
 
   return (
