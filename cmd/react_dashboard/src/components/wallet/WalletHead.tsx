@@ -1,6 +1,7 @@
 import { WalletContext } from "store/WalletProvider";
-import React, { Dispatch, useContext, useState } from "react";
+import React, { Dispatch, useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import { /* walletDetails, */ fetchWalletBalance } from "api/wallet";
 
 const TitleRow = styled.div`
   display: flex;
@@ -52,6 +53,30 @@ const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
     text: string;
   }>(miners[0]);
 
+  const walletContext = useContext(WalletContext);
+  const wallet =
+    type === "Miner"
+      ? {
+          details: walletContext.minerWallet,
+          set: walletContext.setMinerWallet,
+        }
+      : {
+          details: walletContext.userWallet,
+          set: walletContext.setUserWallet,
+        };
+
+  useEffect(() => {
+    fetchWalletBalance(wallet.details.blockchainAddress)
+      .then((balance) => {
+        console.log(balance);
+        console.log(walletContext);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
+
+  // TODO: Handle multiple miner wallets (in store)
   const handleMinerChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = event.target.value;
     const selectedMiner = miners.find((miner) => miner.value === selectedValue);
@@ -62,17 +87,12 @@ const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
     }
   };
 
-  const walletContext = useContext(WalletContext);
-
-  const walletDetails =
-    type === "Miner" ? walletContext.minerWallet : walletContext.userWallet;
-
   return (
     <div>
       {type === "User" ? (
         <TitleRow>
           <Title>User Wallet</Title>
-          <Balance>{`${walletDetails.balance}₿`}</Balance>
+          <Balance>{`${wallet.details.balance}₿`}</Balance>
         </TitleRow>
       ) : (
         <TitleRow>
@@ -91,7 +111,7 @@ const WalletHead: React.FC<WalletHeadProps> = ({ type, dispatchUtil }) => {
             <Title>{` Wallet`}</Title>
           </MinerTitleContainer>
 
-          <Balance>{`${walletDetails.balance}₿`}</Balance>
+          <Balance>{`${wallet.details.balance}₿`}</Balance>
         </TitleRow>
       )}
     </div>
