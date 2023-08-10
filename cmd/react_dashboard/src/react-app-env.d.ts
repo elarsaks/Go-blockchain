@@ -16,10 +16,6 @@ type Blockchain = {
   chain: Block[];
 };
 
-type LocalError = {
-  message: string;
-} | null;
-
 type Transaction = {
   message: string;
   recipientBlockchainAddress: string;
@@ -50,7 +46,7 @@ type UtilAction =
     };
 
 type UtilState = {
-  isActive: boolean | undefined;
+  isActive: boolean;
   type: "info" | "warning" | "error" | "success";
   message: string;
 };

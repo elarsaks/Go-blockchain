@@ -99,7 +99,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         wallet.details.publicKey === "" ||
         wallet.details.recipientAddress === "" ||
         wallet.details.amount === "" ||
-        !wallet.details.util.isActive
+        wallet.details.util.isActive
     );
   }, [wallet.details]);
 
@@ -116,6 +116,12 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   };
 
   const sendCrypto = () => {
+    wallet.setUtil({
+      isActive: true,
+      type: "info",
+      message: "Transaction request sent",
+    });
+
     transaction({
       message: "USER TRANSACTION",
       recipientBlockchainAddress: wallet.details.recipientAddress,
@@ -127,21 +133,46 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
       .then((response) => {
         walletContext.setMinerWalletUtil({
           isActive: true,
-          type: "info",
+          type: "success",
           message:
             "Balance will be updated when the next block is mined. It takes maximum 23 seconds.",
         });
 
         walletContext.setUserWalletUtil({
           isActive: true,
-          type: "info",
+          type: "success",
           message:
             "Balance will be updated when the next block is mined. It takes maximum 23 seconds.",
         });
       })
       .catch((error) => {
-        // TODO: Handle error (After fixing the backend)
-        console.log(error);
+        // TODO: Handle error (after fixing the backend)
+        // walletContext.setMinerWalletUtil({
+        //   isActive: true,
+        //   type: "error",
+        //   message: error.message,
+        // });
+        // walletContext.setUserWalletUtil({
+        //   isActive: true,
+        //   type: "error",
+        //   message: error.message,
+        // });
+      })
+      .finally(() => {
+        //* This is debug, until the backend is fixed
+        walletContext.setMinerWalletUtil({
+          isActive: true,
+          type: "success",
+          message:
+            "Balance will be updated when the next block is mined. It takes maximum 23 seconds.",
+        });
+
+        walletContext.setUserWalletUtil({
+          isActive: true,
+          type: "success",
+          message:
+            "Balance will be updated when the next block is mined. It takes maximum 23 seconds.",
+        });
       });
   };
 

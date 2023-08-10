@@ -3,6 +3,8 @@ package block
 import (
 	"log"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/elarsaks/Go-blockchain/pkg/utils"
@@ -20,14 +22,29 @@ func (bc *Blockchain) SetNeighbors() {
 			"http://" + host + "-2:5002",
 			"http://" + host + "-3:5003",
 		}
-		return
+	} else {
+		bc.neighbors = utils.FindNeighbors(
+			utils.GetHost(), bc.port,
+			NEIGHBOR_IP_RANGE_START, NEIGHBOR_IP_RANGE_END,
+			BLOCKCHAIN_PORT_RANGE_START, BLOCKCHAIN_PORT_RANGE_END)
 	}
 
-	bc.neighbors = utils.FindNeighbors(
-		utils.GetHost(), bc.port,
-		NEIGHBOR_IP_RANGE_START, NEIGHBOR_IP_RANGE_END,
-		BLOCKCHAIN_PORT_RANGE_START, BLOCKCHAIN_PORT_RANGE_END)
+	// Filter out the neighbors with the same port as the current instance
+	bc.neighbors = filterOutSelfPort(bc.neighbors, strconv.Itoa(int(bc.port)))
+
 	log.Printf("%v", bc.neighbors)
+}
+
+//* This is a debug method, until blockchain broadcasting is implemented
+// filterOutSelfPort removes neighbors with the same port as the current instance
+func filterOutSelfPort(neighbors []string, port string) []string {
+	var filtered []string
+	for _, neighbor := range neighbors {
+		if !strings.HasSuffix(neighbor, ":"+port) {
+			filtered = append(filtered, neighbor)
+		}
+	}
+	return filtered
 }
 
 // SyncNeighbors synchronizes the neighbors ensuring thread safety.
