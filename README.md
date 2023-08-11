@@ -1,8 +1,7 @@
 
 # Go-blockchain (🚧 UNDER DEVELOPMENT 🚧)
 - [*LIVE EXAMPLE*](https://elarsaks.github.io/Go-blockchain/)
-- [*PROJECT WIKI*](https://github.com/elarsaks/Go-blockchain/wiki) 
-
+- [*PROJECT WIKI*](https://github.com/elarsaks/Go-blockchain/wiki)
 
 # Table of Contents
 1. [About](#about)
@@ -22,6 +21,9 @@ This project is a Docker-based blockchain application that is currently under de
 1. **Skill Development:** It provides an excellent opportunity to push the boundaries of my technical skills and deepen my understanding of Blockchain technology.
 
 2. **Community Resource:** I'm dedicated to creating a robust codebase that can serve as a valuable learning resource for anyone interested in this technology.
+
+
+![Topology Diagram](https://github.com/elarsaks/Go-blockchain/blob/main/docs/topology.png)
 
 
 # Workflow

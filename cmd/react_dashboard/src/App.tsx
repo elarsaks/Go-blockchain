@@ -6,9 +6,12 @@ import Background from "components/layout/Background";
 import BlockDiv from "components/BlockDiv";
 import Loader from "components/shared/Loader";
 import Notification from "components/shared/Notification";
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
+import UtilReducer from "store/UtilReducer";
 import Wallet from "components/wallet/Wallet";
+import { WalletProvider } from "store/WalletProvider";
+
 const AppWrapper = styled.div`
   margin: 0;
   position: absolute;
@@ -35,43 +38,56 @@ const WalletWrapperContainer = styled.div`
   }
 `;
 
-export const MiningContext = createContext<MiningContextType>({
-  mining: false,
-  setMining: () => {},
-});
-
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState({ message: "" });
   const [blockchain, setBlockchain] = useState<Block[]>([]);
-  const [mining, setMining] = useState(false);
+  const [utilState, dispatchUtil] = React.useReducer(UtilReducer, {
+    isActive: false,
+    type: "info",
+    message: "",
+  });
 
-  function fetchchainData() {
+  const fetchchainData = useCallback(() => {
+    if (blockchain.length === 0) {
+      dispatchUtil({
+        type: "ON",
+        payload: {
+          type: "info",
+          message: "Fetching blockchain data...",
+        },
+      });
+    }
+
     return fetchBlockchainData()
       .then((blocks) => {
         setBlockchain(blocks);
-        setIsLoading(false);
+        dispatchUtil({
+          type: "OFF",
+          payload: null,
+        });
       })
       .catch((error) => {
-        setIsError({ message: "Failed to fetch blockchain data" });
-        setIsLoading(false);
+        dispatchUtil({
+          type: "ON",
+          payload: {
+            type: "error",
+            message: error.message,
+          },
+        });
       });
-  }
+  }, [blockchain.length]);
 
   useEffect(() => {
     // Fetch blockchain data immediately on component mount
-    fetchchainData().then(() => {
-      setMining(false);
-    });
+    fetchchainData();
 
-    // Fetch blockchain data every second
+    // Fetch blockchain data every 3 seconds
     const intervalId = setInterval(() => {
       fetchchainData();
-    }, 10000);
+    }, 5000);
 
-    // Clean up function to clear the interval when the component unmounts
+    // Clear interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [fetchchainData]);
 
   return (
     <AppWrapper>
@@ -80,32 +96,23 @@ function App() {
       <ContentContainer className="App">
         <AppInfo />
 
-        <MiningContext.Provider value={{ mining, setMining }}>
-          <WalletWrapperContainer>
+        <WalletWrapperContainer>
+          <WalletProvider previousHash={blockchain[0]?.previousHash}>
             <Wallet type="Miner" />
             <Wallet type="User" />
-          </WalletWrapperContainer>
-        </MiningContext.Provider>
+          </WalletProvider>
+        </WalletWrapperContainer>
 
-        {isLoading && (
+        {utilState.isActive && (
           <Notification
-            type="info"
-            insideContainer={false}
-            message="Loading blockchain data."
-          />
-        )}
-
-        {isError.message && !isLoading && (
-          <Notification
-            type="error"
-            message="Sorry, there was an error loading blockchain data."
+            type={utilState.type}
+            message={utilState.message}
             underDevelopment={true}
             insideContainer={false}
           />
         )}
 
-        {!isLoading &&
-          !isError.message &&
+        {!utilState.isActive &&
           blockchain.map((block, index) => (
             <React.Fragment key={index}>
               <Loader height={100} />

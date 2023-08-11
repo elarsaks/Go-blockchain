@@ -1,7 +1,5 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { fetchMinerWalletDetails } from "../../api/miner";
-import { fetchUserWalletDetails, fetchWalletBalance } from "../../api/wallet";
 
 const TitleRow = styled.div`
   display: flex;
@@ -35,27 +33,18 @@ const Balance = styled.h2`
   color: #00acd7;
 `;
 
-interface WalletHeadProps {
-  type: string;
-  walletDetails: WalletState;
-  setWalletDetails: Dispatch<SetStateAction<WalletState>>;
-  setIsLoading: Dispatch<SetStateAction<boolean>>;
-  setIsError: Dispatch<SetStateAction<LocalError>>;
-}
-
 const miners = [
   { value: "1", text: "Miner 1" },
   { value: "2", text: "Miner 2" },
   { value: "3", text: "Miner 3" },
 ];
 
-const WalletHead: React.FC<WalletHeadProps> = ({
-  type,
-  walletDetails,
-  setWalletDetails,
-  setIsLoading,
-  setIsError,
-}) => {
+interface WalletHeadProps {
+  type: string;
+  walletDetails: WalletState;
+}
+
+const WalletHead: React.FC<WalletHeadProps> = ({ type, walletDetails }) => {
   const [selectedMiner, setSelectedMiner] = useState<{
     value: string;
     text: string;
@@ -65,89 +54,9 @@ const WalletHead: React.FC<WalletHeadProps> = ({
     const selectedValue = event.target.value;
     const selectedMiner = miners.find((miner) => miner.value === selectedValue);
 
-    if (selectedMiner) {
-      setSelectedMiner(selectedMiner);
-      fetchMinerDetails(selectedMiner.value);
-    }
+    // TODO: Dispatch action to update miner wallet
+    if (selectedMiner) setSelectedMiner(selectedMiner);
   };
-
-  function fetchUserDetails() {
-    setIsLoading(true);
-    fetchUserWalletDetails()
-      .then((userWalletDetails: WalletDetails) =>
-        setWalletDetails((prevDetails) => ({
-          ...prevDetails,
-          ...userWalletDetails,
-        }))
-      )
-      .catch((error: LocalError) => setIsError(error))
-      .finally(() => setIsLoading(false));
-  }
-
-  function fetchMinerDetails(selectedMinerId: string) {
-    setIsLoading(true);
-    // Fetch miner wallet details
-    return (
-      fetchMinerWalletDetails(selectedMinerId)
-        .then((minerWalletDetails: WalletDetails) => {
-          setWalletDetails((prevDetails) => ({
-            ...prevDetails,
-            ...minerWalletDetails,
-          }));
-          setIsError(null);
-
-          return minerWalletDetails.blockchainAddress;
-        })
-
-        // Fetch miner wallet balance
-        .then((blockchainAddress) =>
-          fetchWalletBalance(blockchainAddress).then((balance) => {
-            setWalletDetails((prevDetails) => ({
-              ...prevDetails,
-              balance: balance === "0" ? "0.00" : balance,
-            }));
-            setIsError(null);
-          })
-        )
-        .catch((error: LocalError) => setIsError(error))
-        .finally(() => setIsLoading(false))
-    );
-  }
-
-  useEffect(() => {
-    if (type === "User") {
-      fetchUserDetails();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
-
-  useEffect(
-    () => {
-      if (type === "Miner") fetchMinerDetails(selectedMiner.value);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [type, selectedMiner.value]
-  );
-
-  useEffect(() => {
-    let walletUpdate: NodeJS.Timeout;
-
-    if (walletDetails.blockchainAddress) {
-      walletUpdate = setInterval(() => {
-        fetchWalletBalance(walletDetails.blockchainAddress)
-          .then((balance) => {
-            setWalletDetails((prevDetails) => ({
-              ...prevDetails,
-              balance: balance === "0" ? "0.00" : balance,
-            }));
-            setIsError(null);
-          })
-          .catch((error: LocalError) => setIsError(error));
-      }, 10000);
-    }
-
-    return () => clearInterval(walletUpdate);
-  }, [setIsError, setWalletDetails, walletDetails.blockchainAddress]);
 
   return (
     <div>

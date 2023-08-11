@@ -33,6 +33,7 @@ services:
     build:
       context: .
       dockerfile: ./cmd/blockchain_server/Dockerfile
+    container_name: miner-1
     ports:
       - 5001:5001
     environment:
@@ -47,7 +48,7 @@ services:
     build:
       context: .
       dockerfile: ./cmd/blockchain_server/Dockerfile
-    container_name: miner
+    container_name: miner-2
     ports:
       - 5002:5002
     environment:
