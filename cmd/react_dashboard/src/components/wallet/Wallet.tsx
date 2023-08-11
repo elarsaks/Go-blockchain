@@ -135,14 +135,14 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           isActive: true,
           type: "success",
           message:
-            "Balance will be updated when the next block is mined. It takes maximum 23 seconds.",
+            "Balance will be updated when the next block is mined. It can take up to 28 seconds.",
         });
 
         walletContext.setUserWalletUtil({
           isActive: true,
           type: "success",
           message:
-            "Balance will be updated when the next block is mined. It takes maximum 23 seconds.",
+            "Balance will be updated when the next block is mined. It can take up to 28 seconds.",
         });
       })
       .catch((error) => {
@@ -164,14 +164,14 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           isActive: true,
           type: "success",
           message:
-            "Balance will be updated when the next block is mined. It takes maximum 23 seconds.",
+            "Balance will be updated when the next block is mined. It can take up to 28 seconds.",
         });
 
         walletContext.setUserWalletUtil({
           isActive: true,
           type: "success",
           message:
-            "Balance will be updated when the next block is mined. It takes maximum 23 seconds.",
+            "Balance will be updated when the next block is mined. It can take up to 28 seconds.",
         });
       });
   };
@@ -243,7 +243,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           <Notification
             type={wallet.details.util.type}
             message={wallet.details.util.message}
-            underDevelopment={wallet.details.util.type !== "info"}
+            underDevelopment={wallet.details.util.type === "error"}
             insideContainer={false}
           />
         )}

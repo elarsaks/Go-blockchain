@@ -47,15 +47,15 @@ function App() {
   });
 
   function fetchchainData() {
-    console.log("Fetching blockchain data...");
-
-    dispatchUtil({
-      type: "ON",
-      payload: {
-        type: "info",
-        message: "Fetching blockchain data...",
-      },
-    });
+    if (blockchain.length === 0) {
+      dispatchUtil({
+        type: "ON",
+        payload: {
+          type: "info",
+          message: "Fetching blockchain data...",
+        },
+      });
+    }
 
     return fetchBlockchainData()
       .then((blocks) => {
@@ -83,7 +83,7 @@ function App() {
     // Fetch blockchain data every 3 seconds
     const intervalId = setInterval(() => {
       fetchchainData();
-    }, 3000);
+    }, 5000);
 
     // Clear interval on component unmount
     return () => clearInterval(intervalId);
