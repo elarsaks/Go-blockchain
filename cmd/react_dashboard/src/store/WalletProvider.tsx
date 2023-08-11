@@ -55,7 +55,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
       payload: {
         isActive: true,
         type: "info",
-        message: "Fetching user wallet details",
+        message:
+          "Registering the user wallet on the blockchain. This process can take up to 28 seconds.",
       },
     });
 
@@ -196,8 +197,6 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
   useEffect(() => {
     if (minerWallet.blockchainAddress) getMinerWalletWalletBalance();
     if (userWallet.blockchainAddress) getUserWalletWalletBalance();
-
-    console.log("previousHash", previousHash);
   }, [
     minerWallet.blockchainAddress,
     userWallet.blockchainAddress,
