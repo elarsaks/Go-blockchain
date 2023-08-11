@@ -196,6 +196,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
   useEffect(() => {
     if (minerWallet.blockchainAddress) getMinerWalletWalletBalance();
     if (userWallet.blockchainAddress) getUserWalletWalletBalance();
+
+    console.log("previousHash", previousHash);
   }, [
     minerWallet.blockchainAddress,
     userWallet.blockchainAddress,

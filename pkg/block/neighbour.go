@@ -1,7 +1,6 @@
 package block
 
 import (
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -32,7 +31,7 @@ func (bc *Blockchain) SetNeighbors() {
 	// Filter out the neighbors with the same port as the current instance
 	bc.neighbors = filterOutSelfPort(bc.neighbors, strconv.Itoa(int(bc.port)))
 
-	log.Printf("%v", bc.neighbors)
+	//log.Printf("%v", bc.neighbors)
 }
 
 //* This is a debug method, until blockchain broadcasting is implemented

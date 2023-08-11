@@ -47,6 +47,8 @@ function App() {
   });
 
   function fetchchainData() {
+    console.log("Fetching blockchain data...");
+
     dispatchUtil({
       type: "ON",
       payload: {
@@ -77,12 +79,14 @@ function App() {
   useEffect(() => {
     // Fetch blockchain data immediately on component mount
     fetchchainData();
-    // Fetch blockchain data every 5 seconds
+
+    // Fetch blockchain data every 3 seconds
     const intervalId = setInterval(() => {
       fetchchainData();
-    }, 5000);
+    }, 3000);
+
     // Clear interval on component unmount
-    return clearInterval(intervalId);
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
