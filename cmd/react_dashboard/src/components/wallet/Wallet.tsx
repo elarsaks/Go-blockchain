@@ -146,6 +146,8 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         });
       })
       .catch((error) => {
+        console.log(error);
+
         // TODO: Handle error (after fixing the backend)
         // walletContext.setMinerWalletUtil({
         //   isActive: true,

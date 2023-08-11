@@ -6,7 +6,7 @@ import Background from "components/layout/Background";
 import BlockDiv from "components/BlockDiv";
 import Loader from "components/shared/Loader";
 import Notification from "components/shared/Notification";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import UtilReducer from "store/UtilReducer";
 import Wallet from "components/wallet/Wallet";
@@ -46,7 +46,7 @@ function App() {
     message: "",
   });
 
-  function fetchchainData() {
+  const fetchchainData = useCallback(() => {
     if (blockchain.length === 0) {
       dispatchUtil({
         type: "ON",
@@ -74,7 +74,7 @@ function App() {
           },
         });
       });
-  }
+  }, [blockchain.length]);
 
   useEffect(() => {
     // Fetch blockchain data immediately on component mount
@@ -87,7 +87,7 @@ function App() {
 
     // Clear interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [fetchchainData]);
 
   return (
     <AppWrapper>
