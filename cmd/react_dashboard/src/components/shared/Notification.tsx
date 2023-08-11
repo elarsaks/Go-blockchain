@@ -22,6 +22,11 @@ const NotificationWrapper = styled.div<WrapperProps>`
   background-color: #f2f2f2;
   border: 1px solid #ccc;
 
+  &.success {
+    background-color: #28a745;
+    border: 1px solid #1e7e34;
+  }
+
   &.info {
     background-color: #00add8;
     border: 1px solid #007d9c;

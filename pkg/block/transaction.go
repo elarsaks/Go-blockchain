@@ -107,7 +107,7 @@ func (bc *Blockchain) CreateTransaction(sender string, recipient string, message
 				&message, &publicKeyStr, &recipient, &sender, &signatureStr, &value}
 			m, _ := json.Marshal(bt)
 			buf := bytes.NewBuffer(m)
-			endpoint := fmt.Sprintf("http://%s/transactions", n)
+			endpoint := fmt.Sprintf("%s/transactions", n)
 			client := &http.Client{}
 			req, _ := http.NewRequest("PUT", endpoint, buf)
 			resp, err := client.Do(req)

@@ -83,7 +83,7 @@ func (bc *Blockchain) ValidProof(nonce int, previousHash [32]byte, transactions 
 	//log.Printf("nonce=%v, previousHash=%v, difficulty=%v", nonce, previousHash, difficulty)
 	// Log prevoius hash as string
 	// #debug
-	log.Printf("previousHash=%x", previousHash)
+	// log.Printf("previousHash=%x", previousHash)
 
 	zeros := strings.Repeat("0", difficulty)
 	guessBlock := Block{0, nonce, previousHash, transactions}

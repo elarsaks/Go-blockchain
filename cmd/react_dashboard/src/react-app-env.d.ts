@@ -16,10 +16,6 @@ type Blockchain = {
   chain: Block[];
 };
 
-type LocalError = {
-  message: string;
-} | null;
-
 type Transaction = {
   message: string;
   recipientBlockchainAddress: string;

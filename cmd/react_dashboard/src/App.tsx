@@ -6,7 +6,7 @@ import Background from "components/layout/Background";
 import BlockDiv from "components/BlockDiv";
 import Loader from "components/shared/Loader";
 import Notification from "components/shared/Notification";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import UtilReducer from "store/UtilReducer";
 import Wallet from "components/wallet/Wallet";
@@ -46,14 +46,16 @@ function App() {
     message: "",
   });
 
-  function fetchchainData() {
-    dispatchUtil({
-      type: "ON",
-      payload: {
-        type: "info",
-        message: "Fetching blockchain data...",
-      },
-    });
+  const fetchchainData = useCallback(() => {
+    if (blockchain.length === 0) {
+      dispatchUtil({
+        type: "ON",
+        payload: {
+          type: "info",
+          message: "Fetching blockchain data...",
+        },
+      });
+    }
 
     return fetchBlockchainData()
       .then((blocks) => {
@@ -72,18 +74,20 @@ function App() {
           },
         });
       });
-  }
+  }, [blockchain.length]);
 
   useEffect(() => {
     // Fetch blockchain data immediately on component mount
     fetchchainData();
-    // Fetch blockchain data every 5 seconds
+
+    // Fetch blockchain data every 3 seconds
     const intervalId = setInterval(() => {
       fetchchainData();
     }, 5000);
+
     // Clear interval on component unmount
-    return clearInterval(intervalId);
-  }, []);
+    return () => clearInterval(intervalId);
+  }, [fetchchainData]);
 
   return (
     <AppWrapper>
@@ -93,7 +97,7 @@ function App() {
         <AppInfo />
 
         <WalletWrapperContainer>
-          <WalletProvider>
+          <WalletProvider previousHash={blockchain[0]?.previousHash}>
             <Wallet type="Miner" />
             <Wallet type="User" />
           </WalletProvider>

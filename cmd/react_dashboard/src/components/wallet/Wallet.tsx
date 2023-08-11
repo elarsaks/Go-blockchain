@@ -2,7 +2,6 @@ import { transaction } from "api/wallet";
 import Notification from "components/shared/Notification";
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import UtilReducer from "store/UtilReducer";
 import WalletHead from "./WalletHead";
 import { WalletContext } from "store/WalletProvider";
 
@@ -80,29 +79,29 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
 
   const walletContext = useContext(WalletContext);
 
-  const walletDetails =
-    type === "Miner" ? walletContext.minerWallet : walletContext.userWallet;
-
-  const setWalletDetails =
+  const wallet =
     type === "Miner"
-      ? walletContext?.setMinerWallet
-      : walletContext?.setUserWallet;
-
-  const [utilState, dispatchUtil] = React.useReducer(UtilReducer, {
-    isActive: false,
-    type: "info",
-    message: "",
-  });
+      ? {
+          details: walletContext.minerWallet,
+          setDetails: walletContext?.setMinerWallet,
+          setUtil: walletContext?.setMinerWalletUtil,
+        }
+      : {
+          details: walletContext.userWallet,
+          setDetails: walletContext?.setUserWallet,
+          setUtil: walletContext?.setUserWalletUtil,
+        };
 
   useEffect(() => {
     setIsAnyFieldEmpty(
-      walletDetails.blockchainAddress === "" ||
-        walletDetails.privateKey === "" ||
-        walletDetails.publicKey === "" ||
-        walletDetails.recipientAddress === "" ||
-        walletDetails.amount === ""
+      wallet.details.blockchainAddress === "" ||
+        wallet.details.privateKey === "" ||
+        wallet.details.publicKey === "" ||
+        wallet.details.recipientAddress === "" ||
+        wallet.details.amount === "" ||
+        wallet.details.util.isActive
     );
-  }, [walletDetails]);
+  }, [wallet.details]);
 
   // Event Handlers
   const handleInputChange = (
@@ -110,55 +109,78 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
   ) => {
     const { name, value } = event.target;
 
-    setWalletDetails({
-      ...walletDetails,
+    wallet.setDetails({
+      ...wallet.details,
       [name]: value,
     });
   };
 
   const sendCrypto = () => {
+    wallet.setUtil({
+      isActive: true,
+      type: "info",
+      message: "Transaction request sent",
+    });
+
     transaction({
       message: "USER TRANSACTION",
-      recipientBlockchainAddress: walletDetails.recipientAddress,
-      senderBlockchainAddress: walletDetails.blockchainAddress,
-      senderPrivateKey: walletDetails.privateKey,
-      senderPublicKey: walletDetails.publicKey,
-      value: walletDetails.amount,
+      recipientBlockchainAddress: wallet.details.recipientAddress,
+      senderBlockchainAddress: wallet.details.blockchainAddress,
+      senderPrivateKey: wallet.details.privateKey,
+      senderPublicKey: wallet.details.publicKey,
+      value: wallet.details.amount,
     })
       .then((response) => {
-        if (response.message === "fail") {
-          dispatchUtil({
-            type: "ON",
-            payload: {
-              type: "error",
-              message: "Transaction failed",
-            },
-          });
-        } else {
-          dispatchUtil({
-            type: "OFF",
-            payload: null,
-          });
-        }
+        walletContext.setMinerWalletUtil({
+          isActive: true,
+          type: "success",
+          message:
+            "The balance will be updated once the next block is mined. This process can take up to 28 seconds.",
+        });
+
+        walletContext.setUserWalletUtil({
+          isActive: true,
+          type: "success",
+          message:
+            "The balance will be updated once the next block is mined. This process can take up to 28 seconds.",
+        });
       })
-      .catch((error) =>
-        dispatchUtil({
-          type: "ON",
-          payload: {
-            type: "error",
-            message: error.message,
-          },
-        })
-      );
+      .catch((error) => {
+        console.log(error);
+
+        // TODO: Handle error (after fixing the backend)
+        // walletContext.setMinerWalletUtil({
+        //   isActive: true,
+        //   type: "error",
+        //   message: error.message,
+        // });
+        // walletContext.setUserWalletUtil({
+        //   isActive: true,
+        //   type: "error",
+        //   message: error.message,
+        // });
+      })
+      .finally(() => {
+        //* This is debug, until the backend is fixed
+        walletContext.setMinerWalletUtil({
+          isActive: true,
+          type: "success",
+          message:
+            "The balance will be updated once the next block is mined. This process can take up to 28 seconds.",
+        });
+
+        walletContext.setUserWalletUtil({
+          isActive: true,
+          type: "success",
+          message:
+            "The balance will be updated once the next block is mined. This process can take up to 28 seconds.",
+        });
+      });
   };
 
   return (
     <WalletContainer isMiner={type === "Miner"}>
-      <WalletHead
-        type={type}
-        walletDetails={walletDetails}
-        dispatchUtil={dispatchUtil}
-      />
+      <WalletHead type={type} walletDetails={wallet.details} />
 
       <Form>
         <Field>
@@ -166,7 +188,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           <TextArea
             rows={4}
             name="publicKey"
-            value={walletDetails.publicKey}
+            value={wallet.details.publicKey}
             onChange={handleInputChange}
           />
         </Field>
@@ -176,7 +198,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           <TextArea
             rows={2}
             name="privateKey"
-            value={walletDetails.privateKey}
+            value={wallet.details.privateKey}
             onChange={handleInputChange}
           />
         </Field>
@@ -188,7 +210,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
           <TextArea
             rows={2}
             name="blockchainAddress"
-            value={walletDetails.blockchainAddress}
+            value={wallet.details.blockchainAddress}
             onChange={handleInputChange}
           />
         </Field>
@@ -203,7 +225,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
                 ? "User Blockchain Address"
                 : "Miner Blockchain Address"
             }
-            value={walletDetails.recipientAddress}
+            value={wallet.details.recipientAddress}
             onChange={handleInputChange}
           />
         </Field>
@@ -214,16 +236,16 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type="text"
             name="amount"
             placeholder="0.00₿"
-            value={walletDetails.amount.toString()}
+            value={wallet.details.amount.toString()}
             onChange={handleInputChange}
           />
         </Field>
 
-        {utilState.isActive && (
+        {wallet.details.util.isActive && (
           <Notification
-            type={utilState.type}
-            message={utilState.message}
-            underDevelopment={utilState.type !== "info"}
+            type={wallet.details.util.type}
+            message={wallet.details.util.message}
+            underDevelopment={wallet.details.util.type === "error"}
             insideContainer={false}
           />
         )}
