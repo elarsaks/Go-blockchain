@@ -1,4 +1,4 @@
-const UtilReducer = (state: UtilState, action: UtilAction): UtilState => {
+const utilReducer = (state: UtilState, action: UtilAction): UtilState => {
   switch (action.type) {
     case "ON":
       return {
@@ -16,4 +16,4 @@ const UtilReducer = (state: UtilState, action: UtilAction): UtilState => {
   }
 };
 
-export default UtilReducer;
+export default utilReducer;
