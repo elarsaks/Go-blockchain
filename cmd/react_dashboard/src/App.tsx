@@ -60,17 +60,9 @@ function App() {
     return fetchBlockchainData()
       .then((blocks) => {
         setBlockchain(blocks);
-        // dispatchUtil({
-        //   type: "OFF",
-        //   payload: null,
-        // });
-
         dispatchUtil({
-          type: "ON",
-          payload: {
-            type: "error",
-            message: "error.message,",
-          },
+          type: "OFF",
+          payload: null,
         });
       })
       .catch((error) => {

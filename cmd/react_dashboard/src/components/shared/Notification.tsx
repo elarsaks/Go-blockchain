@@ -38,8 +38,8 @@ const NotificationWrapper = styled.div<WrapperProps>`
   }
 
   &.error {
-    color: #d94141;
-    border: 1px solid #d94141;
+    background-color: #f44336;
+    border: 1px solid #d32f2f;
   }
 
   @media (max-width: 850px) {
@@ -57,10 +57,6 @@ const Message = styled.p`
   text-align: center;
   margin: 1em;
   font-size: 1.2em;
-
-  &.error {
-    color: #d94141;
-  }
 `;
 
 const SubMessage = styled.h1`
