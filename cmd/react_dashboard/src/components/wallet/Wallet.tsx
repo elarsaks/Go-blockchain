@@ -93,12 +93,16 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         };
 
   useEffect(() => {
+    const isAmountExceedingBalance =
+      parseFloat(wallet.details.amount) > parseFloat(wallet.details.balance);
+
     setIsAnyFieldEmpty(
       wallet.details.blockchainAddress === "" ||
         wallet.details.privateKey === "" ||
         wallet.details.publicKey === "" ||
         wallet.details.recipientAddress === "" ||
         wallet.details.amount === "" ||
+        isAmountExceedingBalance || // Add this condition
         wallet.details.util.isActive
     );
   }, [wallet.details]);
@@ -233,11 +237,13 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
         <Field>
           <Label>Amount: </Label>
           <Input
-            type="text"
+            type="number"
             name="amount"
             placeholder="0.00₿"
             value={wallet.details.amount.toString()}
             onChange={handleInputChange}
+            max={wallet.details.balance}
+            min="0"
           />
         </Field>
 
@@ -246,7 +252,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type={wallet.details.util.type}
             message={wallet.details.util.message}
             underDevelopment={wallet.details.util.type === "error"}
-            insideContainer={false}
+            insideContainer={true}
           />
         )}
 
