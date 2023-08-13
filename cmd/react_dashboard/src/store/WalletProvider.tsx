@@ -71,7 +71,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
     }
   }
 
-  function getUserWallet() {
+  const getUserWallet = useCallback(() => {
     dispatchUserWallet({
       type: "SET_WALLET_UTIL",
       payload: {
@@ -104,9 +104,9 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
           },
         });
       });
-  }
+  }, [dispatchMinerWallet, dispatchUserWallet]);
 
-  function getMinerWallet() {
+  const getMinerWallet = useCallback(() => {
     dispatchMinerWallet({
       type: "SET_WALLET_UTIL",
       payload: {
@@ -137,7 +137,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
           },
         });
       });
-  }
+  }, [dispatchMinerWallet, dispatchUserWallet]);
 
   const getUserWalletWalletBalance = useCallback(() => {
     fetchWalletBalance(userWallet.blockchainAddress)
@@ -186,7 +186,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
   useEffect(() => {
     getMinerWallet();
     getUserWallet();
-  });
+  }, [getMinerWallet, getUserWallet]);
 
   // Fetch wallet balance
   useEffect(() => {
