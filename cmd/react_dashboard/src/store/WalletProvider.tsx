@@ -186,7 +186,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
   useEffect(() => {
     getMinerWallet();
     getUserWallet();
-  }, []);
+  });
 
   // Fetch wallet balance
   useEffect(() => {
