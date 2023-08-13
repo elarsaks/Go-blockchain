@@ -70,14 +70,14 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
           },
         });
 
-        dispatchUserWallet({
-          type: "SET_WALLET_UTIL",
-          payload: {
-            isActive: false,
-            type: "info",
-            message: "",
-          },
-        });
+        // dispatchUserWallet({
+        //   type: "SET_WALLET_UTIL",
+        //   payload: {
+        //     isActive: false,
+        //     type: "info",
+        //     message: "",
+        //   },
+        // });
       })
       .catch((error) => {
         dispatchUserWallet({
@@ -110,14 +110,14 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
           },
         });
 
-        dispatchMinerWallet({
-          type: "SET_WALLET_UTIL",
-          payload: {
-            isActive: false,
-            type: "info",
-            message: "",
-          },
-        });
+        // dispatchMinerWallet({
+        //   type: "SET_WALLET_UTIL",
+        //   payload: {
+        //     isActive: false,
+        //     type: "info",
+        //     message: "",
+        //   },
+        // });
       })
       .catch((error) => {
         dispatchMinerWallet({
@@ -138,14 +138,14 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
           type: "SET_WALLET",
           payload: { balance: userBalance },
         });
-        dispatchUserWallet({
-          type: "SET_WALLET_UTIL",
-          payload: {
-            isActive: false,
-            type: "info",
-            message: "",
-          },
-        });
+        // dispatchUserWallet({
+        //   type: "SET_WALLET_UTIL",
+        //   payload: {
+        //     isActive: false,
+        //     type: "info",
+        //     message: "",
+        //   },
+        // });
       })
       .catch((error) =>
         dispatchUserWallet({
@@ -166,14 +166,14 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({
           type: "SET_WALLET",
           payload: { balance: minerBalance },
         });
-        dispatchMinerWallet({
-          type: "SET_WALLET_UTIL",
-          payload: {
-            isActive: false,
-            type: "info",
-            message: "",
-          },
-        });
+        // dispatchMinerWallet({
+        //   type: "SET_WALLET_UTIL",
+        //   payload: {
+        //     isActive: false,
+        //     type: "info",
+        //     message: "",
+        //   },
+        // });
       })
       .catch((error) =>
         dispatchMinerWallet({

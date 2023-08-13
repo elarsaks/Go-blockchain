@@ -15,7 +15,7 @@ const NotificationWrapper = styled.div<WrapperProps>`
   margin-top: 1em;
   margin-bottom: 1em;
   width: 90%;
-  max-width: 785px;
+  max-width: 800px;
   border-radius: 5px;
   color: #333;
   overflow: auto;

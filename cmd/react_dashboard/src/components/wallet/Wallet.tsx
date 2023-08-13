@@ -246,7 +246,7 @@ const Wallet: React.FC<WalletProps> = ({ type }) => {
             type={wallet.details.util.type}
             message={wallet.details.util.message}
             underDevelopment={wallet.details.util.type === "error"}
-            insideContainer={false}
+            insideContainer={true}
           />
         )}
 
