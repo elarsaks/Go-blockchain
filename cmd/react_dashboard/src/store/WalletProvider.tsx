@@ -7,7 +7,6 @@ import React, {
   useEffect,
   useReducer,
 } from "react";
-import { clear } from "console";
 
 const initialState: StoreWallet = {
   amount: "",
