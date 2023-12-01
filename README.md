@@ -1,5 +1,5 @@
 
-# Go-blockchain (🚧 UNDER DEVELOPMENT 🚧)
+# Go-blockchain
 - [*LIVE EXAMPLE*](https://elarsaks.github.io/Go-blockchain/)
 - [*PROJECT WIKI*](https://github.com/elarsaks/Go-blockchain/wiki)
 
