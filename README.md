@@ -1,6 +1,7 @@
 
 # Go-blockchain
-- [*LIVE EXAMPLE*](https://elarsaks.github.io/Go-blockchain/)
+- [*LIVE EXAMPLE*](https://elarsaks.github.io/Go-blockchain/)  
+🔴 𝗡𝗼𝘁𝗲: The backend of this project has been deactivated to reduce unnecessary costs.
 - [*PROJECT WIKI*](https://github.com/elarsaks/Go-blockchain/wiki)
 
 # Table of Contents
