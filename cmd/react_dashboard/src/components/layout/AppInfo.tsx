@@ -74,6 +74,13 @@ const AppInfo: React.FC = () => {
       <p>Beneath the wallets, you'll find the 10 most recently mined blocks.</p>
       <br />
       <p>
+        🔴{" "}
+        <b style={{ textDecoration: "underline" }}>
+          Note: The backend of this project has been deactivated to reduce
+          unnecessary costs.
+        </b>
+      </p>
+      <p>
         <b>
           Check out the project on{" "}
           <a
