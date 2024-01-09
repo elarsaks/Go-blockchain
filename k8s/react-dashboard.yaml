@@ -1,7 +1,5 @@
 apiVersion: apps/v1
 kind: Deployment
-apiVersion: apps/v1
-kind: Deployment
 metadata:
   name: react-dashboard
 spec:
@@ -15,13 +13,13 @@ spec:
         app: react-dashboard
     spec:
       containers:
-      - name: react-dashboard
-        image: elarsaks/react-dashboard:v1.0.2
-        ports:
-        - containerPort: 80  # Nginx inside the container listens on port 80
-        env:
-        - name: REACT_APP_GATEWAY_API_URL
-          value: "http://wallet-server:5000"
+        - name: react-dashboard
+          image: elarsaks/react-dashboard:v1.0.2
+          ports:
+            - containerPort: 80
+          env:
+            - name: REACT_APP_GATEWAY_API_URL
+              value: "http://wallet-server:5000"
 ---
 apiVersion: v1
 kind: Service
@@ -31,7 +29,47 @@ spec:
   selector:
     app: react-dashboard
   ports:
-  - protocol: TCP
-    port: 3000          # The port that the service is accessible on from outside
-    targetPort: 80      # The port on the pod to send requests to (Nginx port)
+    - protocol: TCP
+      port: 3000
+      targetPort: 80
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blockchain-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blockchain-server
+  template:
+    metadata:
+      labels:
+        app: blockchain-server
+    spec:
+      containers:
+        - name: blockchain-server
+          image: elarsaks/blockchain_server:v1.0.1
+          ports:
+            - containerPort: 5001
+          env:
+            - name: COMMAND
+              value: "air"
+            - name: BLOCKCHAIN_SERVER_PORT
+              value: "5001"
+            - name: MINER_HOST
+              value: "miner"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-server-service
+spec:
+  selector:
+    app: blockchain-server
+  ports:
+    - protocol: TCP
+      port: 5001
+      targetPort: 5001
   type: NodePort

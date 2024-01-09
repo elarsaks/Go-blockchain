@@ -33,7 +33,7 @@ WORKDIR /app
 COPY --from=builder /app/main .
 
 # Expose the port
-EXPOSE ${BLOCKCHAIN_SERVER_PORT}
+EXPOSE 8080
 
 # Set the default command to run the application
 CMD ["./main"]
