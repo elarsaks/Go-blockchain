@@ -10,17 +10,11 @@ COPY package*.json ./
 # Install dependencies 
 RUN npm install
 
-# Create a group and user
-# COPY --chown=node:node . .
-
 # Copy the keys directory
 COPY keys ./keys
 
 # Copy the rest of your app's source code from your host to your image filesystem.
 COPY . .
-
-# Change to the node user
-# USER node
 
 # Expose the listening port of your app
 EXPOSE 3000
