@@ -8,4 +8,4 @@ node_modules
 *.log
 
 # Ignore the build output directory
-# build
+build
