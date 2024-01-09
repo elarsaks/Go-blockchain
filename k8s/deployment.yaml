@@ -37,6 +37,46 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: wallet-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wallet-server
+  template:
+    metadata:
+      labels:
+        app: wallet-server
+    spec:
+      containers:
+        - name: wallet-server
+          image: elarsaks/wallet_server:v1.0.1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: COMMAND
+              value: "air"
+            - name: MINER_HOST
+              value: "miner-1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallet-server-service
+spec:
+  selector:
+    app: wallet-server
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
   name: blockchain-server
 spec:
   replicas: 1
