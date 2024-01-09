@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-dashboard
+  template:
+    metadata:
+      labels:
+        app: react-dashboard
+    spec:
+      containers:
+        - name: react-dashboard
+          image: elarsaks/react-dashboard:v1
+          ports:
+            - containerPort: 3000
+          env:
+            - name: REACT_APP_GATEWAY_API_URL
+              value: "http://wallet-server:5000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-dashboard-service
+spec:
+  selector:
+    app: react-dashboard
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: NodePort
