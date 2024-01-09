@@ -50,10 +50,10 @@ const Cube: React.FC = () => {
 
     const animate = () => {
       requestAnimationFrame(animate);
-      cubeEdges.rotation.x += 0.001;
-      cubeEdges.rotation.y += 0.001;
-      cubeMesh.rotation.x += 0.001;
-      cubeMesh.rotation.y += 0.001;
+      cubeEdges.rotation.x += 0.01;
+      cubeEdges.rotation.y += 0.01;
+      cubeMesh.rotation.x += 0.01;
+      cubeMesh.rotation.y += 0.01;
       renderer.render(scene, camera);
     };
 
