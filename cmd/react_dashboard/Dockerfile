@@ -1,5 +1,5 @@
 # Start with a base image containing Node.js runtime
-FROM node:17.0.0 
+FROM node:20.10.0
 
 # Set the working directory in the builder stage
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY package*.json ./
 RUN npm install
 
 # Create a group and user
-#COPY --chown=node:node . .
+# COPY --chown=node:node . .
 
 # Copy the keys directory
 COPY keys ./keys
@@ -20,7 +20,7 @@ COPY keys ./keys
 COPY . .
 
 # Change to the node user
-USER node
+# USER node
 
 # Expose the listening port of your app
 EXPOSE 3000

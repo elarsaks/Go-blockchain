@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: react-dashboard
-          image: elarsaks/react-dashboard:v1
+          image: elarsaks/react-dashboard:v1.0.1
           ports:
             - containerPort: 3000
           env:
