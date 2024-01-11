@@ -155,4 +155,15 @@ go run main.go wallet_server.go -port 8080 -gateway http://127.0.0.1:5001
 
 
 
+K8-s (Under development)
+------------------------
+
+To run it in kubernets, execute the following command in *Go-Blockchain/k8s/*:
+```bash
+kubectl apply -f .\deployment.yaml
+```
+
+TODO: 
+- Fix networking between pods (Use env variables)
+
 
