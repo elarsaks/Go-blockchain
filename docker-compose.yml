@@ -4,7 +4,7 @@ services:
   react-dashboard:
     build:
       context: ./cmd/react_dashboard
-    command: npm run start-react
+      dockerfile: Dockerfile
     container_name: react-dashboard
     restart: unless-stopped
     ports:

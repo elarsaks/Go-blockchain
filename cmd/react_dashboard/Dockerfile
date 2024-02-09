@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 3000
 
 # Run the app
-CMD ["npm", "run", "start-react"]
+CMD ["npm", "run", "start"]
